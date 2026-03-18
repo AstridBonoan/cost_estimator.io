@@ -961,13 +961,8 @@
                 </div>
 
                 <div class="field">
-                  <label for="wallScope">Size of the affected wall or area</label>
-                  <select id="wallScope">
-                    <option value="small-area">Small area only (less than 4 ft)</option>
-                    <option value="standard-wall">Standard wall (up to 8 ft)</option>
-                    <option value="large-wall">Large wall (more than 8 ft)</option>
-                    <option value="connected-walls">Multiple connected walls</option>
-                  </select>
+                  <label for="wallScope" id="wallScopeLabel">Size of the affected wall or area</label>
+                  <select id="wallScope"></select>
                 </div>
 
                 <div class="field">
@@ -1004,13 +999,8 @@
                 </div>
 
                 <div class="field" id="paintBlendField">
-                  <label for="paintBlend">What area should be painted?</label>
-                  <select id="paintBlend">
-                    <option value="patch-only">Only the patch area</option>
-                    <option value="full-wall">Entire wall</option>
-                    <option value="connected-walls">Connected walls</option>
-                    <option value="not-sure">Not sure</option>
-                  </select>
+                  <label for="paintBlend" id="paintBlendLabel">What area should be painted?</label>
+                  <select id="paintBlend"></select>
                 </div>
 
                 <div class="field">
@@ -1032,7 +1022,7 @@
                 </div>
 
                 <div class="field">
-                  <label for="ceilingHeight">Height of the work area</label>
+                  <label for="ceilingHeight" id="ceilingHeightLabel">Height of the work area</label>
                   <select id="ceilingHeight">
                     <option value="standard">Less than 8 ft</option>
                     <option value="medium">8 to 10 ft</option>
@@ -1206,6 +1196,36 @@
       }
     };
 
+    const wallScopeOptions = {
+      wall: [
+        { value: "small-area", label: "Small wall area (less than 4 ft)" },
+        { value: "standard-wall", label: "Standard wall (up to 8 ft)" },
+        { value: "large-wall", label: "Large wall (more than 8 ft)" },
+        { value: "connected-walls", label: "Multiple connected walls" }
+      ],
+      ceiling: [
+        { value: "small-area", label: "Small ceiling area (less than 4 ft)" },
+        { value: "standard-wall", label: "Standard ceiling section (up to 8 ft)" },
+        { value: "large-wall", label: "Large ceiling area (more than 8 ft)" },
+        { value: "connected-walls", label: "Multiple connected ceiling areas" }
+      ]
+    };
+
+    const paintBlendOptions = {
+      wall: [
+        { value: "patch-only", label: "Only the patch area" },
+        { value: "full-wall", label: "Entire wall" },
+        { value: "connected-walls", label: "Connected walls" },
+        { value: "not-sure", label: "Not sure" }
+      ],
+      ceiling: [
+        { value: "patch-only", label: "Only the patch area" },
+        { value: "full-wall", label: "Entire ceiling area" },
+        { value: "connected-walls", label: "Connected ceiling areas" },
+        { value: "not-sure", label: "Not sure" }
+      ]
+    };
+
     let currentStep = 1;
     let latestEstimate = null;
     let coldLeadSubmitted = false;
@@ -1226,6 +1246,13 @@
     const doneBtn = document.getElementById("doneBtn");
     const projectFiles = document.getElementById("projectFiles");
     const resultsProjectName = document.getElementById("resultsProjectName");
+
+    const damageLocation = document.getElementById("damageLocation");
+    const wallScope = document.getElementById("wallScope");
+    const paintBlend = document.getElementById("paintBlend");
+    const wallScopeLabel = document.getElementById("wallScopeLabel");
+    const paintBlendLabel = document.getElementById("paintBlendLabel");
+    const ceilingHeightLabel = document.getElementById("ceilingHeightLabel");
 
     const hotCompletionScreen = document.getElementById("hotCompletionScreen");
     const doneCompletionScreen = document.getElementById("doneCompletionScreen");
@@ -1284,6 +1311,38 @@
     function clearValidation(box) {
       box.textContent = "";
       box.classList.remove("active");
+    }
+
+    function populateSelect(selectEl, options, selectedValue = null) {
+      selectEl.innerHTML = "";
+      options.forEach(option => {
+        const opt = document.createElement("option");
+        opt.value = option.value;
+        opt.textContent = option.label;
+        if (selectedValue && selectedValue === option.value) {
+          opt.selected = true;
+        }
+        selectEl.appendChild(opt);
+      });
+    }
+
+    function updateContextualFields() {
+      const mode = damageLocation.value === "ceiling" ? "ceiling" : "wall";
+      const currentWallScope = wallScope.value;
+      const currentPaintBlend = paintBlend.value;
+
+      if (mode === "wall") {
+        wallScopeLabel.textContent = "Size of the affected wall or area";
+        paintBlendLabel.textContent = "What area should be painted?";
+        ceilingHeightLabel.textContent = "Height of the work area";
+      } else {
+        wallScopeLabel.textContent = "Size of the affected ceiling area";
+        paintBlendLabel.textContent = "What ceiling area should be painted?";
+        ceilingHeightLabel.textContent = "Height of the ceiling area";
+      }
+
+      populateSelect(wallScope, wallScopeOptions[mode], currentWallScope);
+      populateSelect(paintBlend, paintBlendOptions[mode], currentPaintBlend);
     }
 
     function validateStep(step) {
@@ -1458,14 +1517,22 @@
           hours += 2.5;
           minMaterials += 35;
           maxMaterials += 85;
-          adjustments.push("Includes painting the full wall");
+          adjustments.push(
+            formData.damageLocation === "ceiling"
+              ? "Includes painting the full ceiling area"
+              : "Includes painting the full wall"
+          );
         }
 
         if (formData.paintBlend === "connected-walls") {
           hours += 4.5;
           minMaterials += 65;
           maxMaterials += 160;
-          adjustments.push("Includes painting connected walls");
+          adjustments.push(
+            formData.damageLocation === "ceiling"
+              ? "Includes painting connected ceiling areas"
+              : "Includes painting connected walls"
+          );
         }
 
         if (formData.paintBlend === "not-sure") {
@@ -1490,21 +1557,33 @@
         hours += 0.5;
         minMaterials += 10;
         maxMaterials += 20;
-        adjustments.push("Adjustment for standard wall");
+        adjustments.push(
+          formData.damageLocation === "ceiling"
+            ? "Adjustment for standard ceiling section"
+            : "Adjustment for standard wall"
+        );
       }
 
       if (formData.wallScope === "large-wall") {
         hours += 1.0;
         minMaterials += 20;
         maxMaterials += 45;
-        adjustments.push("Adjustment for large wall");
+        adjustments.push(
+          formData.damageLocation === "ceiling"
+            ? "Adjustment for large ceiling area"
+            : "Adjustment for large wall"
+        );
       }
 
       if (formData.wallScope === "connected-walls") {
         hours += 1.5;
         minMaterials += 30;
         maxMaterials += 70;
-        adjustments.push("Adjustment for multiple connected walls");
+        adjustments.push(
+          formData.damageLocation === "ceiling"
+            ? "Adjustment for multiple connected ceiling areas"
+            : "Adjustment for multiple connected walls"
+        );
       }
 
       hours = Math.round(hours * 10) / 10;
@@ -1539,12 +1618,12 @@
         city: document.getElementById("city").value.trim(),
         ownerStatus: document.getElementById("ownerStatus").value,
         timeline: document.getElementById("timeline").value,
-        damageLocation: document.getElementById("damageLocation").value,
+        damageLocation: damageLocation.value,
         damageSize: document.getElementById("damageSize").value,
-        wallScope: document.getElementById("wallScope").value,
+        wallScope: wallScope.value,
         texture: document.getElementById("texture").value,
         paintRequired: document.getElementById("paintRequired").value,
-        paintBlend: document.getElementById("paintBlend").value,
+        paintBlend: paintBlend.value,
         paintAvailable: document.getElementById("paintAvailable").value,
         insulation: document.getElementById("insulation").value,
         ceilingHeight: document.getElementById("ceilingHeight").value,
@@ -1638,6 +1717,7 @@
       resultsProjectName.textContent = "Project Type: Drywall Patch / Wall Repair";
 
       setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
+      updateContextualFields();
       togglePaintBlendField();
       hideAllEndStates();
       stepper.classList.remove("hidden");
@@ -1649,6 +1729,8 @@
     drywallProjectOption.addEventListener("click", function() {
       setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
     });
+
+    damageLocation.addEventListener("change", updateContextualFields);
 
     setupAccordions();
 
@@ -1756,6 +1838,7 @@
     startNewFromDone.addEventListener("click", resetExperience);
 
     setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
+    updateContextualFields();
     hideAllEndStates();
     showStep(1);
   </script>
