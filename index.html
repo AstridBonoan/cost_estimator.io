@@ -13,17 +13,11 @@
       --line: #dbe2ea;
       --primary: #0f172a;
       --primary-2: #1e293b;
-      --soft: #eef4ff;
-      --soft-border: #c8d8f2;
       --warn-bg: #fff7ed;
       --warn-border: #fed7aa;
       --warn-text: #7c2d12;
-      --success-bg: #ecfdf5;
-      --success-border: #bbf7d0;
-      --success-text: #166534;
       --shadow: 0 12px 34px rgba(15, 23, 42, 0.08);
       --max: 1080px;
-      --radius: 18px;
     }
 
     * { box-sizing: border-box; }
@@ -134,9 +128,7 @@
       animation: fadeIn 0.18s ease;
     }
 
-    .step-panel.active {
-      display: block;
-    }
+    .step-panel.active { display: block; }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(4px); }
@@ -171,9 +163,7 @@
       min-width: 0;
     }
 
-    .field.full {
-      grid-column: 1 / -1;
-    }
+    .field.full { grid-column: 1 / -1; }
 
     label {
       display: inline-block;
@@ -277,9 +267,7 @@
       background: #fcfdff;
     }
 
-    .selector-shell.open .selector-panel {
-      display: block;
-    }
+    .selector-shell.open .selector-panel { display: block; }
 
     .accordion-group + .accordion-group { margin-top: 10px; }
 
@@ -323,9 +311,7 @@
       padding: 10px 4px 0;
     }
 
-    .accordion-group.open .accordion-content {
-      display: block;
-    }
+    .accordion-group.open .accordion-content { display: block; }
 
     .project-option {
       border: 1px solid var(--line);
@@ -422,7 +408,7 @@
     .btn:active { transform: translateY(1px); }
 
     .btn-primary {
-      background: var(--primary);
+      background: #0f172a;
       color: #fff;
     }
 
@@ -678,8 +664,8 @@
         <div class="hero">
           <div class="eyebrow">Project Cost Estimator</div>
           <h1>Want to know how much your project will cost?</h1>
-          <p>Real Contractor Estimate — Powered by Tamay Enterprises</p>
-          <div class="microcopy">No obligation. No generic ranges. Just real-world pricing.</div>
+          <p>Real-World Contractor Pricing — Powered by Tamay Enterprises</p>
+          <div class="microcopy">No obligation. No generic ranges. Based on real contractor experience.</div>
         </div>
 
         <div class="content">
@@ -1038,38 +1024,78 @@
   <script>
     const FORMSPREE_ENDPOINT = "https://formspree.io/f/xqeyglen";
 
-    const LABOR_RATE_PER_PERSON = 32;
-    const CREW_SIZE = 2;
-    const CREW_HOURLY_RATE = LABOR_RATE_PER_PERSON * CREW_SIZE;
-
-    const materialPresets = {
-      small: {
-        label: "Small patch",
-        baseMin: 18,
-        baseMax: 35,
-        hours: 1.5,
-        materials: ["Patch repair kit", "Joint compound", "Basic tape", "Minor consumables"]
+    const PRICING = {
+      labor: {
+        ratePerPerson: 32,
+        crewSize: 2
       },
-      medium: {
-        label: "Medium patch",
-        baseMin: 35,
-        baseMax: 70,
-        hours: 2.5,
-        materials: ["1 drywall sheet or equivalent piece", "Joint compound", "Drywall tape", "Screws", "Minor consumables"]
+      drywall: {
+        small: {
+          label: "Small patch",
+          materialMin: 18,
+          materialMax: 35,
+          hours: 1.5,
+          materials: ["Patch repair kit", "Joint compound", "Basic tape", "Minor consumables"]
+        },
+        medium: {
+          label: "Medium patch",
+          materialMin: 35,
+          materialMax: 70,
+          hours: 2.5,
+          materials: ["1 drywall sheet or equivalent piece", "Joint compound", "Drywall tape", "Screws", "Minor consumables"]
+        },
+        large: {
+          label: "Large patch",
+          materialMin: 70,
+          materialMax: 125,
+          hours: 4,
+          materials: ["1 to 2 drywall sheets", "Joint compound", "Drywall tape", "Screws", "Minor consumables"]
+        },
+        xlarge: {
+          label: "Very large patch",
+          materialMin: 125,
+          materialMax: 220,
+          hours: 6,
+          materials: ["2 to 3 drywall sheets", "Additional joint compound", "Drywall tape", "Screws", "Consumables and reinforcement"]
+        }
       },
-      large: {
-        label: "Large patch",
-        baseMin: 70,
-        baseMax: 125,
-        hours: 4,
-        materials: ["1 to 2 drywall sheets", "Joint compound", "Drywall tape", "Screws", "Minor consumables"]
+      adjustments: {
+        damageLocation: {
+          ceiling: { hoursMultiplier: 1.25, materialMinAdd: 8, materialMaxAdd: 18, label: "Adjustment for ceiling work" }
+        },
+        texture: {
+          light: { hoursMultiplier: 1.15, materialMinAdd: 10, materialMaxAdd: 20, label: "Adjustment for light texture" },
+          heavy: { hoursMultiplier: 1.30, materialMinAdd: 20, materialMaxAdd: 40, label: "Adjustment for heavy texture" }
+        },
+        workHeight: {
+          medium: { hoursMultiplier: 1.10, materialMinAdd: 0, materialMaxAdd: 0, label: "Adjustment for 8–10 ft height" },
+          high: { hoursMultiplier: 1.20, materialMinAdd: 8, materialMaxAdd: 20, label: "Adjustment for height above 10 ft" }
+        },
+        obstacles: {
+          yes: { hoursMultiplier: 1.15, materialMinAdd: 0, materialMaxAdd: 0, label: "Adjustment for moving furniture or obstacles" }
+        },
+        insulation: {
+          yes: { hoursAdd: 0.5, materialMinAdd: 12, materialMaxAdd: 25, label: "Includes possible insulation adjustment" }
+        },
+        paint: {
+          patchOnly: { hoursAdd: 1, materialMinAdd: 15, materialMaxAdd: 35, label: "Includes painting the patch area only" },
+          fullSurface: { hoursAdd: 2.5, materialMinAdd: 35, materialMaxAdd: 85 },
+          connectedSurfaces: { hoursAdd: 4.5, materialMinAdd: 65, materialMaxAdd: 160 },
+          notSure: { hoursAdd: 2, materialMinAdd: 25, materialMaxAdd: 65, label: "Painting included, final scope to be confirmed" },
+          noExistingPaint: { hoursAdd: 0, materialMinAdd: 15, materialMaxAdd: 35, label: "No existing paint available" },
+          yesExistingPaint: { label: "Customer indicates existing paint is available" }
+        },
+        scopeContext: {
+          standardSurface: { hoursAdd: 0.5, materialMinAdd: 10, materialMaxAdd: 20 },
+          largeSurface: { hoursAdd: 1, materialMinAdd: 20, materialMaxAdd: 45 },
+          connectedSurfaces: { hoursAdd: 1.5, materialMinAdd: 30, materialMaxAdd: 70 }
+        }
       },
-      xlarge: {
-        label: "Very large patch",
-        baseMin: 125,
-        baseMax: 220,
-        hours: 6,
-        materials: ["2 to 3 drywall sheets", "Additional joint compound", "Drywall tape", "Screws", "Consumables and reinforcement"]
+      serviceZoneMultipliers: {
+        core: 1.00,
+        extended: 1.08,
+        outer: 1.15,
+        distant: 1.22
       }
     };
 
@@ -1126,6 +1152,7 @@
 
     let currentStep = 1;
     let latestEstimate = null;
+    let latestLeadMeta = null;
     let coldLeadSubmitted = false;
     let hotLeadSubmitted = false;
 
@@ -1327,129 +1354,258 @@
       });
     }
 
+    function classifyZipBand(zipcodeRaw) {
+      const zip = String(zipcodeRaw || "").trim().slice(0, 5);
+
+      if (!/^\d{5}$/.test(zip)) {
+        return {
+          distanceBand: "unknown",
+          serviceZone: "distant",
+          marketRegion: "unknown",
+          multiplier: PRICING.serviceZoneMultipliers.distant
+        };
+      }
+
+      if (zip.startsWith("06")) {
+        const firstThree = zip.slice(0, 3);
+
+        const corePrefixes = ["064", "065", "066", "067"];
+        const extendedPrefixes = ["068", "069", "063"];
+
+        if (corePrefixes.includes(firstThree)) {
+          return {
+            distanceBand: "0-50",
+            serviceZone: "core",
+            marketRegion: "connecticut_local",
+            multiplier: PRICING.serviceZoneMultipliers.core
+          };
+        }
+
+        if (extendedPrefixes.includes(firstThree)) {
+          return {
+            distanceBand: "50-60",
+            serviceZone: "extended",
+            marketRegion: "connecticut_extended",
+            multiplier: PRICING.serviceZoneMultipliers.extended
+          };
+        }
+
+        return {
+          distanceBand: "60-70",
+          serviceZone: "outer",
+          marketRegion: "connecticut_outer",
+          multiplier: PRICING.serviceZoneMultipliers.outer
+        };
+      }
+
+      if (zip.startsWith("10") || zip.startsWith("11")) {
+        return {
+          distanceBand: "50-60",
+          serviceZone: "extended",
+          marketRegion: "new_york_near",
+          multiplier: PRICING.serviceZoneMultipliers.extended
+        };
+      }
+
+      if (zip.startsWith("01") || zip.startsWith("02")) {
+        return {
+          distanceBand: "60-70",
+          serviceZone: "outer",
+          marketRegion: "massachusetts_near",
+          multiplier: PRICING.serviceZoneMultipliers.outer
+        };
+      }
+
+      return {
+        distanceBand: "70+",
+        serviceZone: "distant",
+        marketRegion: "outside_primary_region",
+        multiplier: PRICING.serviceZoneMultipliers.distant
+      };
+    }
+
+    function classifyJobSize(formData) {
+      if (formData.damageSize === "large" || formData.damageSize === "xlarge") return "large";
+      if (formData.damageSize === "medium") return "medium";
+      return "small";
+    }
+
+    function classifyLead(formData) {
+      const zipMeta = classifyZipBand(formData.zipcode);
+      const jobSize = classifyJobSize(formData);
+
+      let priority = "low";
+
+      if (zipMeta.serviceZone === "core") priority = "high";
+      else if (zipMeta.serviceZone === "extended") priority = jobSize === "small" ? "medium" : "high";
+      else if (zipMeta.serviceZone === "outer") priority = jobSize === "large" ? "medium" : "low";
+      else priority = jobSize === "large" ? "medium" : "low";
+
+      return {
+        ...zipMeta,
+        jobSize,
+        leadPriority: priority
+      };
+    }
+
     function calculateEstimate(formData) {
       const ctx = drywallContextConfig[formData.damageLocation === "ceiling" ? "ceiling" : "wall"];
+      const leadMeta = classifyLead(formData);
+      const crewHourlyRate = PRICING.labor.ratePerPerson * PRICING.labor.crewSize;
+      const preset = PRICING.drywall[formData.damageSize];
 
-      let preset = materialPresets[formData.damageSize];
-      let minMaterials = preset.baseMin;
-      let maxMaterials = preset.baseMax;
+      let minMaterials = preset.materialMin;
+      let maxMaterials = preset.materialMax;
       let hours = preset.hours;
       let adjustments = [];
 
       adjustments.push(`Selected base: ${preset.label}`);
+      adjustments.push(`Service zone: ${leadMeta.serviceZone}`);
+      adjustments.push(`Distance band: ${leadMeta.distanceBand}`);
+      adjustments.push(`Lead priority: ${leadMeta.leadPriority}`);
 
       if (formData.damageLocation === "ceiling") {
-        hours *= 1.25;
-        minMaterials += 8;
-        maxMaterials += 18;
-        adjustments.push("Adjustment for ceiling work");
+        const a = PRICING.adjustments.damageLocation.ceiling;
+        hours *= a.hoursMultiplier;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
+        adjustments.push(a.label);
       }
 
       if (formData.texture === "light") {
-        hours *= 1.15;
-        minMaterials += 10;
-        maxMaterials += 20;
-        adjustments.push("Adjustment for light texture");
+        const a = PRICING.adjustments.texture.light;
+        hours *= a.hoursMultiplier;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
+        adjustments.push(a.label);
       }
 
       if (formData.texture === "heavy") {
-        hours *= 1.30;
-        minMaterials += 20;
-        maxMaterials += 40;
-        adjustments.push("Adjustment for heavy texture");
+        const a = PRICING.adjustments.texture.heavy;
+        hours *= a.hoursMultiplier;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
+        adjustments.push(a.label);
       }
 
       if (formData.ceilingHeight === "medium") {
-        hours *= 1.10;
-        adjustments.push("Adjustment for 8–10 ft height");
+        const a = PRICING.adjustments.workHeight.medium;
+        hours *= a.hoursMultiplier;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
+        adjustments.push(a.label);
       }
 
       if (formData.ceilingHeight === "high") {
-        hours *= 1.20;
-        minMaterials += 8;
-        maxMaterials += 20;
-        adjustments.push("Adjustment for height above 10 ft");
+        const a = PRICING.adjustments.workHeight.high;
+        hours *= a.hoursMultiplier;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
+        adjustments.push(a.label);
       }
 
       if (formData.obstacles === "yes") {
-        hours *= 1.15;
-        adjustments.push("Adjustment for moving furniture or obstacles");
+        const a = PRICING.adjustments.obstacles.yes;
+        hours *= a.hoursMultiplier;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
+        adjustments.push(a.label);
       }
 
       if (formData.insulation === "yes") {
-        minMaterials += 12;
-        maxMaterials += 25;
-        hours += 0.5;
-        adjustments.push("Includes possible insulation adjustment");
+        const a = PRICING.adjustments.insulation.yes;
+        hours += a.hoursAdd;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
+        adjustments.push(a.label);
       }
 
       if (formData.paintRequired === "yes") {
         if (formData.paintBlend === "patch-only") {
-          hours += 1;
-          minMaterials += 15;
-          maxMaterials += 35;
-          adjustments.push("Includes painting the patch area only");
+          const a = PRICING.adjustments.paint.patchOnly;
+          hours += a.hoursAdd;
+          minMaterials += a.materialMinAdd;
+          maxMaterials += a.materialMaxAdd;
+          adjustments.push(a.label);
         }
 
         if (formData.paintBlend === "full-surface") {
-          hours += 2.5;
-          minMaterials += 35;
-          maxMaterials += 85;
+          const a = PRICING.adjustments.paint.fullSurface;
+          hours += a.hoursAdd;
+          minMaterials += a.materialMinAdd;
+          maxMaterials += a.materialMaxAdd;
           adjustments.push(ctx.summaryMap.fullSurfacePaint);
         }
 
         if (formData.paintBlend === "connected-surfaces") {
-          hours += 4.5;
-          minMaterials += 65;
-          maxMaterials += 160;
+          const a = PRICING.adjustments.paint.connectedSurfaces;
+          hours += a.hoursAdd;
+          minMaterials += a.materialMinAdd;
+          maxMaterials += a.materialMaxAdd;
           adjustments.push(ctx.summaryMap.connectedSurfacePaint);
         }
 
         if (formData.paintBlend === "not-sure") {
-          hours += 2;
-          minMaterials += 25;
-          maxMaterials += 65;
-          adjustments.push("Painting included, final scope to be confirmed");
+          const a = PRICING.adjustments.paint.notSure;
+          hours += a.hoursAdd;
+          minMaterials += a.materialMinAdd;
+          maxMaterials += a.materialMaxAdd;
+          adjustments.push(a.label);
         }
 
         if (formData.paintAvailable === "no") {
-          minMaterials += 15;
-          maxMaterials += 35;
-          adjustments.push("No existing paint available");
+          const a = PRICING.adjustments.paint.noExistingPaint;
+          hours += a.hoursAdd;
+          minMaterials += a.materialMinAdd;
+          maxMaterials += a.materialMaxAdd;
+          adjustments.push(a.label);
         }
 
         if (formData.paintAvailable === "yes") {
-          adjustments.push("Customer indicates existing paint is available");
+          adjustments.push(PRICING.adjustments.paint.yesExistingPaint.label);
         }
       }
 
       if (formData.scopeContext === "standard-surface") {
-        hours += 0.5;
-        minMaterials += 10;
-        maxMaterials += 20;
+        const a = PRICING.adjustments.scopeContext.standardSurface;
+        hours += a.hoursAdd;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
         adjustments.push(ctx.summaryMap.standardSurface);
       }
 
       if (formData.scopeContext === "large-surface") {
-        hours += 1.0;
-        minMaterials += 20;
-        maxMaterials += 45;
+        const a = PRICING.adjustments.scopeContext.largeSurface;
+        hours += a.hoursAdd;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
         adjustments.push(ctx.summaryMap.largeSurface);
       }
 
       if (formData.scopeContext === "connected-surfaces") {
-        hours += 1.5;
-        minMaterials += 30;
-        maxMaterials += 70;
+        const a = PRICING.adjustments.scopeContext.connectedSurfaces;
+        hours += a.hoursAdd;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
         adjustments.push(ctx.summaryMap.connectedSurfaces);
       }
 
       hours = Math.round(hours * 10) / 10;
 
-      const laborMin = hours * CREW_HOURLY_RATE;
-      const laborMax = laborMin * 1.15;
-      const totalMin = minMaterials + laborMin;
-      const totalMax = maxMaterials + laborMax;
+      let laborMin = hours * crewHourlyRate;
+      let laborMax = laborMin * 1.15;
+      let totalMin = minMaterials + laborMin;
+      let totalMax = maxMaterials + laborMax;
+
+      const zoneMultiplier = leadMeta.multiplier;
+      minMaterials *= zoneMultiplier;
+      maxMaterials *= zoneMultiplier;
+      laborMin *= zoneMultiplier;
+      laborMax *= zoneMultiplier;
+      totalMin *= zoneMultiplier;
+      totalMax *= zoneMultiplier;
+
+      adjustments.push(`Market adjustment applied: x${zoneMultiplier.toFixed(2)}`);
 
       return {
         hours,
@@ -1460,7 +1616,8 @@
         totalMin,
         totalMax,
         materialsList: preset.materials,
-        adjustments
+        adjustments,
+        leadMeta
       };
     }
 
@@ -1491,6 +1648,7 @@
 
     async function submitLead(leadType, estimateData) {
       const formData = getFormData();
+      const leadMeta = estimateData.leadMeta || classifyLead(formData);
       const payload = new FormData();
 
       payload.append("lead_type", leadType);
@@ -1513,9 +1671,16 @@
       payload.append("paint_area", formData.paintBlend);
       payload.append("paint_available", formData.paintAvailable);
       payload.append("insulation", formData.insulation);
-      payload.append("ceiling_height", formData.ceilingHeight);
+      payload.append("work_height", formData.ceilingHeight);
       payload.append("obstacles", formData.obstacles);
       payload.append("notes", formData.notes);
+
+      payload.append("distance_band", leadMeta.distanceBand);
+      payload.append("service_zone", leadMeta.serviceZone);
+      payload.append("market_region", leadMeta.marketRegion);
+      payload.append("job_size", leadMeta.jobSize);
+      payload.append("lead_priority", leadMeta.leadPriority);
+      payload.append("pricing_multiplier", String(leadMeta.multiplier));
 
       payload.append("estimated_materials", `${currency(estimateData.minMaterials)} – ${currency(estimateData.maxMaterials)}`);
       payload.append("estimated_labor", `${currency(estimateData.laborMin)} – ${currency(estimateData.laborMax)}`);
@@ -1524,7 +1689,7 @@
       payload.append("materials_considered", estimateData.materialsList.join(", "));
       payload.append("calculation_summary", estimateData.adjustments.join(" | "));
 
-      payload.append("_subject", `${leadType} LEAD – ${formData.projectDisplayName}`);
+      payload.append("_subject", `${leadType} LEAD – ${formData.projectDisplayName} – ${leadMeta.serviceZone.toUpperCase()} – ${leadMeta.leadPriority.toUpperCase()}`);
 
       const files = projectFiles.files;
       if (files && files.length > 0) {
@@ -1551,6 +1716,7 @@
       clearValidation(validationStep4);
 
       latestEstimate = null;
+      latestLeadMeta = null;
       coldLeadSubmitted = false;
       hotLeadSubmitted = false;
 
@@ -1613,6 +1779,7 @@
 
       const formData = getFormData();
       latestEstimate = calculateEstimate(formData);
+      latestLeadMeta = latestEstimate.leadMeta;
 
       materialsCost.textContent = `${currency(latestEstimate.minMaterials)} – ${currency(latestEstimate.maxMaterials)}`;
       laborCost.textContent = `${currency(latestEstimate.laborMin)} – ${currency(latestEstimate.laborMax)}`;
