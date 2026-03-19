@@ -74,14 +74,6 @@
       letter-spacing: -0.02em;
     }
 
-    .hero p {
-      margin: 0;
-      color: rgba(255, 255, 255, 0.92);
-      font-size: 0.97rem;
-      line-height: 1.55;
-      max-width: 760px;
-    }
-
     .hero .subline {
       margin: 0;
       color: rgba(255, 255, 255, 0.95);
@@ -667,7 +659,6 @@
       .page { padding: 34px 24px 60px; }
       .hero { padding: 38px 34px; }
       .hero h1 { font-size: 2.35rem; }
-      .hero p { font-size: 1.02rem; }
       .content { padding: 28px 28px 30px; }
       .section-title { font-size: 1.12rem; }
     }
@@ -696,7 +687,7 @@
             <div class="step-pill" data-step-pill="5">5. Results</div>
           </div>
 
-          <form id="drywallForm" novalidate>
+          <form id="estimatorForm" novalidate>
             <div class="step-panel active" data-step="1">
               <div class="section-title">Select Your Project Type</div>
               <p class="section-subtitle">
@@ -730,19 +721,19 @@
                     </div>
                   </div>
 
-                  <div class="accordion-group" data-accordion="lighting">
+                  <div class="accordion-group open" data-accordion="lighting">
                     <button type="button" class="accordion-button">
                       <div>
                         <div>Electrical &amp; Lighting</div>
-                        <div class="meta">Estimator in development</div>
+                        <div class="meta">Available now</div>
                       </div>
                       <div class="acc-icon">⌄</div>
                     </button>
                     <div class="accordion-content">
-                      <div class="project-option coming-soon">
+                      <div class="project-option selectable" id="lightingProjectOption">
                         <h4>Add or Replace a Light Fixture</h4>
-                        <p>Install or replace a light fixture for an existing or new lighting location.</p>
-                        <div class="badge soon">Coming Soon</div>
+                        <p>Estimate new fixture installs or replacement of existing light fixtures, including access, repair, and painting if needed.</p>
+                        <div class="badge live">Available Now</div>
                       </div>
                     </div>
                   </div>
@@ -842,41 +833,87 @@
 
             <div class="step-panel" data-step="3">
               <div class="section-title">Project Basics</div>
-              <p class="section-subtitle">
+              <p class="section-subtitle" id="basicsSubtitle">
                 Tell us about the damaged area so we can build a more accurate estimate.
               </p>
 
-              <div class="grid">
-                <div class="field">
-                  <label for="damageLocation">Where is the damage located?</label>
-                  <select id="damageLocation">
-                    <option value="wall">Wall</option>
-                    <option value="ceiling">Ceiling</option>
-                  </select>
-                </div>
+              <div id="drywallBasicsSection">
+                <div class="grid">
+                  <div class="field">
+                    <label for="damageLocation">Where is the damage located?</label>
+                    <select id="damageLocation">
+                      <option value="wall">Wall</option>
+                      <option value="ceiling">Ceiling</option>
+                    </select>
+                  </div>
 
-                <div class="field">
-                  <label for="damageSize">Approximate size of the damage</label>
-                  <select id="damageSize">
-                    <option value="small">Small (less than 6")</option>
-                    <option value="medium">Medium (6" to 24")</option>
-                    <option value="large">Large (24" to 48")</option>
-                    <option value="xlarge">Very large (more than 48")</option>
-                  </select>
-                </div>
+                  <div class="field">
+                    <label for="damageSize">Approximate size of the damage</label>
+                    <select id="damageSize">
+                      <option value="small">Small (less than 6")</option>
+                      <option value="medium">Medium (6" to 24")</option>
+                      <option value="large">Large (24" to 48")</option>
+                      <option value="xlarge">Very large (more than 48")</option>
+                    </select>
+                  </div>
 
-                <div class="field">
-                  <label for="scopeContext" id="scopeContextLabel">Size of the affected wall or area</label>
-                  <select id="scopeContext"></select>
-                </div>
+                  <div class="field">
+                    <label for="scopeContext" id="scopeContextLabel">Size of the affected wall or area</label>
+                    <select id="scopeContext"></select>
+                  </div>
 
-                <div class="field">
-                  <label for="texture">Surface / texture type</label>
-                  <select id="texture">
-                    <option value="none">Smooth</option>
-                    <option value="light">Light texture</option>
-                    <option value="heavy">Heavy texture</option>
-                  </select>
+                  <div class="field">
+                    <label for="texture">Surface / texture type</label>
+                    <select id="texture">
+                      <option value="none">Smooth</option>
+                      <option value="light">Light texture</option>
+                      <option value="heavy">Heavy texture</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div id="lightingBasicsSection" class="hidden">
+                <div class="grid">
+                  <div class="field">
+                    <label for="lightingType">What type of lighting project is this?</label>
+                    <select id="lightingType">
+                      <option value="replace">Replace an existing light fixture</option>
+                      <option value="add">Add a new light fixture</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="lightingLocation">Where will the light be installed?</label>
+                    <select id="lightingLocation">
+                      <option value="ceiling">Ceiling</option>
+                      <option value="wall">Wall</option>
+                      <option value="exterior">Exterior</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="fixtureCount">How many fixtures would you like to install or replace?</label>
+                    <select id="fixtureCount">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5+</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="fixtureType">What type of light fixture is it?</label>
+                    <select id="fixtureType">
+                      <option value="standard">Standard ceiling light</option>
+                      <option value="recessed">Recessed light</option>
+                      <option value="vanity">Vanity / wall light</option>
+                      <option value="pendant">Pendant / chandelier</option>
+                      <option value="exterior">Exterior light</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -890,70 +927,173 @@
 
             <div class="step-panel" data-step="4">
               <div class="section-title">Project Details</div>
-              <p class="section-subtitle">
+              <p class="section-subtitle" id="detailsSubtitle">
                 A few final details help us refine the estimate more accurately.
               </p>
 
-              <div class="grid">
-                <div class="field">
-                  <label for="paintRequired">Would you like us to paint too?</label>
-                  <select id="paintRequired">
-                    <option value="no">No</option>
-                    <option value="yes">Yes</option>
-                  </select>
-                </div>
+              <div id="drywallDetailsSection">
+                <div class="grid">
+                  <div class="field">
+                    <label for="paintRequired">Would you like us to paint too?</label>
+                    <select id="paintRequired">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                  </div>
 
-                <div class="field" id="paintBlendField">
-                  <label for="paintBlend" id="paintBlendLabel">What area should be painted?</label>
-                  <select id="paintBlend"></select>
-                </div>
+                  <div class="field" id="paintBlendField">
+                    <label for="paintBlend" id="paintBlendLabel">What area should be painted?</label>
+                    <select id="paintBlend"></select>
+                  </div>
 
-                <div class="field">
-                  <label for="paintAvailable">Do you have the existing paint?</label>
-                  <select id="paintAvailable">
-                    <option value="unknown">Not sure</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
-                </div>
+                  <div class="field">
+                    <label for="paintAvailable">Do you have the existing paint?</label>
+                    <select id="paintAvailable">
+                      <option value="unknown">Not sure</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
 
-                <div class="field">
-                  <label for="insulation">Is there insulation behind the damage?</label>
-                  <select id="insulation">
-                    <option value="unknown">Not sure</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
-                </div>
+                  <div class="field">
+                    <label for="insulation">Is there insulation behind the damage?</label>
+                    <select id="insulation">
+                      <option value="unknown">Not sure</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
 
-                <div class="field">
-                  <label for="workHeightLabelTarget" id="workHeightLabel">Height of the work area</label>
-                  <select id="ceilingHeight">
-                    <option value="standard">Less than 8 ft</option>
-                    <option value="medium">8 to 10 ft</option>
-                    <option value="high">More than 10 ft</option>
-                  </select>
-                </div>
+                  <div class="field">
+                    <label for="ceilingHeight" id="workHeightLabel">Height of the work area</label>
+                    <select id="ceilingHeight">
+                      <option value="standard">Less than 8 ft</option>
+                      <option value="medium">8 to 10 ft</option>
+                      <option value="high">More than 10 ft</option>
+                    </select>
+                  </div>
 
-                <div class="field">
-                  <label for="obstacles">Any furniture or obstacles to move?</label>
-                  <select id="obstacles">
-                    <option value="no">No</option>
-                    <option value="yes">Yes</option>
-                  </select>
-                </div>
+                  <div class="field">
+                    <label for="obstacles">Any furniture or obstacles to move?</label>
+                    <select id="obstacles">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                  </div>
 
-                <div class="field full">
-                  <label for="projectFiles">Upload photos or PDFs (optional)</label>
-                  <input type="file" id="projectFiles" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple />
-                  <div class="small-note">
-                    You can upload project photos or PDF files to help us better understand the repair.
+                  <div class="field full">
+                    <label for="projectFiles">Upload photos or PDFs (optional)</label>
+                    <input type="file" id="projectFiles" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple />
+                    <div class="small-note">
+                      You can upload project photos or PDF files to help us better understand the repair.
+                    </div>
+                  </div>
+
+                  <div class="field full">
+                    <label for="notes">Additional Notes</label>
+                    <textarea id="notes" placeholder="Describe any details we should know about the repair area."></textarea>
                   </div>
                 </div>
+              </div>
 
-                <div class="field full">
-                  <label for="notes">Additional Notes</label>
-                  <textarea id="notes" placeholder="Describe any details we should know about the repair area."></textarea>
+              <div id="lightingDetailsSection" class="hidden">
+                <div class="grid">
+                  <div class="field">
+                    <label for="accessDifficulty">How easy is access for the wiring installation?</label>
+                    <select id="accessDifficulty">
+                      <option value="veryEasy">Very easy (existing wiring already in place)</option>
+                      <option value="easy">Easy (minor wall or ceiling access may be needed)</option>
+                      <option value="moderate">Moderate (some wall or ceiling openings will likely be needed)</option>
+                      <option value="difficult">Difficult (limited access, multiple openings, or no attic access)</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="fixtureSupplied">Do you already have the new light fixture?</label>
+                    <select id="fixtureSupplied">
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="newSwitch">Will a new switch be needed?</label>
+                    <select id="newSwitch">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="wireRun">About how far will wiring likely need to run?</label>
+                    <select id="wireRun">
+                      <option value="none">No new wiring needed</option>
+                      <option value="short">Short run (up to 10 ft)</option>
+                      <option value="medium">Medium run (10 to 25 ft)</option>
+                      <option value="long">Long run (more than 25 ft)</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="atticAccess">Is attic access available, if needed?</label>
+                    <select id="atticAccess">
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="repairIncluded">Would you like wall or ceiling repairs included if access openings are needed?</label>
+                    <select id="repairIncluded">
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="paintLighting">Would you like painting included after repairs, if needed?</label>
+                    <select id="paintLighting">
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="lightingHeight">Height of the work area</label>
+                    <select id="lightingHeight">
+                      <option value="standard">Less than 8 ft</option>
+                      <option value="medium">8 to 10 ft</option>
+                      <option value="high">More than 10 ft</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="lightingObstacles">Any furniture or obstacles to move?</label>
+                    <select id="lightingObstacles">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                  </div>
+
+                  <div class="field full">
+                    <label for="projectFilesLighting">Upload photos or PDFs (optional)</label>
+                    <input type="file" id="projectFilesLighting" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple />
+                    <div class="small-note">
+                      You can upload project photos or PDF files to help us better understand the installation.
+                    </div>
+                  </div>
+
+                  <div class="field full">
+                    <label for="notesLighting">Additional Notes</label>
+                    <textarea id="notesLighting" placeholder="Describe any details we should know about the lighting project."></textarea>
+                  </div>
                 </div>
               </div>
 
@@ -1045,9 +1185,12 @@
 
     const PRICING = {
       labor: {
-        ratePerPerson: 32,
-        crewSize: 2
+        general: { ratePerPerson: 32, crewSize: 2 },
+        electrical: { ratePerPerson: 45, crewSize: 2 },
+        plumbing: { ratePerPerson: 45, crewSize: 2 },
+        hvac: { ratePerPerson: 50, crewSize: 2 }
       },
+
       drywall: {
         small: {
           label: "Small patch",
@@ -1078,7 +1221,8 @@
           materials: ["2 to 3 drywall sheets", "Additional joint compound", "Drywall tape", "Screws", "Consumables and reinforcement"]
         }
       },
-      adjustments: {
+
+      drywallAdjustments: {
         damageLocation: {
           ceiling: { hoursMultiplier: 1.25, materialMinAdd: 8, materialMaxAdd: 18, label: "Adjustment for ceiling work" }
         },
@@ -1110,6 +1254,110 @@
           connectedSurfaces: { hoursAdd: 1.5, materialMinAdd: 30, materialMaxAdd: 70 }
         }
       },
+
+      lighting: {
+        replace: {
+          label: "Replace existing light fixture",
+          materialMin: 15,
+          materialMax: 40,
+          hours: 1.5,
+          materials: [
+            "Wire nuts / connectors",
+            "Mounting hardware",
+            "Minor electrical consumables"
+          ]
+        },
+
+        add: {
+          label: "Add new light fixture",
+          materialMin: 45,
+          materialMax: 110,
+          hours: 3.5,
+          materials: [
+            "Electrical box",
+            "Basic wiring (cable)",
+            "Wire nuts / connectors",
+            "Fasteners / staples",
+            "Mounting hardware",
+            "Electrical consumables"
+          ]
+        },
+
+        adjustments: {
+          location: {
+            ceiling: { hoursMultiplier: 1.10, materialMinAdd: 5, materialMaxAdd: 15, label: "Ceiling installation adjustment" },
+            wall: { hoursMultiplier: 1.05, materialMinAdd: 0, materialMaxAdd: 10, label: "Wall installation adjustment" },
+            exterior: { hoursMultiplier: 1.25, materialMinAdd: 25, materialMaxAdd: 60, label: "Exterior installation adjustment" }
+          },
+
+          fixtureType: {
+            standard: { hoursMultiplier: 1, materialMinAdd: 0, materialMaxAdd: 0, label: "Standard fixture" },
+            recessed: { hoursMultiplier: 1.25, materialMinAdd: 15, materialMaxAdd: 40, label: "Recessed light installation" },
+            vanity: { hoursMultiplier: 1.10, materialMinAdd: 0, materialMaxAdd: 15, label: "Vanity / wall light adjustment" },
+            pendant: { hoursMultiplier: 1.30, materialMinAdd: 10, materialMaxAdd: 30, label: "Pendant / chandelier installation" },
+            exterior: { hoursMultiplier: 1.20, materialMinAdd: 20, materialMaxAdd: 50, label: "Exterior fixture setup" },
+            notSure: { hoursMultiplier: 1.15, materialMinAdd: 0, materialMaxAdd: 20, label: "Fixture type to be confirmed" }
+          },
+
+          access: {
+            veryEasy: { hoursMultiplier: 1, materialMinAdd: 0, materialMaxAdd: 0, label: "Existing wiring already in place" },
+            easy: { hoursMultiplier: 1.15, materialMinAdd: 10, materialMaxAdd: 25, label: "Minor access adjustments" },
+            moderate: { hoursMultiplier: 1.35, materialMinAdd: 25, materialMaxAdd: 60, label: "Multiple openings required" },
+            difficult: { hoursMultiplier: 1.60, materialMinAdd: 50, materialMaxAdd: 120, label: "Limited access / complex routing" },
+            notSure: { hoursMultiplier: 1.30, materialMinAdd: 20, materialMaxAdd: 50, label: "Access conditions to be confirmed" }
+          },
+
+          switch: {
+            yes: { hoursAdd: 1.5, materialMinAdd: 20, materialMaxAdd: 45, label: "New switch installation" },
+            no: { hoursAdd: 0, materialMinAdd: 0, materialMaxAdd: 0, label: "" },
+            notSure: { hoursAdd: 0.8, materialMinAdd: 10, materialMaxAdd: 25, label: "Switch requirement to be confirmed" }
+          },
+
+          wireRun: {
+            none: { hoursAdd: 0, materialMinAdd: 0, materialMaxAdd: 0, label: "" },
+            short: { hoursAdd: 0.5, materialMinAdd: 10, materialMaxAdd: 25, label: "Short wiring run" },
+            medium: { hoursAdd: 1.2, materialMinAdd: 20, materialMaxAdd: 50, label: "Medium wiring run" },
+            long: { hoursAdd: 2, materialMinAdd: 40, materialMaxAdd: 90, label: "Long wiring run" },
+            notSure: { hoursAdd: 1, materialMinAdd: 20, materialMaxAdd: 45, label: "Wiring distance to be confirmed" }
+          },
+
+          atticAccess: {
+            yes: { hoursMultiplier: 0.90, materialMinAdd: 0, materialMaxAdd: 0, label: "Attic access available" },
+            no: { hoursMultiplier: 1.25, materialMinAdd: 0, materialMaxAdd: 0, label: "No attic access" },
+            notSure: { hoursMultiplier: 1.10, materialMinAdd: 0, materialMaxAdd: 0, label: "Access conditions unknown" }
+          },
+
+          repair: {
+            yes: { hoursAdd: 2, materialMinAdd: 25, materialMaxAdd: 70, label: "Wall/ceiling repairs included" },
+            no: { hoursAdd: 0, materialMinAdd: 0, materialMaxAdd: 0, label: "" },
+            notSure: { hoursAdd: 1, materialMinAdd: 15, materialMaxAdd: 40, label: "Repair scope to be confirmed" }
+          },
+
+          paint: {
+            yes: { hoursAdd: 2.5, materialMinAdd: 35, materialMaxAdd: 85, label: "Painting included after repairs" },
+            no: { hoursAdd: 0, materialMinAdd: 0, materialMaxAdd: 0, label: "" },
+            notSure: { hoursAdd: 1.5, materialMinAdd: 25, materialMaxAdd: 65, label: "Painting scope to be confirmed" }
+          },
+
+          height: {
+            standard: { hoursMultiplier: 1, materialMinAdd: 0, materialMaxAdd: 0, label: "" },
+            medium: { hoursMultiplier: 1.10, materialMinAdd: 0, materialMaxAdd: 0, label: "8–10 ft height adjustment" },
+            high: { hoursMultiplier: 1.25, materialMinAdd: 0, materialMaxAdd: 0, label: "Over 10 ft height adjustment" }
+          },
+
+          obstacles: {
+            yes: { hoursMultiplier: 1.15, materialMinAdd: 0, materialMaxAdd: 0, label: "Furniture / obstacle adjustment" },
+            no: { hoursMultiplier: 1, materialMinAdd: 0, materialMaxAdd: 0, label: "" }
+          },
+
+          fixtureSupply: {
+            yes: { hoursAdd: 0, materialMinAdd: 0, materialMaxAdd: 0, label: "" },
+            no: { hoursAdd: 0, materialMinAdd: 40, materialMaxAdd: 120, label: "Fixture allowance included" },
+            notSure: { hoursAdd: 0, materialMinAdd: 20, materialMaxAdd: 60, label: "Fixture allowance to be confirmed" }
+          }
+        }
+      },
+
       serviceZoneMultipliers: {
         core: 1.00,
         extended: 1.08,
@@ -1171,11 +1419,10 @@
 
     let currentStep = 1;
     let latestEstimate = null;
-    let latestLeadMeta = null;
     let coldLeadSubmitted = false;
     let hotLeadSubmitted = false;
 
-    const form = document.getElementById("drywallForm");
+    const form = document.getElementById("estimatorForm");
     const results = document.getElementById("results");
     const stepper = document.getElementById("stepper");
     const stepPanels = document.querySelectorAll(".step-panel");
@@ -1188,7 +1435,6 @@
     const paintBlendField = document.getElementById("paintBlendField");
     const hotLeadBtn = document.getElementById("hotLeadBtn");
     const doneBtn = document.getElementById("doneBtn");
-    const projectFiles = document.getElementById("projectFiles");
     const resultsProjectName = document.getElementById("resultsProjectName");
 
     const damageLocation = document.getElementById("damageLocation");
@@ -1205,22 +1451,32 @@
 
     const projectType = document.getElementById("projectType");
     const projectDisplayName = document.getElementById("projectDisplayName");
-
     const selectedProjectLabel = document.getElementById("selectedProjectLabel");
     const selectedProjectSubLabel = document.getElementById("selectedProjectSubLabel");
     const selectedProjectMessageText = document.getElementById("selectedProjectMessageText");
-
     const projectSelectorShell = document.getElementById("projectSelectorShell");
     const projectSelectorTrigger = document.getElementById("projectSelectorTrigger");
     const drywallProjectOption = document.getElementById("drywallProjectOption");
+    const lightingProjectOption = document.getElementById("lightingProjectOption");
 
     const validationStep1 = document.getElementById("validationStep1");
     const validationStep2 = document.getElementById("validationStep2");
     const validationStep3 = document.getElementById("validationStep3");
     const validationStep4 = document.getElementById("validationStep4");
 
+    const basicsSubtitle = document.getElementById("basicsSubtitle");
+    const detailsSubtitle = document.getElementById("detailsSubtitle");
+    const drywallBasicsSection = document.getElementById("drywallBasicsSection");
+    const lightingBasicsSection = document.getElementById("lightingBasicsSection");
+    const drywallDetailsSection = document.getElementById("drywallDetailsSection");
+    const lightingDetailsSection = document.getElementById("lightingDetailsSection");
+
     function currency(value) {
       return "$" + Math.round(value).toLocaleString("en-US");
+    }
+
+    function getCurrentProjectType() {
+      return projectType.value;
     }
 
     function getDrywallContext() {
@@ -1244,6 +1500,29 @@
 
       setOptions(scopeContext, ctx.scopeOptions, previousScope);
       setOptions(paintBlend, ctx.paintOptions, previousPaint);
+    }
+
+    function updateProjectSpecificUI() {
+      const type = getCurrentProjectType();
+
+      drywallProjectOption.classList.toggle("active", type === "drywall_patch_wall_repair");
+      lightingProjectOption.classList.toggle("active", type === "lighting_add_replace");
+
+      if (type === "lighting_add_replace") {
+        basicsSubtitle.textContent = "Tell us about the lighting project so we can build a more accurate estimate.";
+        detailsSubtitle.textContent = "A few final details help us refine the lighting estimate more accurately.";
+        drywallBasicsSection.classList.add("hidden");
+        lightingBasicsSection.classList.remove("hidden");
+        drywallDetailsSection.classList.add("hidden");
+        lightingDetailsSection.classList.remove("hidden");
+      } else {
+        basicsSubtitle.textContent = "Tell us about the damaged area so we can build a more accurate estimate.";
+        detailsSubtitle.textContent = "A few final details help us refine the estimate more accurately.";
+        drywallBasicsSection.classList.remove("hidden");
+        lightingBasicsSection.classList.add("hidden");
+        drywallDetailsSection.classList.remove("hidden");
+        lightingDetailsSection.classList.add("hidden");
+      }
     }
 
     function hideAllEndStates() {
@@ -1340,8 +1619,7 @@
     }
 
     function togglePaintBlendField() {
-      if (paintRequired.value === "yes") paintBlendField.classList.remove("hidden");
-      else paintBlendField.classList.add("hidden");
+      paintBlendField.classList.toggle("hidden", paintRequired.value !== "yes");
     }
 
     function setSelectedProject(projectKey, displayName) {
@@ -1350,10 +1628,10 @@
       selectedProjectLabel.textContent = displayName;
       selectedProjectSubLabel.textContent = "Project selected. Continue when ready.";
       selectedProjectMessageText.textContent = displayName;
-      drywallProjectOption.classList.add("active");
       projectSelectorShell.classList.remove("open");
       projectSelectorTrigger.setAttribute("aria-expanded", "false");
       clearValidation(validationStep1);
+      updateProjectSpecificUI();
     }
 
     function toggleProjectSelector() {
@@ -1387,7 +1665,6 @@
 
       if (zip.startsWith("06")) {
         const firstThree = zip.slice(0, 3);
-
         const corePrefixes = ["064", "065", "066", "067"];
         const extendedPrefixes = ["068", "069", "063"];
 
@@ -1444,6 +1721,13 @@
     }
 
     function classifyJobSize(formData) {
+      if (formData.projectType === "lighting_add_replace") {
+        const count = parseInt(formData.fixtureCount || "1", 10);
+        if (count >= 4) return "large";
+        if (count >= 2) return "medium";
+        return "small";
+      }
+
       if (formData.damageSize === "large" || formData.damageSize === "xlarge") return "large";
       if (formData.damageSize === "medium") return "medium";
       return "small";
@@ -1454,7 +1738,6 @@
       const jobSize = classifyJobSize(formData);
 
       let priority = "low";
-
       if (zipMeta.serviceZone === "core") priority = "high";
       else if (zipMeta.serviceZone === "extended") priority = jobSize === "small" ? "medium" : "high";
       else if (zipMeta.serviceZone === "outer") priority = jobSize === "large" ? "medium" : "low";
@@ -1467,10 +1750,10 @@
       };
     }
 
-    function calculateEstimate(formData) {
+    function calculateDrywallEstimate(formData) {
       const ctx = drywallContextConfig[formData.damageLocation === "ceiling" ? "ceiling" : "wall"];
       const leadMeta = classifyLead(formData);
-      const crewHourlyRate = PRICING.labor.ratePerPerson * PRICING.labor.crewSize;
+      const crewHourlyRate = PRICING.labor.general.ratePerPerson * PRICING.labor.general.crewSize;
       const preset = PRICING.drywall[formData.damageSize];
 
       let minMaterials = preset.materialMin;
@@ -1485,7 +1768,7 @@
       internalAdjustments.push(`Lead priority: ${leadMeta.leadPriority}`);
 
       if (formData.damageLocation === "ceiling") {
-        const a = PRICING.adjustments.damageLocation.ceiling;
+        const a = PRICING.drywallAdjustments.damageLocation.ceiling;
         hours *= a.hoursMultiplier;
         minMaterials += a.materialMinAdd;
         maxMaterials += a.materialMaxAdd;
@@ -1493,7 +1776,7 @@
       }
 
       if (formData.texture === "light") {
-        const a = PRICING.adjustments.texture.light;
+        const a = PRICING.drywallAdjustments.texture.light;
         hours *= a.hoursMultiplier;
         minMaterials += a.materialMinAdd;
         maxMaterials += a.materialMaxAdd;
@@ -1501,7 +1784,7 @@
       }
 
       if (formData.texture === "heavy") {
-        const a = PRICING.adjustments.texture.heavy;
+        const a = PRICING.drywallAdjustments.texture.heavy;
         hours *= a.hoursMultiplier;
         minMaterials += a.materialMinAdd;
         maxMaterials += a.materialMaxAdd;
@@ -1509,15 +1792,13 @@
       }
 
       if (formData.ceilingHeight === "medium") {
-        const a = PRICING.adjustments.workHeight.medium;
+        const a = PRICING.drywallAdjustments.workHeight.medium;
         hours *= a.hoursMultiplier;
-        minMaterials += a.materialMinAdd;
-        maxMaterials += a.materialMaxAdd;
         adjustments.push(a.label);
       }
 
       if (formData.ceilingHeight === "high") {
-        const a = PRICING.adjustments.workHeight.high;
+        const a = PRICING.drywallAdjustments.workHeight.high;
         hours *= a.hoursMultiplier;
         minMaterials += a.materialMinAdd;
         maxMaterials += a.materialMaxAdd;
@@ -1525,15 +1806,13 @@
       }
 
       if (formData.obstacles === "yes") {
-        const a = PRICING.adjustments.obstacles.yes;
+        const a = PRICING.drywallAdjustments.obstacles.yes;
         hours *= a.hoursMultiplier;
-        minMaterials += a.materialMinAdd;
-        maxMaterials += a.materialMaxAdd;
         adjustments.push(a.label);
       }
 
       if (formData.insulation === "yes") {
-        const a = PRICING.adjustments.insulation.yes;
+        const a = PRICING.drywallAdjustments.insulation.yes;
         hours += a.hoursAdd;
         minMaterials += a.materialMinAdd;
         maxMaterials += a.materialMaxAdd;
@@ -1542,7 +1821,7 @@
 
       if (formData.paintRequired === "yes") {
         if (formData.paintBlend === "patch-only") {
-          const a = PRICING.adjustments.paint.patchOnly;
+          const a = PRICING.drywallAdjustments.paint.patchOnly;
           hours += a.hoursAdd;
           minMaterials += a.materialMinAdd;
           maxMaterials += a.materialMaxAdd;
@@ -1550,7 +1829,7 @@
         }
 
         if (formData.paintBlend === "full-surface") {
-          const a = PRICING.adjustments.paint.fullSurface;
+          const a = PRICING.drywallAdjustments.paint.fullSurface;
           hours += a.hoursAdd;
           minMaterials += a.materialMinAdd;
           maxMaterials += a.materialMaxAdd;
@@ -1558,7 +1837,7 @@
         }
 
         if (formData.paintBlend === "connected-surfaces") {
-          const a = PRICING.adjustments.paint.connectedSurfaces;
+          const a = PRICING.drywallAdjustments.paint.connectedSurfaces;
           hours += a.hoursAdd;
           minMaterials += a.materialMinAdd;
           maxMaterials += a.materialMaxAdd;
@@ -1566,7 +1845,7 @@
         }
 
         if (formData.paintBlend === "not-sure") {
-          const a = PRICING.adjustments.paint.notSure;
+          const a = PRICING.drywallAdjustments.paint.notSure;
           hours += a.hoursAdd;
           minMaterials += a.materialMinAdd;
           maxMaterials += a.materialMaxAdd;
@@ -1574,20 +1853,19 @@
         }
 
         if (formData.paintAvailable === "no") {
-          const a = PRICING.adjustments.paint.noExistingPaint;
-          hours += a.hoursAdd;
+          const a = PRICING.drywallAdjustments.paint.noExistingPaint;
           minMaterials += a.materialMinAdd;
           maxMaterials += a.materialMaxAdd;
           adjustments.push(a.label);
         }
 
         if (formData.paintAvailable === "yes") {
-          adjustments.push(PRICING.adjustments.paint.yesExistingPaint.label);
+          adjustments.push(PRICING.drywallAdjustments.paint.yesExistingPaint.label);
         }
       }
 
       if (formData.scopeContext === "standard-surface") {
-        const a = PRICING.adjustments.scopeContext.standardSurface;
+        const a = PRICING.drywallAdjustments.scopeContext.standardSurface;
         hours += a.hoursAdd;
         minMaterials += a.materialMinAdd;
         maxMaterials += a.materialMaxAdd;
@@ -1595,7 +1873,7 @@
       }
 
       if (formData.scopeContext === "large-surface") {
-        const a = PRICING.adjustments.scopeContext.largeSurface;
+        const a = PRICING.drywallAdjustments.scopeContext.largeSurface;
         hours += a.hoursAdd;
         minMaterials += a.materialMinAdd;
         maxMaterials += a.materialMaxAdd;
@@ -1603,7 +1881,7 @@
       }
 
       if (formData.scopeContext === "connected-surfaces") {
-        const a = PRICING.adjustments.scopeContext.connectedSurfaces;
+        const a = PRICING.drywallAdjustments.scopeContext.connectedSurfaces;
         hours += a.hoursAdd;
         minMaterials += a.materialMinAdd;
         maxMaterials += a.materialMaxAdd;
@@ -1642,9 +1920,172 @@
       };
     }
 
-    function getFormData() {
+    function getFixtureCountMultiplier(count) {
+      const n = parseInt(count || "1", 10);
+      if (n <= 1) return 1;
+      if (n === 2) return 1.9;
+      if (n === 3) return 2.75;
+      if (n === 4) return 3.6;
+      return 4.45;
+    }
+
+    function calculateLightingEstimate(formData) {
+      const leadMeta = classifyLead(formData);
+      const crewHourlyRate = PRICING.labor.electrical.ratePerPerson * PRICING.labor.electrical.crewSize;
+      const preset = formData.lightingType === "replace" ? PRICING.lighting.replace : PRICING.lighting.add;
+
+      let minMaterials = preset.materialMin;
+      let maxMaterials = preset.materialMax;
+      let hours = preset.hours;
+      let adjustments = [];
+      let internalAdjustments = [];
+
+      adjustments.push(`Selected base: ${preset.label}`);
+      internalAdjustments.push(`Service zone: ${leadMeta.serviceZone}`);
+      internalAdjustments.push(`Distance band: ${leadMeta.distanceBand}`);
+      internalAdjustments.push(`Lead priority: ${leadMeta.leadPriority}`);
+
+      const locationAdj = PRICING.lighting.adjustments.location[formData.lightingLocation];
+      if (locationAdj) {
+        hours *= locationAdj.hoursMultiplier;
+        minMaterials += locationAdj.materialMinAdd || 0;
+        maxMaterials += locationAdj.materialMaxAdd || 0;
+        if (locationAdj.label) adjustments.push(locationAdj.label);
+      }
+
+      const fixtureTypeAdj = PRICING.lighting.adjustments.fixtureType[formData.fixtureType];
+      if (fixtureTypeAdj) {
+        hours *= fixtureTypeAdj.hoursMultiplier;
+        minMaterials += fixtureTypeAdj.materialMinAdd || 0;
+        maxMaterials += fixtureTypeAdj.materialMaxAdd || 0;
+        if (fixtureTypeAdj.label) adjustments.push(fixtureTypeAdj.label);
+      }
+
+      const accessAdj = PRICING.lighting.adjustments.access[formData.accessDifficulty];
+      if (accessAdj) {
+        hours *= accessAdj.hoursMultiplier;
+        minMaterials += accessAdj.materialMinAdd || 0;
+        maxMaterials += accessAdj.materialMaxAdd || 0;
+        if (accessAdj.label) adjustments.push(accessAdj.label);
+      }
+
+      const switchAdj = PRICING.lighting.adjustments.switch[formData.newSwitch];
+      if (switchAdj) {
+        hours += switchAdj.hoursAdd || 0;
+        minMaterials += switchAdj.materialMinAdd || 0;
+        maxMaterials += switchAdj.materialMaxAdd || 0;
+        if (switchAdj.label) adjustments.push(switchAdj.label);
+      }
+
+      const wireAdj = PRICING.lighting.adjustments.wireRun[formData.wireRun];
+      if (wireAdj) {
+        hours += wireAdj.hoursAdd || 0;
+        minMaterials += wireAdj.materialMinAdd || 0;
+        maxMaterials += wireAdj.materialMaxAdd || 0;
+        if (wireAdj.label) adjustments.push(wireAdj.label);
+      }
+
+      const atticAdj = PRICING.lighting.adjustments.atticAccess[formData.atticAccess];
+      if (atticAdj) {
+        hours *= atticAdj.hoursMultiplier;
+        minMaterials += atticAdj.materialMinAdd || 0;
+        maxMaterials += atticAdj.materialMaxAdd || 0;
+        if (atticAdj.label) adjustments.push(atticAdj.label);
+      }
+
+      const repairAdj = PRICING.lighting.adjustments.repair[formData.repairIncluded];
+      if (repairAdj) {
+        hours += repairAdj.hoursAdd || 0;
+        minMaterials += repairAdj.materialMinAdd || 0;
+        maxMaterials += repairAdj.materialMaxAdd || 0;
+        if (repairAdj.label) adjustments.push(repairAdj.label);
+      }
+
+      const paintAdj = PRICING.lighting.adjustments.paint[formData.paintLighting];
+      if (paintAdj) {
+        hours += paintAdj.hoursAdd || 0;
+        minMaterials += paintAdj.materialMinAdd || 0;
+        maxMaterials += paintAdj.materialMaxAdd || 0;
+        if (paintAdj.label) adjustments.push(paintAdj.label);
+      }
+
+      const heightAdj = PRICING.lighting.adjustments.height[formData.lightingHeight];
+      if (heightAdj) {
+        hours *= heightAdj.hoursMultiplier;
+        minMaterials += heightAdj.materialMinAdd || 0;
+        maxMaterials += heightAdj.materialMaxAdd || 0;
+        if (heightAdj.label) adjustments.push(heightAdj.label);
+      }
+
+      const obstacleAdj = PRICING.lighting.adjustments.obstacles[formData.lightingObstacles];
+      if (obstacleAdj) {
+        hours *= obstacleAdj.hoursMultiplier;
+        minMaterials += obstacleAdj.materialMinAdd || 0;
+        maxMaterials += obstacleAdj.materialMaxAdd || 0;
+        if (obstacleAdj.label) adjustments.push(obstacleAdj.label);
+      }
+
+      const fixtureSupplyAdj = PRICING.lighting.adjustments.fixtureSupply[formData.fixtureSupplied];
+      if (fixtureSupplyAdj) {
+        hours += fixtureSupplyAdj.hoursAdd || 0;
+        minMaterials += fixtureSupplyAdj.materialMinAdd || 0;
+        maxMaterials += fixtureSupplyAdj.materialMaxAdd || 0;
+        if (fixtureSupplyAdj.label) adjustments.push(fixtureSupplyAdj.label);
+      }
+
+      const countMultiplier = getFixtureCountMultiplier(formData.fixtureCount);
+      hours *= countMultiplier;
+      minMaterials *= countMultiplier;
+      maxMaterials *= countMultiplier;
+
+      if ((parseInt(formData.fixtureCount || "1", 10)) > 1) {
+        adjustments.push(`Quantity adjustment for ${formData.fixtureCount} fixtures`);
+      }
+
+      hours = Math.round(hours * 10) / 10;
+
+      let laborMin = hours * crewHourlyRate;
+      let laborMax = laborMin * 1.15;
+      let totalMin = minMaterials + laborMin;
+      let totalMax = maxMaterials + laborMax;
+
+      const zoneMultiplier = leadMeta.multiplier;
+      minMaterials *= zoneMultiplier;
+      maxMaterials *= zoneMultiplier;
+      laborMin *= zoneMultiplier;
+      laborMax *= zoneMultiplier;
+      totalMin *= zoneMultiplier;
+      totalMax *= zoneMultiplier;
+
+      internalAdjustments.push(`Market adjustment applied: x${zoneMultiplier.toFixed(2)}`);
+
       return {
-        projectType: projectType.value,
+        hours,
+        minMaterials,
+        maxMaterials,
+        laborMin,
+        laborMax,
+        totalMin,
+        totalMax,
+        materialsList: preset.materials,
+        adjustments,
+        internalAdjustments,
+        leadMeta
+      };
+    }
+
+    function getUploadedFiles() {
+      if (getCurrentProjectType() === "lighting_add_replace") {
+        return document.getElementById("projectFilesLighting").files;
+      }
+      return document.getElementById("projectFiles").files;
+    }
+
+    function getFormData() {
+      const type = getCurrentProjectType();
+
+      return {
+        projectType: type,
         projectDisplayName: projectDisplayName.value,
         fullName: document.getElementById("fullName").value.trim(),
         phone: document.getElementById("phone").value.trim(),
@@ -1653,17 +2094,33 @@
         city: document.getElementById("city").value.trim(),
         ownerStatus: document.getElementById("ownerStatus").value,
         timeline: document.getElementById("timeline").value,
-        damageLocation: damageLocation.value,
+
+        damageLocation: document.getElementById("damageLocation").value,
         damageSize: document.getElementById("damageSize").value,
-        scopeContext: scopeContext.value,
+        scopeContext: document.getElementById("scopeContext").value,
         texture: document.getElementById("texture").value,
-        paintRequired: paintRequired.value,
-        paintBlend: paintBlend.value,
+        paintRequired: document.getElementById("paintRequired").value,
+        paintBlend: document.getElementById("paintBlend").value,
         paintAvailable: document.getElementById("paintAvailable").value,
         insulation: document.getElementById("insulation").value,
         ceilingHeight: document.getElementById("ceilingHeight").value,
         obstacles: document.getElementById("obstacles").value,
-        notes: document.getElementById("notes").value.trim()
+        notes: document.getElementById("notes").value.trim(),
+
+        lightingType: document.getElementById("lightingType").value,
+        lightingLocation: document.getElementById("lightingLocation").value,
+        fixtureCount: document.getElementById("fixtureCount").value,
+        fixtureType: document.getElementById("fixtureType").value,
+        accessDifficulty: document.getElementById("accessDifficulty").value,
+        fixtureSupplied: document.getElementById("fixtureSupplied").value,
+        newSwitch: document.getElementById("newSwitch").value,
+        wireRun: document.getElementById("wireRun").value,
+        atticAccess: document.getElementById("atticAccess").value,
+        repairIncluded: document.getElementById("repairIncluded").value,
+        paintLighting: document.getElementById("paintLighting").value,
+        lightingHeight: document.getElementById("lightingHeight").value,
+        lightingObstacles: document.getElementById("lightingObstacles").value,
+        notesLighting: document.getElementById("notesLighting").value.trim()
       };
     }
 
@@ -1684,24 +2141,41 @@
       payload.append("relationship_to_property", formData.ownerStatus);
       payload.append("timeline", formData.timeline);
 
-      payload.append("damage_location", formData.damageLocation);
-      payload.append("damage_size", formData.damageSize);
-      payload.append("scope_context", formData.scopeContext);
-      payload.append("texture", formData.texture);
-      payload.append("paint_required", formData.paintRequired);
-      payload.append("paint_area", formData.paintBlend);
-      payload.append("paint_available", formData.paintAvailable);
-      payload.append("insulation", formData.insulation);
-      payload.append("work_height", formData.ceilingHeight);
-      payload.append("obstacles", formData.obstacles);
-      payload.append("notes", formData.notes);
-
       payload.append("distance_band", leadMeta.distanceBand);
       payload.append("service_zone", leadMeta.serviceZone);
       payload.append("market_region", leadMeta.marketRegion);
       payload.append("job_size", leadMeta.jobSize);
       payload.append("lead_priority", leadMeta.leadPriority);
       payload.append("pricing_multiplier", String(leadMeta.multiplier));
+
+      if (formData.projectType === "lighting_add_replace") {
+        payload.append("lighting_type", formData.lightingType);
+        payload.append("lighting_location", formData.lightingLocation);
+        payload.append("fixture_count", formData.fixtureCount);
+        payload.append("fixture_type", formData.fixtureType);
+        payload.append("access_difficulty", formData.accessDifficulty);
+        payload.append("fixture_supplied", formData.fixtureSupplied);
+        payload.append("new_switch", formData.newSwitch);
+        payload.append("wire_run", formData.wireRun);
+        payload.append("attic_access", formData.atticAccess);
+        payload.append("repair_included", formData.repairIncluded);
+        payload.append("paint_included", formData.paintLighting);
+        payload.append("work_height", formData.lightingHeight);
+        payload.append("obstacles", formData.lightingObstacles);
+        payload.append("notes", formData.notesLighting);
+      } else {
+        payload.append("damage_location", formData.damageLocation);
+        payload.append("damage_size", formData.damageSize);
+        payload.append("scope_context", formData.scopeContext);
+        payload.append("texture", formData.texture);
+        payload.append("paint_required", formData.paintRequired);
+        payload.append("paint_area", formData.paintBlend);
+        payload.append("paint_available", formData.paintAvailable);
+        payload.append("insulation", formData.insulation);
+        payload.append("work_height", formData.ceilingHeight);
+        payload.append("obstacles", formData.obstacles);
+        payload.append("notes", formData.notes);
+      }
 
       payload.append("estimated_materials", `${currency(estimateData.minMaterials)} – ${currency(estimateData.maxMaterials)}`);
       payload.append("estimated_labor", `${currency(estimateData.laborMin)} – ${currency(estimateData.laborMax)}`);
@@ -1712,7 +2186,7 @@
 
       payload.append("_subject", `${leadType} LEAD – ${formData.projectDisplayName} – ${leadMeta.serviceZone.toUpperCase()} – ${leadMeta.leadPriority.toUpperCase()}`);
 
-      const files = projectFiles.files;
+      const files = getUploadedFiles();
       if (files && files.length > 0) {
         for (let i = 0; i < files.length; i++) {
           payload.append("attachments", files[i]);
@@ -1737,19 +2211,13 @@
       clearValidation(validationStep4);
 
       latestEstimate = null;
-      latestLeadMeta = null;
       coldLeadSubmitted = false;
       hotLeadSubmitted = false;
 
       hotLeadBtn.disabled = false;
       hotLeadBtn.textContent = "Get My Exact Quote";
       doneBtn.disabled = false;
-
       breakdownList.innerHTML = "";
-
-      projectType.value = "drywall_patch_wall_repair";
-      projectDisplayName.value = "Drywall Patch / Wall Repair";
-      resultsProjectName.textContent = "Project Type: Drywall Patch / Wall Repair";
 
       setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
       updateDrywallContextUI();
@@ -1760,10 +2228,17 @@
     }
 
     projectSelectorTrigger.addEventListener("click", toggleProjectSelector);
+
     drywallProjectOption.addEventListener("click", function() {
       setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
     });
+
+    lightingProjectOption.addEventListener("click", function() {
+      setSelectedProject("lighting_add_replace", "Add or Replace a Light Fixture");
+    });
+
     damageLocation.addEventListener("change", updateDrywallContextUI);
+    paintRequired.addEventListener("change", togglePaintBlendField);
 
     setupAccordions();
 
@@ -1791,16 +2266,17 @@
       showStep(3);
     });
 
-    paintRequired.addEventListener("change", togglePaintBlendField);
-    togglePaintBlendField();
-
     form.addEventListener("submit", async function(e) {
       e.preventDefault();
       if (!validateStep(4)) return;
 
       const formData = getFormData();
-      latestEstimate = calculateEstimate(formData);
-      latestLeadMeta = latestEstimate.leadMeta;
+
+      if (formData.projectType === "lighting_add_replace") {
+        latestEstimate = calculateLightingEstimate(formData);
+      } else {
+        latestEstimate = calculateDrywallEstimate(formData);
+      }
 
       materialsCost.textContent = `${currency(latestEstimate.minMaterials)} – ${currency(latestEstimate.maxMaterials)}`;
       laborCost.textContent = `${currency(latestEstimate.laborMin)} – ${currency(latestEstimate.laborMax)}`;
@@ -1814,6 +2290,7 @@
       ];
 
       [...summaryItems, ...latestEstimate.adjustments].forEach(item => {
+        if (!item) return;
         const li = document.createElement("li");
         li.textContent = item;
         breakdownList.appendChild(li);
@@ -1863,8 +2340,9 @@
     startNewFromHot.addEventListener("click", resetExperience);
     startNewFromDone.addEventListener("click", resetExperience);
 
-    setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
     updateDrywallContextUI();
+    togglePaintBlendField();
+    setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
     hideAllEndStates();
     showStep(1);
   </script>
