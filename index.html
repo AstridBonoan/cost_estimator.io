@@ -996,110 +996,110 @@
                 </div>
               </div>
 
-             <div id="lightingDetailsSection" class="hidden">
-  <div class="grid">
-    <div class="field">
-      <label for="accessDifficulty">How easy is access for the wiring installation?</label>
-      <select id="accessDifficulty">
-        <option value="veryEasy">Very easy (existing wiring already in place)</option>
-        <option value="easy">Easy (minor wall or ceiling access may be needed)</option>
-        <option value="moderate">Moderate (some wall or ceiling openings will likely be needed)</option>
-        <option value="difficult">Difficult (limited access, multiple openings, or no attic access)</option>
-        <option value="notSure">Not sure</option>
-      </select>
-    </div>
+              <div id="lightingDetailsSection" class="hidden">
+                <div class="grid">
+                  <div class="field">
+                    <label for="accessDifficulty">How easy is access for the wiring installation?</label>
+                    <select id="accessDifficulty">
+                      <option value="veryEasy">Very easy (existing wiring already in place)</option>
+                      <option value="easy">Easy (minor wall or ceiling access may be needed)</option>
+                      <option value="moderate">Moderate (some wall or ceiling openings will likely be needed)</option>
+                      <option value="difficult">Difficult (limited access, multiple openings, or no attic access)</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
 
-    <div class="field">
-      <label for="fixtureSupplied">Do you already have the new light fixture?</label>
-      <select id="fixtureSupplied">
-        <option value="yes">Yes</option>
-        <option value="no">No</option>
-        <option value="notSure">Not sure</option>
-      </select>
-    </div>
+                  <div class="field" id="lightingWireRunField">
+                    <label for="wireRun">About how far will wiring likely need to run?</label>
+                    <select id="wireRun">
+                      <option value="none">No new wiring needed</option>
+                      <option value="short">Short run (up to 10 ft)</option>
+                      <option value="medium">Medium run (10 to 25 ft)</option>
+                      <option value="long">Long run (more than 25 ft)</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
 
-    <div class="field" id="lightingWireRunField">
-      <label for="wireRun">About how far will wiring likely need to run?</label>
-      <select id="wireRun">
-        <option value="none">No new wiring needed</option>
-        <option value="short">Short run (up to 10 ft)</option>
-        <option value="medium">Medium run (10 to 25 ft)</option>
-        <option value="long">Long run (more than 25 ft)</option>
-        <option value="notSure">Not sure</option>
-      </select>
-    </div>
+                  <div class="field" id="lightingAtticAccessField">
+                    <label for="atticAccess" id="atticAccessLabel">Is access available from above or below (attic, basement, or crawlspace)?</label>
+                    <select id="atticAccess">
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
 
-    <div class="field" id="lightingSwitchField">
-      <label for="newSwitch">Will a new switch be needed?</label>
-      <select id="newSwitch">
-        <option value="no">No</option>
-        <option value="yes">Yes</option>
-        <option value="notSure">Not sure</option>
-      </select>
-    </div>
+                  <div class="field">
+                    <label for="fixtureSupplied">Fixture already available?</label>
+                    <select id="fixtureSupplied">
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
 
-    <div class="field hidden" id="lightingAtticAccessField">
-      <label for="atticAccess">Is attic access available, if needed?</label>
-      <select id="atticAccess">
-        <option value="yes">Yes</option>
-        <option value="no">No</option>
-        <option value="notSure">Not sure</option>
-      </select>
-    </div>
+                  <div class="field" id="lightingSwitchField">
+                    <label for="newSwitch">Include a new switch?</label>
+                    <select id="newSwitch">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
 
-    <div class="field" id="lightingRepairField">
-      <label for="repairIncluded">Would you like us to include repairs if access openings are needed?</label>
-      <select id="repairIncluded">
-        <option value="no">No</option>
-        <option value="yes">Yes</option>
-        <option value="notSure">Not sure</option>
-      </select>
-    </div>
+                  <div class="field hidden" id="lightingRepairField">
+                    <label for="repairIncluded">Include repairs if openings are needed?</label>
+                    <select id="repairIncluded">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
 
-    <div class="field hidden" id="lightingPaintYesNoField">
-      <label for="paintAfterRepair">Would you like us to paint after the repairs?</label>
-      <select id="paintAfterRepair">
-        <option value="no">No</option>
-        <option value="yes">Yes</option>
-      </select>
-    </div>
+                  <div class="field hidden" id="lightingPaintYesNoField">
+                    <label for="paintAfterRepair">Include painting after repairs?</label>
+                    <select id="paintAfterRepair">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                  </div>
 
-    <div class="field hidden" id="lightingPaintScopeField">
-      <label for="paintLightingScope" id="paintLightingScopeLabel">What would you like us to paint?</label>
-      <select id="paintLightingScope"></select>
-    </div>
+                  <div class="field hidden" id="lightingPaintScopeField">
+                    <label for="paintLightingScope" id="paintLightingScopeLabel">What area should be painted?</label>
+                    <select id="paintLightingScope"></select>
+                  </div>
 
-    <div class="field">
-      <label for="lightingHeight">Height of the work area</label>
-      <select id="lightingHeight">
-        <option value="standard">Less than 8 ft</option>
-        <option value="medium">8 to 10 ft</option>
-        <option value="high">More than 10 ft</option>
-      </select>
-    </div>
+                  <div class="field">
+                    <label for="lightingHeight">Height of the work area</label>
+                    <select id="lightingHeight">
+                      <option value="standard">Less than 8 ft</option>
+                      <option value="medium">8 to 10 ft</option>
+                      <option value="high">More than 10 ft</option>
+                    </select>
+                  </div>
 
-    <div class="field">
-      <label for="lightingObstacles">Any furniture or obstacles to move?</label>
-      <select id="lightingObstacles">
-        <option value="no">No</option>
-        <option value="yes">Yes</option>
-      </select>
-    </div>
+                  <div class="field">
+                    <label for="lightingObstacles">Any furniture or obstacles to move?</label>
+                    <select id="lightingObstacles">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                  </div>
 
-    <div class="field full">
-      <label for="projectFilesLighting">Upload photos or PDFs (optional)</label>
-      <input type="file" id="projectFilesLighting" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple />
-      <div class="small-note">
-        You can upload project photos or PDF files to help us better understand the installation.
-      </div>
-    </div>
+                  <div class="field full">
+                    <label for="projectFilesLighting">Upload photos or PDFs (optional)</label>
+                    <input type="file" id="projectFilesLighting" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple />
+                    <div class="small-note">
+                      You can upload project photos or PDF files to help us better understand the installation.
+                    </div>
+                  </div>
 
-    <div class="field full">
-      <label for="notesLighting">Additional Notes</label>
-      <textarea id="notesLighting" placeholder="Describe any details we should know about the lighting project."></textarea>
-    </div>
-  </div>
-</div>
+                  <div class="field full">
+                    <label for="notesLighting">Additional Notes</label>
+                    <textarea id="notesLighting" placeholder="Describe any details we should know about the lighting project."></textarea>
+                  </div>
+                </div>
+              </div>
 
               <div class="validation" id="validationStep4"></div>
 
@@ -1326,13 +1326,13 @@
           },
 
           atticAccess: {
-            yes: { hoursMultiplier: 0.90, materialMinAdd: 0, materialMaxAdd: 0, label: "Attic access available" },
-            no: { hoursMultiplier: 1.25, materialMinAdd: 0, materialMaxAdd: 0, label: "No attic access" },
-            notSure: { hoursMultiplier: 1.10, materialMinAdd: 0, materialMaxAdd: 0, label: "Access conditions unknown" }
+            yes: { hoursMultiplier: 0.90, materialMinAdd: 0, materialMaxAdd: 0, label: "Access available from above or below" },
+            no: { hoursMultiplier: 1.25, materialMinAdd: 0, materialMaxAdd: 0, label: "No access available from above or below" },
+            notSure: { hoursMultiplier: 1.10, materialMinAdd: 0, materialMaxAdd: 0, label: "Access route conditions unknown" }
           },
 
           repair: {
-            yes: { hoursAdd: 2, materialMinAdd: 25, materialMaxAdd: 70, label: "Wall/ceiling repairs included" },
+            yes: { hoursAdd: 2, materialMinAdd: 25, materialMaxAdd: 70, label: "Repairs included if openings are needed" },
             no: { hoursAdd: 0, materialMinAdd: 0, materialMaxAdd: 0, label: "" },
             notSure: { hoursAdd: 1, materialMinAdd: 15, materialMaxAdd: 40, label: "Repair scope to be confirmed" }
           },
@@ -1428,31 +1428,31 @@
     };
 
     const lightingPaintScopeConfig = {
-  wall: {
-    label: "What would you like us to paint?",
-    options: [
-      { value: "patchOnly", label: "Patch area only" },
-      { value: "fullSurface", label: "The whole wall" },
-      { value: "notSure", label: "Not sure" }
-    ]
-  },
-  ceiling: {
-    label: "What would you like us to paint?",
-    options: [
-      { value: "patchOnly", label: "Patch area only" },
-      { value: "fullSurface", label: "The whole ceiling" },
-      { value: "notSure", label: "Not sure" }
-    ]
-  },
-  exterior: {
-    label: "What would you like us to paint?",
-    options: [
-      { value: "patchOnly", label: "Repair area only" },
-      { value: "fullSurface", label: "Full affected area" },
-      { value: "notSure", label: "Not sure" }
-    ]
-  }
-};
+      wall: {
+        label: "What area should be painted?",
+        options: [
+          { value: "patchOnly", label: "Patch area only" },
+          { value: "fullSurface", label: "The whole wall" },
+          { value: "notSure", label: "Not sure" }
+        ]
+      },
+      ceiling: {
+        label: "What area should be painted?",
+        options: [
+          { value: "patchOnly", label: "Patch area only" },
+          { value: "fullSurface", label: "The whole ceiling" },
+          { value: "notSure", label: "Not sure" }
+        ]
+      },
+      exterior: {
+        label: "What area should be painted?",
+        options: [
+          { value: "patchOnly", label: "Repair area only" },
+          { value: "fullSurface", label: "Full affected area" },
+          { value: "notSure", label: "Not sure" }
+        ]
+      }
+    };
 
     let currentStep = 1;
     let latestEstimate = null;
@@ -1521,6 +1521,7 @@
     const paintAfterRepair = document.getElementById("paintAfterRepair");
     const paintLightingScope = document.getElementById("paintLightingScope");
     const paintLightingScopeLabel = document.getElementById("paintLightingScopeLabel");
+    const atticAccessLabel = document.getElementById("atticAccessLabel");
     const lightingHeight = document.getElementById("lightingHeight");
     const lightingObstacles = document.getElementById("lightingObstacles");
 
@@ -1563,44 +1564,55 @@
     }
 
     function updateLightingPaintScopeOptions() {
-  const config = lightingPaintScopeConfig[lightingLocation.value] || lightingPaintScopeConfig.ceiling;
-  const previousValue = paintLightingScope.value;
+      const config = lightingPaintScopeConfig[lightingLocation.value] || lightingPaintScopeConfig.ceiling;
+      const previousValue = paintLightingScope.value;
 
-  paintLightingScopeLabel.textContent = config.label;
-  setOptions(paintLightingScope, config.options, previousValue);
-}
+      paintLightingScopeLabel.textContent = config.label;
+      setOptions(paintLightingScope, config.options, previousValue);
+    }
 
     function updateLightingConditionalFields() {
-  const isReplace = lightingType.value === "replace";
-  const isAdd = lightingType.value === "add";
-  const access = accessDifficulty.value;
-  const wire = wireRun.value;
-  const repair = repairIncluded.value;
-  const wantsPaint = paintAfterRepair.value === "yes";
+      const isReplace = lightingType.value === "replace";
+      const isAdd = lightingType.value === "add";
+      const access = accessDifficulty.value;
+      const wire = wireRun.value;
+      const route = atticAccess.value;
+      const repair = repairIncluded.value;
+      const wantsPaint = paintAfterRepair.value === "yes";
 
-  const showReplaceRepair = isReplace && access !== "veryEasy";
-  const showAddRepair = isAdd;
+      lightingSwitchField.classList.toggle("hidden", isReplace);
+      lightingWireRunField.classList.toggle("hidden", isReplace);
+      lightingAtticAccessField.classList.toggle("hidden", isReplace);
 
-  lightingSwitchField.classList.toggle("hidden", isReplace);
-  lightingWireRunField.classList.toggle("hidden", isReplace);
+      if (isAdd) {
+        atticAccessLabel.textContent = "Is access available from above or below (attic, basement, or crawlspace)?";
+      }
 
-  const showAtticForAdd =
-    isAdd &&
-    (wire === "medium" || wire === "long" || wire === "notSure" || access === "moderate" || access === "difficult" || access === "notSure");
+      const showReplaceRepair = isReplace && access !== "veryEasy";
 
-  lightingAtticAccessField.classList.toggle("hidden", !showAtticForAdd);
+      const showAddRepair =
+        isAdd && (
+          wire === "medium" ||
+          wire === "long" ||
+          wire === "notSure" ||
+          route === "no" ||
+          route === "notSure" ||
+          access === "moderate" ||
+          access === "difficult" ||
+          access === "notSure"
+        );
 
-  const showRepair = showReplaceRepair || showAddRepair;
-  lightingRepairField.classList.toggle("hidden", !showRepair);
+      const showRepair = showReplaceRepair || showAddRepair;
+      lightingRepairField.classList.toggle("hidden", !showRepair);
 
-  const showPaintYesNo = showRepair && (repair === "yes" || repair === "notSure");
-  lightingPaintYesNoField.classList.toggle("hidden", !showPaintYesNo);
+      const showPaintYesNo = showRepair && (repair === "yes" || repair === "notSure");
+      lightingPaintYesNoField.classList.toggle("hidden", !showPaintYesNo);
 
-  const showPaintScope = showPaintYesNo && wantsPaint;
-  lightingPaintScopeField.classList.toggle("hidden", !showPaintScope);
+      const showPaintScope = showPaintYesNo && wantsPaint;
+      lightingPaintScopeField.classList.toggle("hidden", !showPaintScope);
 
-  updateLightingPaintScopeOptions();
-}
+      updateLightingPaintScopeOptions();
+    }
 
     function updateProjectSpecificUI() {
       const type = getCurrentProjectType();
@@ -2070,7 +2082,7 @@
         if (accessAdj.label) adjustments.push(accessAdj.label);
       }
 
-            if (formData.lightingType === "add") {
+      if (formData.lightingType === "add") {
         const wireAdj = PRICING.lighting.adjustments.wireRun[formData.wireRun];
         if (wireAdj) {
           hours += wireAdj.hoursAdd || 0;
@@ -2087,7 +2099,7 @@
           if (switchAdj.label) adjustments.push(switchAdj.label);
         }
 
-        const shouldUseAttic =
+        const shouldUseAccessRoute =
           formData.wireRun === "medium" ||
           formData.wireRun === "long" ||
           formData.wireRun === "notSure" ||
@@ -2095,7 +2107,7 @@
           formData.accessDifficulty === "difficult" ||
           formData.accessDifficulty === "notSure";
 
-        if (shouldUseAttic) {
+        if (shouldUseAccessRoute) {
           const atticAdj = PRICING.lighting.adjustments.atticAccess[formData.atticAccess];
           if (atticAdj) {
             hours *= atticAdj.hoursMultiplier;
@@ -2106,9 +2118,19 @@
         }
       }
 
-            const shouldApplyRepair =
-        (formData.lightingType === "add") ||
-        (formData.lightingType === "replace" && formData.accessDifficulty !== "veryEasy");
+      const shouldApplyRepair = (
+        (formData.lightingType === "replace" && formData.accessDifficulty !== "veryEasy") ||
+        (formData.lightingType === "add" && (
+          formData.wireRun === "medium" ||
+          formData.wireRun === "long" ||
+          formData.wireRun === "notSure" ||
+          formData.atticAccess === "no" ||
+          formData.atticAccess === "notSure" ||
+          formData.accessDifficulty === "moderate" ||
+          formData.accessDifficulty === "difficult" ||
+          formData.accessDifficulty === "notSure"
+        ))
+      );
 
       if (shouldApplyRepair && formData.repairIncluded !== "no") {
         const repairAdj = PRICING.lighting.adjustments.repair[formData.repairIncluded];
@@ -2365,6 +2387,8 @@
     lightingType.addEventListener("change", updateLightingConditionalFields);
     lightingLocation.addEventListener("change", updateLightingConditionalFields);
     accessDifficulty.addEventListener("change", updateLightingConditionalFields);
+    wireRun.addEventListener("change", updateLightingConditionalFields);
+    atticAccess.addEventListener("change", updateLightingConditionalFields);
     repairIncluded.addEventListener("change", updateLightingConditionalFields);
     paintAfterRepair.addEventListener("change", updateLightingConditionalFields);
 
