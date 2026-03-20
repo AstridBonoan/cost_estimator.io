@@ -1,288 +1,2465 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Estimator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Cost Estimator</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --line: #dbe2ea;
+      --primary: #0f172a;
+      --primary-2: #1e293b;
+      --warn-bg: #fff7ed;
+      --warn-border: #fed7aa;
+      --warn-text: #7c2d12;
+      --shadow: 0 12px 34px rgba(15, 23, 42, 0.08);
+      --max: 1080px;
+    }
 
-<style>
-body {font-family: Arial; padding:20px; background:#f7f7f7;}
-.container {max-width:520px; margin:auto; background:#fff; padding:20px; border-radius:10px;}
-.form-group {margin-bottom:15px;}
-.hidden {display:none;}
-button {width:100%; padding:12px; margin-top:10px; cursor:pointer;}
-.small {font-size:12px; color:#666;}
-h2 {margin-bottom:5px;}
-</style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.45;
+    }
+
+    .page {
+      width: 100%;
+      padding: 18px 14px 40px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid rgba(219, 226, 234, 0.8);
+    }
+
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+      color: #fff;
+      padding: 24px 18px;
+    }
+
+    .hero .eyebrow {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 1.62rem;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .hero .subline {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 1rem;
+      line-height: 1.5;
+      max-width: 760px;
+    }
+
+    .hero .powered-by {
+      display: inline;
+      font-size: 0.84em;
+      opacity: 0.88;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .hero .microcopy {
+      margin-top: 10px;
+      color: rgba(255,255,255,0.86);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .content {
+      padding: 18px 14px 22px;
+    }
+
+    .stepper {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .step-pill {
+      border-radius: 999px;
+      padding: 10px 8px;
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: #eef2f7;
+      color: #64748b;
+      border: 1px solid #dbe2ea;
+    }
+
+    .step-pill.active {
+      background: #0f172a;
+      color: #fff;
+      border-color: #0f172a;
+    }
+
+    .step-pill.done {
+      background: #ecfdf5;
+      color: #166534;
+      border-color: #bbf7d0;
+    }
+
+    .step-panel {
+      display: none;
+      animation: fadeIn 0.18s ease;
+    }
+
+    .step-panel.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-title {
+      margin: 0 0 14px;
+      padding: 0 0 10px;
+      border-bottom: 1px solid var(--line);
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .section-subtitle {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 0.96rem;
+      line-height: 1.55;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      display: inline-block;
+      margin: 0 0 7px;
+      font-size: 0.94rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid #cfd8e3;
+      background: #fff;
+      color: var(--text);
+      border-radius: 14px;
+      padding: 14px 15px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    input, select { min-height: 52px; }
+    textarea { min-height: 120px; resize: vertical; }
+
+    input[type="file"] {
+      padding: 12px;
+      min-height: auto;
+      background: #fff;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #94a3b8;
+      box-shadow: 0 0 0 4px rgba(148, 163, 184, 0.18);
+    }
+
+    .small-note {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .selector-shell {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .selector-trigger {
+      width: 100%;
+      border: none;
+      background: #fff;
+      text-align: left;
+      padding: 16px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      min-height: 58px;
+    }
+
+    .selector-trigger:hover { background: #fafcff; }
+
+    .selector-trigger strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.98rem;
+    }
+
+    .selector-trigger span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 2px;
+    }
+
+    .selector-chevron {
+      font-size: 1.1rem;
+      color: var(--muted);
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .selector-shell.open .selector-chevron {
+      transform: rotate(180deg);
+    }
+
+    .selector-panel {
+      display: none;
+      border-top: 1px solid var(--line);
+      padding: 14px;
+      background: #fcfdff;
+    }
+
+    .selector-shell.open .selector-panel { display: block; }
+
+    .accordion-group + .accordion-group { margin-top: 10px; }
+
+    .accordion-button {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 14px;
+      padding: 14px 14px;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .accordion-button:hover { background: #f8fafc; }
+
+    .accordion-button .meta {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .accordion-button .acc-icon {
+      color: var(--muted);
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .accordion-group.open .accordion-button .acc-icon {
+      transform: rotate(180deg);
+    }
+
+    .accordion-content {
+      display: none;
+      padding: 10px 4px 0;
+    }
+
+    .accordion-group.open .accordion-content { display: block; }
+
+    .project-option {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 10px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .project-option.selectable { cursor: pointer; }
+
+    .project-option.selectable:hover {
+      border-color: #94a3b8;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+    }
+
+    .project-option.active {
+      border-color: #0f172a;
+      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+      background: #f8fafc;
+    }
+
+    .project-option.coming-soon { opacity: 0.7; }
+
+    .project-option h4 {
+      margin: 0 0 6px;
+      font-size: 0.98rem;
+      color: var(--text);
+    }
+
+    .project-option p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .badge.live {
+      background: #ecfdf5;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .badge.soon {
+      background: #fff7ed;
+      color: #9a3412;
+      border: 1px solid #fdba74;
+    }
+
+    .selected-project {
+      margin-top: 14px;
+      background: #eef4ff;
+      border: 1px solid #c8d8f2;
+      color: #16386e;
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 0.94rem;
+      line-height: 1.55;
+      display: none;
+    }
+
+    .selected-project.show { display: block; }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      min-height: 52px;
+      padding: 14px 18px;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.04s ease, background 0.2s ease, opacity 0.2s ease;
+    }
+
+    .btn:active { transform: translateY(1px); }
+
+    .btn-primary {
+      background: #0f172a;
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: #111f34; }
+
+    .btn-ghost {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .btn-ghost:hover { background: #f8fafc; }
+
+    .btn-cta {
+      background: #0f172a;
+      color: #fff;
+    }
+
+    .btn-cta:hover { background: #16253f; }
+
+    .hidden { display: none !important; }
+
+    .results {
+      display: none;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px 14px;
+    }
+
+    .results.active { display: block; }
+
+    .results h2 {
+      margin: 0 0 6px;
+      font-size: 1.35rem;
+      line-height: 1.2;
+      color: var(--text);
+    }
+
+    .results-project-name {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .results-intro {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 0.96rem;
+      line-height: 1.55;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .result-box {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px 14px;
+      min-width: 0;
+    }
+
+    .result-box h3 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .result-box p {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .cta-panel {
+      margin-top: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px 14px;
+    }
+
+    .cta-panel h3 {
+      margin: 0 0 8px;
+      font-size: 1.02rem;
+      color: var(--text);
+    }
+
+    .cta-panel p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 0.94rem;
+      line-height: 1.6;
+    }
+
+    .breakdown {
+      margin-top: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px 14px;
+    }
+
+    .breakdown h3 {
+      margin: 0 0 10px;
+      font-size: 1.02rem;
+      color: var(--text);
+    }
+
+    .breakdown ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .breakdown li {
+      margin-bottom: 8px;
+      line-height: 1.55;
+    }
+
+    .disclaimer {
+      margin-top: 14px;
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      color: var(--warn-text);
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 0.94rem;
+      line-height: 1.6;
+    }
+
+    .validation {
+      margin-top: 12px;
+      background: #fff7ed;
+      border: 1px solid #fdba74;
+      color: #9a3412;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 0.93rem;
+      display: none;
+    }
+
+    .validation.active { display: block; }
+
+    .completion-screen {
+      display: none;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 28px 18px;
+      text-align: center;
+      min-height: 340px;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .completion-screen.active { display: flex; }
+
+    .completion-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 18px;
+      font-size: 1.8rem;
+      font-weight: 900;
+    }
+
+    .completion-icon.hot {
+      background: #ecfdf5;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .completion-icon.done {
+      background: #eef4ff;
+      color: #16386e;
+      border: 1px solid #c8d8f2;
+    }
+
+    .completion-screen h2 {
+      margin: 0 0 10px;
+      font-size: 1.5rem;
+      line-height: 1.2;
+      color: var(--text);
+    }
+
+    .completion-screen p {
+      margin: 0 auto;
+      max-width: 560px;
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.65;
+    }
+
+    .completion-actions {
+      margin-top: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    @media (min-width: 640px) {
+      .page { padding: 24px 18px 48px; }
+      .hero { padding: 30px 24px; }
+      .hero h1 { font-size: 2rem; }
+      .content { padding: 22px 20px 24px; }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+      .actions { flex-direction: row; }
+      .actions .btn { width: auto; min-width: 170px; }
+      .result-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .step-pill { font-size: 0.8rem; }
+      .completion-actions {
+        flex-direction: row;
+        justify-content: center;
+        max-width: none;
+      }
+      .completion-actions .btn {
+        width: auto;
+        min-width: 180px;
+      }
+    }
+
+    @media (min-width: 960px) {
+      .page { padding: 34px 24px 60px; }
+      .hero { padding: 38px 34px; }
+      .hero h1 { font-size: 2.35rem; }
+      .content { padding: 28px 28px 30px; }
+      .section-title { font-size: 1.12rem; }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="page">
+    <div class="container">
+      <div class="card">
+        <div class="hero">
+          <div class="eyebrow">Project Cost Estimator</div>
+          <h1>Want to know how much your project will cost?</h1>
+          <p class="subline">
+            Real-World Contractor Pricing
+            <span class="powered-by">— Powered by Tamay Enterprises Inc.</span>
+          </p>
+          <div class="microcopy">No obligation. No generic ranges. Based on real contractor experience.</div>
+        </div>
 
-<div class="container">
+        <div class="content">
+          <div class="stepper" id="stepper">
+            <div class="step-pill active" data-step-pill="1">1. Project</div>
+            <div class="step-pill" data-step-pill="2">2. Customer</div>
+            <div class="step-pill" data-step-pill="3">3. Basics</div>
+            <div class="step-pill" data-step-pill="4">4. Details</div>
+            <div class="step-pill" data-step-pill="5">5. Results</div>
+          </div>
 
-<h2>Want to know how much your project will cost?</h2>
-<p class="small">Real Contractors Estimate • No Obligations • No Generic Ranges</p>
-<p class="small">Powered by Tamay Enterprises Inc.</p>
+          <form id="estimatorForm" novalidate>
+            <div class="step-panel active" data-step="1">
+              <div class="section-title">Select Your Project Type</div>
+              <p class="section-subtitle">
+                Choose the type of project you want to estimate. Start by opening the selector below.
+              </p>
 
-<!-- PROJECT TYPE -->
-<div class="form-group">
-<label>Select your project type</label>
-<select id="projectType" onchange="handleProjectType()">
-<option value="">Select</option>
-<option value="drywall">Drywall / Patching</option>
-<option value="lighting">Lighting</option>
-</select>
-</div>
+              <div class="selector-shell" id="projectSelectorShell">
+                <button type="button" class="selector-trigger" id="projectSelectorTrigger" aria-expanded="false">
+                  <div>
+                    <strong id="selectedProjectLabel">Select your project</strong>
+                    <span id="selectedProjectSubLabel">Open to browse available estimator categories</span>
+                  </div>
+                  <div class="selector-chevron">⌄</div>
+                </button>
 
-<!-- ===================== DRYWALL ===================== -->
-<div id="drywallSection" class="hidden">
+                <div class="selector-panel" id="projectSelectorPanel">
+                  <div class="accordion-group open" data-accordion="drywall">
+                    <button type="button" class="accordion-button">
+                      <div>
+                        <div>Drywall &amp; Wall Repair</div>
+                        <div class="meta">Available now</div>
+                      </div>
+                      <div class="acc-icon">⌄</div>
+                    </button>
+                    <div class="accordion-content">
+                      <div class="project-option selectable active" id="drywallProjectOption">
+                        <h4>Drywall Patch / Wall Repair</h4>
+                        <p>Repair holes, damaged drywall sections, wall patches, and ceiling repair areas that may also require texture or paint.</p>
+                        <div class="badge live">Available Now</div>
+                      </div>
+                    </div>
+                  </div>
 
-<div class="form-group">
-<label>Where is the damage?</label>
-<select id="drywallLocation">
-<option value="">Select</option>
-<option value="wall">Wall</option>
-<option value="ceiling">Ceiling</option>
-</select>
-</div>
+                  <div class="accordion-group open" data-accordion="lighting">
+                    <button type="button" class="accordion-button">
+                      <div>
+                        <div>Electrical &amp; Lighting</div>
+                        <div class="meta">Available now</div>
+                      </div>
+                      <div class="acc-icon">⌄</div>
+                    </button>
+                    <div class="accordion-content">
+                      <div class="project-option selectable" id="lightingProjectOption">
+                        <h4>Add or Replace a Light Fixture</h4>
+                        <p>Estimate new fixture installs or replacement of existing light fixtures, including access, repair, and painting if needed.</p>
+                        <div class="badge live">Available Now</div>
+                      </div>
+                    </div>
+                  </div>
 
-<div class="form-group">
-<label>How large is the damaged area?</label>
-<select id="drywallSize">
-<option value="">Select</option>
-<option value="small">Small patch</option>
-<option value="medium">Medium area</option>
-<option value="large">Large area</option>
-</select>
-</div>
+                  <div class="accordion-group" data-accordion="painting">
+                    <button type="button" class="accordion-button">
+                      <div>
+                        <div>Painting</div>
+                        <div class="meta">Estimator in development</div>
+                      </div>
+                      <div class="acc-icon">⌄</div>
+                    </button>
+                    <div class="accordion-content">
+                      <div class="project-option coming-soon">
+                        <h4>Paint One Room</h4>
+                        <p>Estimate the cost to professionally paint one room.</p>
+                        <div class="badge soon">Coming Soon</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-<div class="form-group">
-<label>Would you like us to paint after repairs?</label>
-<select id="drywallPaint">
-<option value="">Select</option>
-<option value="yes">Yes</option>
-<option value="no">No</option>
-</select>
-</div>
+              <div class="selected-project show" id="selectedProjectMessage">
+                Selected project: <strong id="selectedProjectMessageText">Drywall Patch / Wall Repair</strong>
+              </div>
 
-</div>
+              <input type="hidden" id="projectType" value="drywall_patch_wall_repair" />
+              <input type="hidden" id="projectDisplayName" value="Drywall Patch / Wall Repair" />
 
-<!-- ===================== LIGHTING ===================== -->
-<div id="lightingSection" class="hidden">
+              <div class="validation" id="validationStep1"></div>
 
-<div class="form-group">
-<label>Type of work</label>
-<select id="lightingType">
-<option value="">Select</option>
-<option value="replace">Replace existing fixture</option>
-<option value="new">Add new fixture</option>
-</select>
-</div>
+              <div class="actions">
+                <button type="button" class="btn btn-primary" id="nextToStep2">Next</button>
+              </div>
+            </div>
 
-<div class="form-group">
-<label>Location</label>
-<select id="fixtureLocation">
-<option value="">Select</option>
-<option value="ceiling">Ceiling</option>
-<option value="wall">Wall</option>
-<option value="exterior">Exterior</option>
-</select>
-</div>
+            <div class="step-panel" data-step="2">
+              <div class="section-title">Customer Information</div>
+              <p class="section-subtitle">
+                Tell us a little about yourself so we can connect your estimate to the right project.
+              </p>
 
-<!-- ACCESS -->
-<div class="form-group">
-<label>How easy is access for the wiring installation?</label>
-<select id="accessDifficulty" onchange="handleLightingLogic()">
-<option value="">Select</option>
-<option value="very_easy">Very easy</option>
-<option value="easy">Easy</option>
-<option value="moderate">Moderate</option>
-<option value="difficult">Difficult</option>
-<option value="not_sure">Not sure</option>
-</select>
-</div>
+              <div class="grid">
+                <div class="field">
+                  <label for="fullName">Full Name</label>
+                  <input type="text" id="fullName" required />
+                </div>
 
-<!-- DISTANCE -->
-<div class="form-group">
-<label>About how far will wiring need to be run?</label>
-<select id="wireDistance" onchange="handleLightingLogic()">
-<option value="">Select</option>
-<option value="short">Short</option>
-<option value="medium">Medium</option>
-<option value="long">Long</option>
-<option value="not_sure">Not sure</option>
-</select>
-</div>
+                <div class="field">
+                  <label for="phone">Phone Number</label>
+                  <input type="tel" id="phone" required />
+                </div>
 
-<!-- SWITCH -->
-<div class="form-group">
-<label>Will a new switch be needed?</label>
-<select id="newSwitch">
-<option value="">Select</option>
-<option value="yes">Yes</option>
-<option value="no">No</option>
-</select>
-</div>
+                <div class="field">
+                  <label for="email">Email Address</label>
+                  <input type="email" id="email" required />
+                </div>
 
-<!-- ATTIC -->
-<div class="form-group hidden" id="atticWrapper">
-<label>Is attic access available if needed?</label>
-<select id="atticAccess">
-<option value="">Select</option>
-<option value="yes">Yes</option>
-<option value="no">No</option>
-<option value="not_sure">Not sure</option>
-</select>
-</div>
+                <div class="field">
+                  <label for="zipcode">ZIP Code</label>
+                  <input type="text" id="zipcode" required />
+                </div>
 
-<!-- FIXTURE -->
-<div class="form-group">
-<label>Do you already have the new light fixture?</label>
-<select id="fixtureReady">
-<option value="">Select</option>
-<option value="yes">Yes</option>
-<option value="no">No</option>
-</select>
-</div>
+                <div class="field">
+                  <label for="city">City</label>
+                  <input type="text" id="city" />
+                </div>
 
-<!-- REPAIR -->
-<div class="form-group">
-<label>Would you like us to include repairs if access openings are needed?</label>
-<select id="repairNeeded" onchange="handleLightingLogic()">
-<option value="">Select</option>
-<option value="yes">Yes</option>
-<option value="no">No</option>
-</select>
-</div>
+                <div class="field">
+                  <label for="ownerStatus">Relationship to Property</label>
+                  <select id="ownerStatus">
+                    <option value="owner">I am the owner</option>
+                    <option value="manager">I am a property manager</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
 
-<!-- PAINT -->
-<div class="form-group hidden" id="paintWrapper">
-<label>Would you like us to paint after the repairs?</label>
-<select id="paintNeeded" onchange="handleLightingLogic()">
-<option value="">Select</option>
-<option value="yes">Yes</option>
-<option value="no">No</option>
-</select>
-</div>
+                <div class="field full">
+                  <label for="timeline">When would you like to do this project?</label>
+                  <select id="timeline">
+                    <option value="asap">As soon as possible</option>
+                    <option value="1-2weeks">1 to 2 weeks</option>
+                    <option value="1month">Within 1 month</option>
+                    <option value="just-looking">Just comparing prices</option>
+                  </select>
+                </div>
+              </div>
 
-<!-- PAINT SCOPE -->
-<div class="form-group hidden" id="paintScopeWrapper">
-<label id="paintScopeLabel">What would you like us to paint?</label>
-<select id="paintScope">
-<option value="">Select</option>
-<option value="patch">Patch area only</option>
-<option value="full">Full surface</option>
-<option value="not_sure">Not sure</option>
-</select>
-</div>
+              <div class="validation" id="validationStep2"></div>
 
-</div>
+              <div class="actions">
+                <button type="button" class="btn btn-ghost" id="backToStep1">Back</button>
+                <button type="button" class="btn btn-primary" id="nextToStep3">Next</button>
+              </div>
+            </div>
 
-<!-- ===================== BUTTON ===================== -->
-<button onclick="calculate()">Calculate</button>
+            <div class="step-panel" data-step="3">
+              <div class="section-title">Project Basics</div>
+              <p class="section-subtitle" id="basicsSubtitle">
+                Tell us about the damaged area so we can build a more accurate estimate.
+              </p>
 
-<div id="result" class="hidden">
-<h3>Your Estimated Price</h3>
-<p id="price"></p>
-<button onclick="done()">Done</button>
-</div>
+              <div id="drywallBasicsSection">
+                <div class="grid">
+                  <div class="field">
+                    <label for="damageLocation">Where is the damage located?</label>
+                    <select id="damageLocation">
+                      <option value="wall">Wall</option>
+                      <option value="ceiling">Ceiling</option>
+                    </select>
+                  </div>
 
-</div>
+                  <div class="field">
+                    <label for="damageSize">Approximate size of the damage</label>
+                    <select id="damageSize">
+                      <option value="small">Small (less than 6")</option>
+                      <option value="medium">Medium (6" to 24")</option>
+                      <option value="large">Large (24" to 48")</option>
+                      <option value="xlarge">Very large (more than 48")</option>
+                    </select>
+                  </div>
 
-<script>
+                  <div class="field">
+                    <label for="scopeContext" id="scopeContextLabel">Size of the affected wall or area</label>
+                    <select id="scopeContext"></select>
+                  </div>
 
-function handleProjectType(){
-const type = document.getElementById("projectType").value;
+                  <div class="field">
+                    <label for="texture">Surface / texture type</label>
+                    <select id="texture">
+                      <option value="none">Smooth</option>
+                      <option value="light">Light texture</option>
+                      <option value="heavy">Heavy texture</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
 
-document.getElementById("drywallSection").classList.add("hidden");
-document.getElementById("lightingSection").classList.add("hidden");
+              <div id="lightingBasicsSection" class="hidden">
+                <div class="grid">
+                  <div class="field">
+                    <label for="lightingType">What type of lighting project is this?</label>
+                    <select id="lightingType">
+                      <option value="replace">Replace an existing light fixture</option>
+                      <option value="add">Add a new light fixture</option>
+                    </select>
+                  </div>
 
-if(type === "drywall"){
-document.getElementById("drywallSection").classList.remove("hidden");
-}
-if(type === "lighting"){
-document.getElementById("lightingSection").classList.remove("hidden");
-}
-}
+                  <div class="field">
+                    <label for="lightingLocation">Where will the light be installed?</label>
+                    <select id="lightingLocation">
+                      <option value="ceiling">Ceiling</option>
+                      <option value="wall">Wall</option>
+                      <option value="exterior">Exterior</option>
+                    </select>
+                  </div>
 
-function handleLightingLogic(){
+                  <div class="field">
+                    <label for="fixtureCount">How many fixtures would you like to install or replace?</label>
+                    <select id="fixtureCount">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5+</option>
+                    </select>
+                  </div>
 
-const access = document.getElementById("accessDifficulty").value;
-const distance = document.getElementById("wireDistance").value;
-const repair = document.getElementById("repairNeeded").value;
-const paint = document.getElementById("paintNeeded")?.value;
-const location = document.getElementById("fixtureLocation")?.value;
+                  <div class="field">
+                    <label for="fixtureType">What type of light fixture is it?</label>
+                    <select id="fixtureType">
+                      <option value="standard">Standard ceiling light</option>
+                      <option value="recessed">Recessed light</option>
+                      <option value="vanity">Vanity / wall light</option>
+                      <option value="pendant">Pendant / chandelier</option>
+                      <option value="exterior">Exterior light</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
 
-// ATTIC
-if(distance === "long" || access === "moderate" || access === "difficult"){
-document.getElementById("atticWrapper").classList.remove("hidden");
-}else{
-document.getElementById("atticWrapper").classList.add("hidden");
-}
+              <div class="validation" id="validationStep3"></div>
 
-// REPAIR
-if(repair === "yes"){
-document.getElementById("paintWrapper").classList.remove("hidden");
-}else{
-document.getElementById("paintWrapper").classList.add("hidden");
-document.getElementById("paintScopeWrapper").classList.add("hidden");
-}
+              <div class="actions">
+                <button type="button" class="btn btn-ghost" id="backToStep2">Back</button>
+                <button type="button" class="btn btn-primary" id="nextToStep4">Next</button>
+              </div>
+            </div>
 
-// PAINT
-if(paint === "yes"){
-document.getElementById("paintScopeWrapper").classList.remove("hidden");
+            <div class="step-panel" data-step="4">
+              <div class="section-title">Project Details</div>
+              <p class="section-subtitle" id="detailsSubtitle">
+                A few final details help us refine the estimate more accurately.
+              </p>
 
-let label = "What would you like us to paint?";
+              <div id="drywallDetailsSection">
+                <div class="grid">
+                  <div class="field">
+                    <label for="paintRequired">Would you like us to paint too?</label>
+                    <select id="paintRequired">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                  </div>
 
-if(location === "ceiling") label = "What part of the ceiling would you like us to paint?";
-if(location === "wall") label = "What part of the wall would you like us to paint?";
-if(location === "exterior") label = "What exterior area would you like us to paint?";
+                  <div class="field" id="paintBlendField">
+                    <label for="paintBlend" id="paintBlendLabel">What area should be painted?</label>
+                    <select id="paintBlend"></select>
+                  </div>
 
-document.getElementById("paintScopeLabel").innerText = label;
+                  <div class="field">
+                    <label for="paintAvailable">Do you have the existing paint?</label>
+                    <select id="paintAvailable">
+                      <option value="unknown">Not sure</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
 
-}else{
-document.getElementById("paintScopeWrapper").classList.add("hidden");
-}
+                  <div class="field">
+                    <label for="insulation">Is there insulation behind the damage?</label>
+                    <select id="insulation">
+                      <option value="unknown">Not sure</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
 
-}
+                  <div class="field">
+                    <label for="ceilingHeight" id="workHeightLabel">Height of the work area</label>
+                    <select id="ceilingHeight">
+                      <option value="standard">Less than 8 ft</option>
+                      <option value="medium">8 to 10 ft</option>
+                      <option value="high">More than 10 ft</option>
+                    </select>
+                  </div>
 
-// CALCULATION
-function calculate(){
+                  <div class="field">
+                    <label for="obstacles">Any furniture or obstacles to move?</label>
+                    <select id="obstacles">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                  </div>
 
-let base = 0;
-const type = document.getElementById("projectType").value;
+                  <div class="field full">
+                    <label for="projectFiles">Upload photos or PDFs (optional)</label>
+                    <input type="file" id="projectFiles" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple />
+                    <div class="small-note">
+                      You can upload project photos or PDF files to help us better understand the repair.
+                    </div>
+                  </div>
 
-// DRYWALL
-if(type === "drywall"){
-base = 150;
-if(document.getElementById("drywallSize").value === "medium") base += 100;
-if(document.getElementById("drywallSize").value === "large") base += 200;
-if(document.getElementById("drywallPaint").value === "yes") base += 150;
-}
+                  <div class="field full">
+                    <label for="notes">Additional Notes</label>
+                    <textarea id="notes" placeholder="Describe any details we should know about the repair area."></textarea>
+                  </div>
+                </div>
+              </div>
 
-// LIGHTING
-if(type === "lighting"){
-base = 150;
+              <div id="lightingDetailsSection" class="hidden">
+                <div class="grid">
+                  <div class="field">
+                    <label for="accessDifficulty">How easy is access for the wiring installation?</label>
+                    <select id="accessDifficulty">
+                      <option value="veryEasy">Very easy (existing wiring already in place)</option>
+                      <option value="easy">Easy (minor wall or ceiling access may be needed)</option>
+                      <option value="moderate">Moderate (some wall or ceiling openings will likely be needed)</option>
+                      <option value="difficult">Difficult (limited access, multiple openings, or no attic access)</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
 
-if(document.getElementById("accessDifficulty").value === "moderate") base += 100;
-if(document.getElementById("accessDifficulty").value === "difficult") base += 200;
+                  <div class="field">
+                    <label for="fixtureSupplied">Do you already have the new light fixture?</label>
+                    <select id="fixtureSupplied">
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
 
-if(document.getElementById("wireDistance").value === "medium") base += 100;
-if(document.getElementById("wireDistance").value === "long") base += 200;
+                  <div class="field" id="lightingSwitchField">
+                    <label for="newSwitch">Will a new switch be needed?</label>
+                    <select id="newSwitch">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
 
-if(document.getElementById("repairNeeded").value === "yes") base += 150;
-if(document.getElementById("paintNeeded").value === "yes") base += 150;
-}
+                  <div class="field" id="lightingWireRunField">
+                    <label for="wireRun">About how far will wiring likely need to run?</label>
+                    <select id="wireRun">
+                      <option value="none">No new wiring needed</option>
+                      <option value="short">Short run (up to 10 ft)</option>
+                      <option value="medium">Medium run (10 to 25 ft)</option>
+                      <option value="long">Long run (more than 25 ft)</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
 
-document.getElementById("result").classList.remove("hidden");
-document.getElementById("price").innerText = "$" + base;
-}
+                  <div class="field" id="lightingAtticAccessField">
+                    <label for="atticAccess">Is attic access available, if needed?</label>
+                    <select id="atticAccess">
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
 
-function done(){
-location.reload();
-}
+                  <div class="field" id="lightingRepairField">
+                    <label for="repairIncluded">Would you like us to include repairs if access openings are needed?</label>
+                    <select id="repairIncluded">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                      <option value="notSure">Not sure</option>
+                    </select>
+                  </div>
 
-</script>
+                  <div class="field hidden" id="lightingPaintYesNoField">
+                    <label for="paintAfterRepair">Would you like us to paint after the repairs?</label>
+                    <select id="paintAfterRepair">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                  </div>
 
+                  <div class="field hidden" id="lightingPaintScopeField">
+                    <label for="paintLightingScope" id="paintLightingScopeLabel">What would you like us to paint?</label>
+                    <select id="paintLightingScope"></select>
+                  </div>
+
+                  <div class="field">
+                    <label for="lightingHeight">Height of the work area</label>
+                    <select id="lightingHeight">
+                      <option value="standard">Less than 8 ft</option>
+                      <option value="medium">8 to 10 ft</option>
+                      <option value="high">More than 10 ft</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label for="lightingObstacles">Any furniture or obstacles to move?</label>
+                    <select id="lightingObstacles">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                  </div>
+
+                  <div class="field full">
+                    <label for="projectFilesLighting">Upload photos or PDFs (optional)</label>
+                    <input type="file" id="projectFilesLighting" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple />
+                    <div class="small-note">
+                      You can upload project photos or PDF files to help us better understand the installation.
+                    </div>
+                  </div>
+
+                  <div class="field full">
+                    <label for="notesLighting">Additional Notes</label>
+                    <textarea id="notesLighting" placeholder="Describe any details we should know about the lighting project."></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="validation" id="validationStep4"></div>
+
+              <div class="actions">
+                <button type="button" class="btn btn-ghost" id="backToStep3">Back</button>
+                <button type="submit" class="btn btn-primary">Calculate Estimate</button>
+              </div>
+            </div>
+          </form>
+
+          <div class="results" id="results">
+            <h2>Preliminary Estimate</h2>
+            <p class="results-project-name" id="resultsProjectName">Project Type: Drywall Patch / Wall Repair</p>
+            <p class="results-intro">
+              Based on the information provided, here is a preliminary estimate for your selected project.
+            </p>
+
+            <div class="result-grid">
+              <div class="result-box">
+                <h3>Estimated Materials</h3>
+                <p id="materialsCost">$0</p>
+              </div>
+
+              <div class="result-box">
+                <h3>Estimated Labor</h3>
+                <p id="laborCost">$0</p>
+              </div>
+
+              <div class="result-box">
+                <h3>Estimated Total Range</h3>
+                <p id="totalCost">$0</p>
+              </div>
+            </div>
+
+            <div class="cta-panel">
+              <h3>Ready for a more accurate quote?</h3>
+              <p>
+                A Tamay team member will review your project, confirm details, and provide a final accurate quote.
+              </p>
+
+              <div class="actions">
+                <button type="button" class="btn btn-cta" id="hotLeadBtn">Get My Exact Quote</button>
+                <button type="button" class="btn btn-ghost" id="doneBtn">Done</button>
+              </div>
+            </div>
+
+            <div class="breakdown">
+              <h3>Calculation Summary</h3>
+              <ul id="breakdownList"></ul>
+            </div>
+
+            <div class="disclaimer">
+              This is a <strong>preliminary estimate</strong> based only on the information provided.
+              Final pricing may vary depending on hidden conditions, actual access, protection needs,
+              paint matching, existing texture, additional structural issues, and on-site review.
+            </div>
+          </div>
+
+          <div class="completion-screen" id="hotCompletionScreen">
+            <div class="completion-icon hot">✓</div>
+            <h2>Thank you.</h2>
+            <p>
+              A Tamay team member will contact you shortly to review your project and provide a final accurate quote.
+            </p>
+            <div class="completion-actions">
+              <button type="button" class="btn btn-primary" id="startNewFromHot">Start New Estimate</button>
+            </div>
+          </div>
+
+          <div class="completion-screen" id="doneCompletionScreen">
+            <div class="completion-icon done">✓</div>
+            <h2>Thank you for using our estimator.</h2>
+            <p>
+              We’re here whenever you’re ready.
+            </p>
+            <div class="completion-actions">
+              <button type="button" class="btn btn-primary" id="startNewFromDone">Start New Estimate</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const FORMSPREE_ENDPOINT = "https://formspree.io/f/xqeyglen";
+
+    const PRICING = {
+      labor: {
+        general: { ratePerPerson: 32, crewSize: 2 },
+        electrical: { ratePerPerson: 45, crewSize: 2 },
+        plumbing: { ratePerPerson: 45, crewSize: 2 },
+        hvac: { ratePerPerson: 50, crewSize: 2 }
+      },
+
+      drywall: {
+        small: {
+          label: "Small patch",
+          materialMin: 18,
+          materialMax: 35,
+          hours: 1.5,
+          materials: ["Patch repair kit", "Joint compound", "Basic tape", "Minor consumables"]
+        },
+        medium: {
+          label: "Medium patch",
+          materialMin: 35,
+          materialMax: 70,
+          hours: 2.5,
+          materials: ["1 drywall sheet or equivalent piece", "Joint compound", "Drywall tape", "Screws", "Minor consumables"]
+        },
+        large: {
+          label: "Large patch",
+          materialMin: 70,
+          materialMax: 125,
+          hours: 4,
+          materials: ["1 to 2 drywall sheets", "Joint compound", "Drywall tape", "Screws", "Minor consumables"]
+        },
+        xlarge: {
+          label: "Very large patch",
+          materialMin: 125,
+          materialMax: 220,
+          hours: 6,
+          materials: ["2 to 3 drywall sheets", "Additional joint compound", "Drywall tape", "Screws", "Consumables and reinforcement"]
+        }
+      },
+
+      drywallAdjustments: {
+        damageLocation: {
+          ceiling: { hoursMultiplier: 1.25, materialMinAdd: 8, materialMaxAdd: 18, label: "Adjustment for ceiling work" }
+        },
+        texture: {
+          light: { hoursMultiplier: 1.15, materialMinAdd: 10, materialMaxAdd: 20, label: "Adjustment for light texture" },
+          heavy: { hoursMultiplier: 1.30, materialMinAdd: 20, materialMaxAdd: 40, label: "Adjustment for heavy texture" }
+        },
+        workHeight: {
+          medium: { hoursMultiplier: 1.10, materialMinAdd: 0, materialMaxAdd: 0, label: "Adjustment for 8–10 ft height" },
+          high: { hoursMultiplier: 1.20, materialMinAdd: 8, materialMaxAdd: 20, label: "Adjustment for height above 10 ft" }
+        },
+        obstacles: {
+          yes: { hoursMultiplier: 1.15, materialMinAdd: 0, materialMaxAdd: 0, label: "Adjustment for moving furniture or obstacles" }
+        },
+        insulation: {
+          yes: { hoursAdd: 0.5, materialMinAdd: 12, materialMaxAdd: 25, label: "Includes possible insulation adjustment" }
+        },
+        paint: {
+          patchOnly: { hoursAdd: 1, materialMinAdd: 15, materialMaxAdd: 35, label: "Includes painting the patch area only" },
+          fullSurface: { hoursAdd: 2.5, materialMinAdd: 35, materialMaxAdd: 85, label: "Includes painting the full affected area" },
+          connectedSurfaces: { hoursAdd: 4.5, materialMinAdd: 65, materialMaxAdd: 160, label: "Includes painting connected areas" },
+          notSure: { hoursAdd: 2, materialMinAdd: 25, materialMaxAdd: 65, label: "Painting included, final scope to be confirmed" },
+          noExistingPaint: { hoursAdd: 0, materialMinAdd: 15, materialMaxAdd: 35, label: "No existing paint available" },
+          yesExistingPaint: { label: "Customer indicates existing paint is available" }
+        },
+        scopeContext: {
+          standardSurface: { hoursAdd: 0.5, materialMinAdd: 10, materialMaxAdd: 20 },
+          largeSurface: { hoursAdd: 1, materialMinAdd: 20, materialMaxAdd: 45 },
+          connectedSurfaces: { hoursAdd: 1.5, materialMinAdd: 30, materialMaxAdd: 70 }
+        }
+      },
+
+      lighting: {
+        replace: {
+          label: "Replace existing light fixture",
+          materialMin: 15,
+          materialMax: 40,
+          hours: 1.5,
+          materials: [
+            "Wire nuts / connectors",
+            "Mounting hardware",
+            "Minor electrical consumables"
+          ]
+        },
+
+        add: {
+          label: "Add new light fixture",
+          materialMin: 45,
+          materialMax: 110,
+          hours: 3.5,
+          materials: [
+            "Electrical box",
+            "Basic wiring (cable)",
+            "Wire nuts / connectors",
+            "Fasteners / staples",
+            "Mounting hardware",
+            "Electrical consumables"
+          ]
+        },
+
+        adjustments: {
+          location: {
+            ceiling: { hoursMultiplier: 1.10, materialMinAdd: 5, materialMaxAdd: 15, label: "Ceiling installation adjustment" },
+            wall: { hoursMultiplier: 1.05, materialMinAdd: 0, materialMaxAdd: 10, label: "Wall installation adjustment" },
+            exterior: { hoursMultiplier: 1.25, materialMinAdd: 25, materialMaxAdd: 60, label: "Exterior installation adjustment" }
+          },
+
+          fixtureType: {
+            standard: { hoursMultiplier: 1, materialMinAdd: 0, materialMaxAdd: 0, label: "Standard fixture" },
+            recessed: { hoursMultiplier: 1.25, materialMinAdd: 15, materialMaxAdd: 40, label: "Recessed light installation" },
+            vanity: { hoursMultiplier: 1.10, materialMinAdd: 0, materialMaxAdd: 15, label: "Vanity / wall light adjustment" },
+            pendant: { hoursMultiplier: 1.30, materialMinAdd: 10, materialMaxAdd: 30, label: "Pendant / chandelier installation" },
+            exterior: { hoursMultiplier: 1.20, materialMinAdd: 20, materialMaxAdd: 50, label: "Exterior fixture setup" },
+            notSure: { hoursMultiplier: 1.15, materialMinAdd: 0, materialMaxAdd: 20, label: "Fixture type to be confirmed" }
+          },
+
+          access: {
+            veryEasy: { hoursMultiplier: 1, materialMinAdd: 0, materialMaxAdd: 0, label: "Existing wiring already in place" },
+            easy: { hoursMultiplier: 1.15, materialMinAdd: 10, materialMaxAdd: 25, label: "Minor access adjustments" },
+            moderate: { hoursMultiplier: 1.35, materialMinAdd: 25, materialMaxAdd: 60, label: "Multiple openings required" },
+            difficult: { hoursMultiplier: 1.60, materialMinAdd: 50, materialMaxAdd: 120, label: "Limited access / complex routing" },
+            notSure: { hoursMultiplier: 1.30, materialMinAdd: 20, materialMaxAdd: 50, label: "Access conditions to be confirmed" }
+          },
+
+          switch: {
+            yes: { hoursAdd: 1.5, materialMinAdd: 20, materialMaxAdd: 45, label: "New switch installation" },
+            no: { hoursAdd: 0, materialMinAdd: 0, materialMaxAdd: 0, label: "" },
+            notSure: { hoursAdd: 0.8, materialMinAdd: 10, materialMaxAdd: 25, label: "Switch requirement to be confirmed" }
+          },
+
+          wireRun: {
+            none: { hoursAdd: 0, materialMinAdd: 0, materialMaxAdd: 0, label: "" },
+            short: { hoursAdd: 0.5, materialMinAdd: 10, materialMaxAdd: 25, label: "Short wiring run" },
+            medium: { hoursAdd: 1.2, materialMinAdd: 20, materialMaxAdd: 50, label: "Medium wiring run" },
+            long: { hoursAdd: 2, materialMinAdd: 40, materialMaxAdd: 90, label: "Long wiring run" },
+            notSure: { hoursAdd: 1, materialMinAdd: 20, materialMaxAdd: 45, label: "Wiring distance to be confirmed" }
+          },
+
+          atticAccess: {
+            yes: { hoursMultiplier: 0.90, materialMinAdd: 0, materialMaxAdd: 0, label: "Attic access available" },
+            no: { hoursMultiplier: 1.25, materialMinAdd: 0, materialMaxAdd: 0, label: "No attic access" },
+            notSure: { hoursMultiplier: 1.10, materialMinAdd: 0, materialMaxAdd: 0, label: "Access conditions unknown" }
+          },
+
+          repair: {
+            yes: { hoursAdd: 2, materialMinAdd: 25, materialMaxAdd: 70, label: "Wall/ceiling repairs included" },
+            no: { hoursAdd: 0, materialMinAdd: 0, materialMaxAdd: 0, label: "" },
+            notSure: { hoursAdd: 1, materialMinAdd: 15, materialMaxAdd: 40, label: "Repair scope to be confirmed" }
+          },
+
+          paintYesNo: {
+            yes: { label: "Painting included after repairs" },
+            no: { label: "" }
+          },
+
+          paintScope: {
+            patchOnly: { hoursAdd: 1, materialMinAdd: 15, materialMaxAdd: 35, label: "Includes painting the patch area only" },
+            fullSurface: { hoursAdd: 2.5, materialMinAdd: 35, materialMaxAdd: 85, label: "Includes painting the full affected area" },
+            connectedSurfaces: { hoursAdd: 4.5, materialMinAdd: 65, materialMaxAdd: 160, label: "Includes painting connected areas" },
+            notSure: { hoursAdd: 2, materialMinAdd: 25, materialMaxAdd: 65, label: "Painting scope to be confirmed" }
+          },
+
+          height: {
+            standard: { hoursMultiplier: 1, materialMinAdd: 0, materialMaxAdd: 0, label: "" },
+            medium: { hoursMultiplier: 1.10, materialMinAdd: 0, materialMaxAdd: 0, label: "8–10 ft height adjustment" },
+            high: { hoursMultiplier: 1.25, materialMinAdd: 0, materialMaxAdd: 0, label: "Over 10 ft height adjustment" }
+          },
+
+          obstacles: {
+            yes: { hoursMultiplier: 1.15, materialMinAdd: 0, materialMaxAdd: 0, label: "Furniture / obstacle adjustment" },
+            no: { hoursMultiplier: 1, materialMinAdd: 0, materialMaxAdd: 0, label: "" }
+          },
+
+          fixtureSupply: {
+            yes: { hoursAdd: 0, materialMinAdd: 0, materialMaxAdd: 0, label: "" },
+            no: { hoursAdd: 0, materialMinAdd: 40, materialMaxAdd: 120, label: "Fixture allowance included" },
+            notSure: { hoursAdd: 0, materialMinAdd: 20, materialMaxAdd: 60, label: "Fixture allowance to be confirmed" }
+          }
+        }
+      },
+
+      serviceZoneMultipliers: {
+        core: 1.00,
+        extended: 1.08,
+        outer: 1.15,
+        distant: 1.22
+      }
+    };
+
+    const drywallContextConfig = {
+      wall: {
+        scopeLabel: "Size of the affected wall or area",
+        scopeOptions: [
+          { value: "small-area", label: "Small wall area (less than 4 ft)" },
+          { value: "standard-surface", label: "Standard wall (up to 8 ft)" },
+          { value: "large-surface", label: "Large wall (more than 8 ft)" },
+          { value: "connected-surfaces", label: "Multiple connected walls" }
+        ],
+        paintLabel: "What area should be painted?",
+        paintOptions: [
+          { value: "patch-only", label: "Only the patch area" },
+          { value: "full-surface", label: "Entire wall" },
+          { value: "connected-surfaces", label: "Connected walls" },
+          { value: "not-sure", label: "Not sure" }
+        ],
+        heightLabel: "Height of the work area",
+        summaryMap: {
+          standardSurface: "Adjustment for standard wall",
+          largeSurface: "Adjustment for large wall",
+          connectedSurfaces: "Adjustment for multiple connected walls",
+          fullSurfacePaint: "Includes painting the full wall",
+          connectedSurfacePaint: "Includes painting connected walls"
+        }
+      },
+      ceiling: {
+        scopeLabel: "Size of the affected ceiling area",
+        scopeOptions: [
+          { value: "small-area", label: "Small ceiling area (less than 4 ft)" },
+          { value: "standard-surface", label: "Standard ceiling section (up to 8 ft)" },
+          { value: "large-surface", label: "Large ceiling area (more than 8 ft)" },
+          { value: "connected-surfaces", label: "Multiple connected ceiling areas" }
+        ],
+        paintLabel: "What ceiling area should be painted?",
+        paintOptions: [
+          { value: "patch-only", label: "Only the patch area" },
+          { value: "full-surface", label: "Entire ceiling area" },
+          { value: "connected-surfaces", label: "Connected ceiling areas" },
+          { value: "not-sure", label: "Not sure" }
+        ],
+        heightLabel: "Height of the ceiling work area",
+        summaryMap: {
+          standardSurface: "Adjustment for standard ceiling section",
+          largeSurface: "Adjustment for large ceiling area",
+          connectedSurfaces: "Adjustment for multiple connected ceiling areas",
+          fullSurfacePaint: "Includes painting the full ceiling area",
+          connectedSurfacePaint: "Includes painting connected ceiling areas"
+        }
+      }
+    };
+
+    const lightingPaintScopeConfig = {
+      wall: {
+        label: "What would you like us to paint?",
+        options: [
+          { value: "patchOnly", label: "Patch area only" },
+          { value: "fullSurface", label: "The whole wall" },
+          { value: "notSure", label: "Not sure" }
+        ]
+      },
+      ceiling: {
+        label: "What would you like us to paint?",
+        options: [
+          { value: "patchOnly", label: "Patch area only" },
+          { value: "fullSurface", label: "The whole ceiling" },
+          { value: "notSure", label: "Not sure" }
+        ]
+      },
+      exterior: {
+        label: "What would you like us to paint?",
+        options: [
+          { value: "patchOnly", label: "Repair area only" },
+          { value: "fullSurface", label: "Full affected area" },
+          { value: "notSure", label: "Not sure" }
+        ]
+      }
+    };
+
+    let currentStep = 1;
+    let latestEstimate = null;
+    let coldLeadSubmitted = false;
+    let hotLeadSubmitted = false;
+
+    const form = document.getElementById("estimatorForm");
+    const results = document.getElementById("results");
+    const stepper = document.getElementById("stepper");
+    const stepPanels = document.querySelectorAll(".step-panel");
+    const stepPills = document.querySelectorAll("[data-step-pill]");
+    const materialsCost = document.getElementById("materialsCost");
+    const laborCost = document.getElementById("laborCost");
+    const totalCost = document.getElementById("totalCost");
+    const breakdownList = document.getElementById("breakdownList");
+    const paintRequired = document.getElementById("paintRequired");
+    const paintBlendField = document.getElementById("paintBlendField");
+    const hotLeadBtn = document.getElementById("hotLeadBtn");
+    const doneBtn = document.getElementById("doneBtn");
+    const resultsProjectName = document.getElementById("resultsProjectName");
+
+    const damageLocation = document.getElementById("damageLocation");
+    const scopeContext = document.getElementById("scopeContext");
+    const paintBlend = document.getElementById("paintBlend");
+    const scopeContextLabel = document.getElementById("scopeContextLabel");
+    const paintBlendLabel = document.getElementById("paintBlendLabel");
+    const workHeightLabel = document.getElementById("workHeightLabel");
+
+    const hotCompletionScreen = document.getElementById("hotCompletionScreen");
+    const doneCompletionScreen = document.getElementById("doneCompletionScreen");
+    const startNewFromHot = document.getElementById("startNewFromHot");
+    const startNewFromDone = document.getElementById("startNewFromDone");
+
+    const projectType = document.getElementById("projectType");
+    const projectDisplayName = document.getElementById("projectDisplayName");
+    const selectedProjectLabel = document.getElementById("selectedProjectLabel");
+    const selectedProjectSubLabel = document.getElementById("selectedProjectSubLabel");
+    const selectedProjectMessageText = document.getElementById("selectedProjectMessageText");
+    const projectSelectorShell = document.getElementById("projectSelectorShell");
+    const projectSelectorTrigger = document.getElementById("projectSelectorTrigger");
+    const drywallProjectOption = document.getElementById("drywallProjectOption");
+    const lightingProjectOption = document.getElementById("lightingProjectOption");
+
+    const validationStep1 = document.getElementById("validationStep1");
+    const validationStep2 = document.getElementById("validationStep2");
+    const validationStep3 = document.getElementById("validationStep3");
+    const validationStep4 = document.getElementById("validationStep4");
+
+    const basicsSubtitle = document.getElementById("basicsSubtitle");
+    const detailsSubtitle = document.getElementById("detailsSubtitle");
+    const drywallBasicsSection = document.getElementById("drywallBasicsSection");
+    const lightingBasicsSection = document.getElementById("lightingBasicsSection");
+    const drywallDetailsSection = document.getElementById("drywallDetailsSection");
+    const lightingDetailsSection = document.getElementById("lightingDetailsSection");
+
+    const lightingType = document.getElementById("lightingType");
+    const lightingLocation = document.getElementById("lightingLocation");
+    const fixtureCount = document.getElementById("fixtureCount");
+    const fixtureType = document.getElementById("fixtureType");
+    const accessDifficulty = document.getElementById("accessDifficulty");
+    const fixtureSupplied = document.getElementById("fixtureSupplied");
+    const newSwitch = document.getElementById("newSwitch");
+    const wireRun = document.getElementById("wireRun");
+    const atticAccess = document.getElementById("atticAccess");
+    const repairIncluded = document.getElementById("repairIncluded");
+    const paintAfterRepair = document.getElementById("paintAfterRepair");
+    const paintLightingScope = document.getElementById("paintLightingScope");
+    const paintLightingScopeLabel = document.getElementById("paintLightingScopeLabel");
+    const lightingHeight = document.getElementById("lightingHeight");
+    const lightingObstacles = document.getElementById("lightingObstacles");
+
+    const lightingSwitchField = document.getElementById("lightingSwitchField");
+    const lightingWireRunField = document.getElementById("lightingWireRunField");
+    const lightingAtticAccessField = document.getElementById("lightingAtticAccessField");
+    const lightingRepairField = document.getElementById("lightingRepairField");
+    const lightingPaintYesNoField = document.getElementById("lightingPaintYesNoField");
+    const lightingPaintScopeField = document.getElementById("lightingPaintScopeField");
+
+    function currency(value) {
+      return "$" + Math.round(value).toLocaleString("en-US");
+    }
+
+    function getCurrentProjectType() {
+      return projectType.value;
+    }
+
+    function getDrywallContext() {
+      return damageLocation.value === "ceiling" ? drywallContextConfig.ceiling : drywallContextConfig.wall;
+    }
+
+    function setOptions(selectEl, options, preferredValue = null) {
+      const safeValue = options.some(o => o.value === preferredValue) ? preferredValue : options[0].value;
+      selectEl.innerHTML = options.map(o => `<option value="${o.value}">${o.label}</option>`).join("");
+      selectEl.value = safeValue;
+    }
+
+    function updateDrywallContextUI() {
+      const ctx = getDrywallContext();
+      const previousScope = scopeContext.value;
+      const previousPaint = paintBlend.value;
+
+      scopeContextLabel.textContent = ctx.scopeLabel;
+      paintBlendLabel.textContent = ctx.paintLabel;
+      workHeightLabel.textContent = ctx.heightLabel;
+
+      setOptions(scopeContext, ctx.scopeOptions, previousScope);
+      setOptions(paintBlend, ctx.paintOptions, previousPaint);
+    }
+
+    function updateLightingPaintScopeOptions() {
+      const config = lightingPaintScopeConfig[lightingLocation.value] || lightingPaintScopeConfig.ceiling;
+      const previousValue = paintLightingScope.value;
+      paintLightingScopeLabel.textContent = config.label;
+      setOptions(paintLightingScope, config.options, previousValue);
+    }
+
+    function updateLightingConditionalFields() {
+      const isReplace = lightingType.value === "replace";
+      const accessIsVeryEasy = accessDifficulty.value === "veryEasy";
+      const showReplaceRepair = isReplace && !accessIsVeryEasy;
+      const showAddFull = !isReplace;
+      const repairSelected = repairIncluded.value === "yes";
+      const paintSelected = paintAfterRepair.value === "yes";
+
+      lightingSwitchField.classList.toggle("hidden", isReplace);
+      lightingWireRunField.classList.toggle("hidden", isReplace);
+      lightingAtticAccessField.classList.toggle("hidden", isReplace);
+
+      lightingRepairField.classList.toggle("hidden", false);
+
+      if (isReplace) {
+        lightingRepairField.classList.toggle("hidden", !showReplaceRepair);
+      }
+
+      if (showAddFull || showReplaceRepair) {
+        lightingRepairField.classList.remove("hidden");
+      }
+
+      lightingPaintYesNoField.classList.toggle("hidden", !(repairSelected && (showAddFull || showReplaceRepair)));
+      lightingPaintScopeField.classList.toggle("hidden", !(repairSelected && paintSelected && (showAddFull || showReplaceRepair)));
+
+      updateLightingPaintScopeOptions();
+    }
+
+    function updateProjectSpecificUI() {
+      const type = getCurrentProjectType();
+
+      drywallProjectOption.classList.toggle("active", type === "drywall_patch_wall_repair");
+      lightingProjectOption.classList.toggle("active", type === "lighting_add_replace");
+
+      if (type === "lighting_add_replace") {
+        basicsSubtitle.textContent = "Tell us about the lighting project so we can build a more accurate estimate.";
+        detailsSubtitle.textContent = "A few final details help us refine the lighting estimate more accurately.";
+        drywallBasicsSection.classList.add("hidden");
+        lightingBasicsSection.classList.remove("hidden");
+        drywallDetailsSection.classList.add("hidden");
+        lightingDetailsSection.classList.remove("hidden");
+        updateLightingConditionalFields();
+      } else {
+        basicsSubtitle.textContent = "Tell us about the damaged area so we can build a more accurate estimate.";
+        detailsSubtitle.textContent = "A few final details help us refine the estimate more accurately.";
+        drywallBasicsSection.classList.remove("hidden");
+        lightingBasicsSection.classList.add("hidden");
+        drywallDetailsSection.classList.remove("hidden");
+        lightingDetailsSection.classList.add("hidden");
+      }
+    }
+
+    function hideAllEndStates() {
+      results.classList.remove("active");
+      hotCompletionScreen.classList.remove("active");
+      doneCompletionScreen.classList.remove("active");
+    }
+
+    function showHotCompletion() {
+      form.classList.add("hidden");
+      results.classList.remove("active");
+      hotCompletionScreen.classList.add("active");
+      doneCompletionScreen.classList.remove("active");
+      stepper.classList.add("hidden");
+      document.querySelector(".content").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function showDoneCompletion() {
+      form.classList.add("hidden");
+      results.classList.remove("active");
+      hotCompletionScreen.classList.remove("active");
+      doneCompletionScreen.classList.add("active");
+      stepper.classList.add("hidden");
+      document.querySelector(".content").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function showValidation(box, message) {
+      box.textContent = message;
+      box.classList.add("active");
+    }
+
+    function clearValidation(box) {
+      box.textContent = "";
+      box.classList.remove("active");
+    }
+
+    function validateStep(step) {
+      if (step === 1) {
+        clearValidation(validationStep1);
+        if (!projectType.value) {
+          showValidation(validationStep1, "Please select a project type before continuing.");
+          return false;
+        }
+      }
+
+      if (step === 2) {
+        clearValidation(validationStep2);
+        const fullName = document.getElementById("fullName").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const zipcode = document.getElementById("zipcode").value.trim();
+
+        if (!fullName || !phone || !email || !zipcode) {
+          showValidation(validationStep2, "Please complete name, phone, email, and ZIP code before continuing.");
+          return false;
+        }
+      }
+
+      if (step === 3) clearValidation(validationStep3);
+      if (step === 4) clearValidation(validationStep4);
+
+      return true;
+    }
+
+    function updateStepper(step) {
+      stepPills.forEach((pill, index) => {
+        const pillStep = index + 1;
+        pill.classList.remove("active", "done");
+        if (pillStep < step) pill.classList.add("done");
+        else if (pillStep === step) pill.classList.add("active");
+      });
+    }
+
+    function showStep(step) {
+      currentStep = step;
+
+      stepPanels.forEach(panel => {
+        panel.classList.remove("active");
+        if (Number(panel.dataset.step) === step) panel.classList.add("active");
+      });
+
+      if (step === 5) {
+        form.classList.add("hidden");
+        hideAllEndStates();
+        results.classList.add("active");
+      } else {
+        form.classList.remove("hidden");
+        hideAllEndStates();
+      }
+
+      stepper.classList.remove("hidden");
+      updateStepper(step);
+      document.querySelector(".content").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function togglePaintBlendField() {
+      paintBlendField.classList.toggle("hidden", paintRequired.value !== "yes");
+    }
+
+    function setSelectedProject(projectKey, displayName) {
+      projectType.value = projectKey;
+      projectDisplayName.value = displayName;
+      selectedProjectLabel.textContent = displayName;
+      selectedProjectSubLabel.textContent = "Project selected. Continue when ready.";
+      selectedProjectMessageText.textContent = displayName;
+      projectSelectorShell.classList.remove("open");
+      projectSelectorTrigger.setAttribute("aria-expanded", "false");
+      clearValidation(validationStep1);
+      updateProjectSpecificUI();
+    }
+
+    function toggleProjectSelector() {
+      const isOpen = projectSelectorShell.classList.toggle("open");
+      projectSelectorTrigger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    }
+
+    function setupAccordions() {
+      const groups = document.querySelectorAll(".accordion-group");
+      groups.forEach(group => {
+        const button = group.querySelector(".accordion-button");
+        button.addEventListener("click", () => {
+          const isOpen = group.classList.contains("open");
+          groups.forEach(g => g.classList.remove("open"));
+          if (!isOpen) group.classList.add("open");
+        });
+      });
+    }
+
+    function classifyZipBand(zipcodeRaw) {
+      const zip = String(zipcodeRaw || "").trim().slice(0, 5);
+
+      if (!/^\d{5}$/.test(zip)) {
+        return {
+          distanceBand: "unknown",
+          serviceZone: "distant",
+          marketRegion: "unknown",
+          multiplier: PRICING.serviceZoneMultipliers.distant
+        };
+      }
+
+      if (zip.startsWith("06")) {
+        const firstThree = zip.slice(0, 3);
+        const corePrefixes = ["064", "065", "066", "067"];
+        const extendedPrefixes = ["068", "069", "063"];
+
+        if (corePrefixes.includes(firstThree)) {
+          return {
+            distanceBand: "0-50",
+            serviceZone: "core",
+            marketRegion: "connecticut_local",
+            multiplier: PRICING.serviceZoneMultipliers.core
+          };
+        }
+
+        if (extendedPrefixes.includes(firstThree)) {
+          return {
+            distanceBand: "50-60",
+            serviceZone: "extended",
+            marketRegion: "connecticut_extended",
+            multiplier: PRICING.serviceZoneMultipliers.extended
+          };
+        }
+
+        return {
+          distanceBand: "60-70",
+          serviceZone: "outer",
+          marketRegion: "connecticut_outer",
+          multiplier: PRICING.serviceZoneMultipliers.outer
+        };
+      }
+
+      if (zip.startsWith("10") || zip.startsWith("11")) {
+        return {
+          distanceBand: "50-60",
+          serviceZone: "extended",
+          marketRegion: "new_york_near",
+          multiplier: PRICING.serviceZoneMultipliers.extended
+        };
+      }
+
+      if (zip.startsWith("01") || zip.startsWith("02")) {
+        return {
+          distanceBand: "60-70",
+          serviceZone: "outer",
+          marketRegion: "massachusetts_near",
+          multiplier: PRICING.serviceZoneMultipliers.outer
+        };
+      }
+
+      return {
+        distanceBand: "70+",
+        serviceZone: "distant",
+        marketRegion: "outside_primary_region",
+        multiplier: PRICING.serviceZoneMultipliers.distant
+      };
+    }
+
+    function classifyJobSize(formData) {
+      if (formData.projectType === "lighting_add_replace") {
+        const count = parseInt(formData.fixtureCount || "1", 10);
+        if (count >= 4) return "large";
+        if (count >= 2) return "medium";
+        return "small";
+      }
+
+      if (formData.damageSize === "large" || formData.damageSize === "xlarge") return "large";
+      if (formData.damageSize === "medium") return "medium";
+      return "small";
+    }
+
+    function classifyLead(formData) {
+      const zipMeta = classifyZipBand(formData.zipcode);
+      const jobSize = classifyJobSize(formData);
+
+      let priority = "low";
+      if (zipMeta.serviceZone === "core") priority = "high";
+      else if (zipMeta.serviceZone === "extended") priority = jobSize === "small" ? "medium" : "high";
+      else if (zipMeta.serviceZone === "outer") priority = jobSize === "large" ? "medium" : "low";
+      else priority = jobSize === "large" ? "medium" : "low";
+
+      return {
+        ...zipMeta,
+        jobSize,
+        leadPriority: priority
+      };
+    }
+
+    function calculateDrywallEstimate(formData) {
+      const ctx = drywallContextConfig[formData.damageLocation === "ceiling" ? "ceiling" : "wall"];
+      const leadMeta = classifyLead(formData);
+      const crewHourlyRate = PRICING.labor.general.ratePerPerson * PRICING.labor.general.crewSize;
+      const preset = PRICING.drywall[formData.damageSize];
+
+      let minMaterials = preset.materialMin;
+      let maxMaterials = preset.materialMax;
+      let hours = preset.hours;
+      let adjustments = [];
+      let internalAdjustments = [];
+
+      adjustments.push(`Selected base: ${preset.label}`);
+      internalAdjustments.push(`Service zone: ${leadMeta.serviceZone}`);
+      internalAdjustments.push(`Distance band: ${leadMeta.distanceBand}`);
+      internalAdjustments.push(`Lead priority: ${leadMeta.leadPriority}`);
+
+      if (formData.damageLocation === "ceiling") {
+        const a = PRICING.drywallAdjustments.damageLocation.ceiling;
+        hours *= a.hoursMultiplier;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
+        adjustments.push(a.label);
+      }
+
+      if (formData.texture === "light") {
+        const a = PRICING.drywallAdjustments.texture.light;
+        hours *= a.hoursMultiplier;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
+        adjustments.push(a.label);
+      }
+
+      if (formData.texture === "heavy") {
+        const a = PRICING.drywallAdjustments.texture.heavy;
+        hours *= a.hoursMultiplier;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
+        adjustments.push(a.label);
+      }
+
+      if (formData.ceilingHeight === "medium") {
+        const a = PRICING.drywallAdjustments.workHeight.medium;
+        hours *= a.hoursMultiplier;
+        adjustments.push(a.label);
+      }
+
+      if (formData.ceilingHeight === "high") {
+        const a = PRICING.drywallAdjustments.workHeight.high;
+        hours *= a.hoursMultiplier;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
+        adjustments.push(a.label);
+      }
+
+      if (formData.obstacles === "yes") {
+        const a = PRICING.drywallAdjustments.obstacles.yes;
+        hours *= a.hoursMultiplier;
+        adjustments.push(a.label);
+      }
+
+      if (formData.insulation === "yes") {
+        const a = PRICING.drywallAdjustments.insulation.yes;
+        hours += a.hoursAdd;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
+        adjustments.push(a.label);
+      }
+
+      if (formData.paintRequired === "yes") {
+        if (formData.paintBlend === "patch-only") {
+          const a = PRICING.drywallAdjustments.paint.patchOnly;
+          hours += a.hoursAdd;
+          minMaterials += a.materialMinAdd;
+          maxMaterials += a.materialMaxAdd;
+          adjustments.push(a.label);
+        }
+
+        if (formData.paintBlend === "full-surface") {
+          const a = PRICING.drywallAdjustments.paint.fullSurface;
+          hours += a.hoursAdd;
+          minMaterials += a.materialMinAdd;
+          maxMaterials += a.materialMaxAdd;
+          adjustments.push(ctx.summaryMap.fullSurfacePaint);
+        }
+
+        if (formData.paintBlend === "connected-surfaces") {
+          const a = PRICING.drywallAdjustments.paint.connectedSurfaces;
+          hours += a.hoursAdd;
+          minMaterials += a.materialMinAdd;
+          maxMaterials += a.materialMaxAdd;
+          adjustments.push(ctx.summaryMap.connectedSurfacePaint);
+        }
+
+        if (formData.paintBlend === "not-sure") {
+          const a = PRICING.drywallAdjustments.paint.notSure;
+          hours += a.hoursAdd;
+          minMaterials += a.materialMinAdd;
+          maxMaterials += a.materialMaxAdd;
+          adjustments.push(a.label);
+        }
+
+        if (formData.paintAvailable === "no") {
+          const a = PRICING.drywallAdjustments.paint.noExistingPaint;
+          minMaterials += a.materialMinAdd;
+          maxMaterials += a.materialMaxAdd;
+          adjustments.push(a.label);
+        }
+
+        if (formData.paintAvailable === "yes") {
+          adjustments.push(PRICING.drywallAdjustments.paint.yesExistingPaint.label);
+        }
+      }
+
+      if (formData.scopeContext === "standard-surface") {
+        const a = PRICING.drywallAdjustments.scopeContext.standardSurface;
+        hours += a.hoursAdd;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
+        adjustments.push(ctx.summaryMap.standardSurface);
+      }
+
+      if (formData.scopeContext === "large-surface") {
+        const a = PRICING.drywallAdjustments.scopeContext.largeSurface;
+        hours += a.hoursAdd;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
+        adjustments.push(ctx.summaryMap.largeSurface);
+      }
+
+      if (formData.scopeContext === "connected-surfaces") {
+        const a = PRICING.drywallAdjustments.scopeContext.connectedSurfaces;
+        hours += a.hoursAdd;
+        minMaterials += a.materialMinAdd;
+        maxMaterials += a.materialMaxAdd;
+        adjustments.push(ctx.summaryMap.connectedSurfaces);
+      }
+
+      hours = Math.round(hours * 10) / 10;
+
+      let laborMin = hours * crewHourlyRate;
+      let laborMax = laborMin * 1.15;
+      let totalMin = minMaterials + laborMin;
+      let totalMax = maxMaterials + laborMax;
+
+      const zoneMultiplier = leadMeta.multiplier;
+      minMaterials *= zoneMultiplier;
+      maxMaterials *= zoneMultiplier;
+      laborMin *= zoneMultiplier;
+      laborMax *= zoneMultiplier;
+      totalMin *= zoneMultiplier;
+      totalMax *= zoneMultiplier;
+
+      internalAdjustments.push(`Market adjustment applied: x${zoneMultiplier.toFixed(2)}`);
+
+      return {
+        hours,
+        minMaterials,
+        maxMaterials,
+        laborMin,
+        laborMax,
+        totalMin,
+        totalMax,
+        materialsList: preset.materials,
+        adjustments,
+        internalAdjustments,
+        leadMeta
+      };
+    }
+
+    function getFixtureCountMultiplier(count) {
+      const n = parseInt(count || "1", 10);
+      if (n <= 1) return 1;
+      if (n === 2) return 1.9;
+      if (n === 3) return 2.75;
+      if (n === 4) return 3.6;
+      return 4.45;
+    }
+
+    function calculateLightingEstimate(formData) {
+      const leadMeta = classifyLead(formData);
+      const crewHourlyRate = PRICING.labor.electrical.ratePerPerson * PRICING.labor.electrical.crewSize;
+      const preset = formData.lightingType === "replace" ? PRICING.lighting.replace : PRICING.lighting.add;
+
+      let minMaterials = preset.materialMin;
+      let maxMaterials = preset.materialMax;
+      let hours = preset.hours;
+      let adjustments = [];
+      let internalAdjustments = [];
+
+      adjustments.push(`Selected base: ${preset.label}`);
+      internalAdjustments.push(`Service zone: ${leadMeta.serviceZone}`);
+      internalAdjustments.push(`Distance band: ${leadMeta.distanceBand}`);
+      internalAdjustments.push(`Lead priority: ${leadMeta.leadPriority}`);
+
+      const locationAdj = PRICING.lighting.adjustments.location[formData.lightingLocation];
+      if (locationAdj) {
+        hours *= locationAdj.hoursMultiplier;
+        minMaterials += locationAdj.materialMinAdd || 0;
+        maxMaterials += locationAdj.materialMaxAdd || 0;
+        if (locationAdj.label) adjustments.push(locationAdj.label);
+      }
+
+      const fixtureTypeAdj = PRICING.lighting.adjustments.fixtureType[formData.fixtureType];
+      if (fixtureTypeAdj) {
+        hours *= fixtureTypeAdj.hoursMultiplier;
+        minMaterials += fixtureTypeAdj.materialMinAdd || 0;
+        maxMaterials += fixtureTypeAdj.materialMaxAdd || 0;
+        if (fixtureTypeAdj.label) adjustments.push(fixtureTypeAdj.label);
+      }
+
+      const accessAdj = PRICING.lighting.adjustments.access[formData.accessDifficulty];
+      if (accessAdj) {
+        hours *= accessAdj.hoursMultiplier;
+        minMaterials += accessAdj.materialMinAdd || 0;
+        maxMaterials += accessAdj.materialMaxAdd || 0;
+        if (accessAdj.label) adjustments.push(accessAdj.label);
+      }
+
+      if (formData.lightingType === "add") {
+        const switchAdj = PRICING.lighting.adjustments.switch[formData.newSwitch];
+        if (switchAdj) {
+          hours += switchAdj.hoursAdd || 0;
+          minMaterials += switchAdj.materialMinAdd || 0;
+          maxMaterials += switchAdj.materialMaxAdd || 0;
+          if (switchAdj.label) adjustments.push(switchAdj.label);
+        }
+
+        const wireAdj = PRICING.lighting.adjustments.wireRun[formData.wireRun];
+        if (wireAdj) {
+          hours += wireAdj.hoursAdd || 0;
+          minMaterials += wireAdj.materialMinAdd || 0;
+          maxMaterials += wireAdj.materialMaxAdd || 0;
+          if (wireAdj.label) adjustments.push(wireAdj.label);
+        }
+
+        const atticAdj = PRICING.lighting.adjustments.atticAccess[formData.atticAccess];
+        if (atticAdj) {
+          hours *= atticAdj.hoursMultiplier;
+          minMaterials += atticAdj.materialMinAdd || 0;
+          maxMaterials += atticAdj.materialMaxAdd || 0;
+          if (atticAdj.label) adjustments.push(atticAdj.label);
+        }
+      }
+
+      const shouldApplyRepair = (
+        (formData.lightingType === "add" && formData.repairIncluded !== "no") ||
+        (formData.lightingType === "replace" && formData.accessDifficulty !== "veryEasy" && formData.repairIncluded !== "no")
+      );
+
+      if (shouldApplyRepair) {
+        const repairAdj = PRICING.lighting.adjustments.repair[formData.repairIncluded];
+        if (repairAdj) {
+          hours += repairAdj.hoursAdd || 0;
+          minMaterials += repairAdj.materialMinAdd || 0;
+          maxMaterials += repairAdj.materialMaxAdd || 0;
+          if (repairAdj.label) adjustments.push(repairAdj.label);
+        }
+
+        if (formData.paintAfterRepair === "yes") {
+          const paintYesNoAdj = PRICING.lighting.adjustments.paintYesNo.yes;
+          if (paintYesNoAdj.label) adjustments.push(paintYesNoAdj.label);
+
+          const paintScopeAdj = PRICING.lighting.adjustments.paintScope[formData.paintLightingScope];
+          if (paintScopeAdj) {
+            hours += paintScopeAdj.hoursAdd || 0;
+            minMaterials += paintScopeAdj.materialMinAdd || 0;
+            maxMaterials += paintScopeAdj.materialMaxAdd || 0;
+            if (paintScopeAdj.label) adjustments.push(paintScopeAdj.label);
+          }
+        }
+      }
+
+      const heightAdj = PRICING.lighting.adjustments.height[formData.lightingHeight];
+      if (heightAdj) {
+        hours *= heightAdj.hoursMultiplier;
+        if (heightAdj.label) adjustments.push(heightAdj.label);
+      }
+
+      const obstacleAdj = PRICING.lighting.adjustments.obstacles[formData.lightingObstacles];
+      if (obstacleAdj) {
+        hours *= obstacleAdj.hoursMultiplier;
+        if (obstacleAdj.label) adjustments.push(obstacleAdj.label);
+      }
+
+      const fixtureSupplyAdj = PRICING.lighting.adjustments.fixtureSupply[formData.fixtureSupplied];
+      if (fixtureSupplyAdj) {
+        minMaterials += fixtureSupplyAdj.materialMinAdd || 0;
+        maxMaterials += fixtureSupplyAdj.materialMaxAdd || 0;
+        if (fixtureSupplyAdj.label) adjustments.push(fixtureSupplyAdj.label);
+      }
+
+      const countMultiplier = getFixtureCountMultiplier(formData.fixtureCount);
+      hours *= countMultiplier;
+      minMaterials *= countMultiplier;
+      maxMaterials *= countMultiplier;
+
+      if ((parseInt(formData.fixtureCount || "1", 10)) > 1) {
+        adjustments.push(`Quantity adjustment for ${formData.fixtureCount} fixtures`);
+      }
+
+      hours = Math.round(hours * 10) / 10;
+
+      let laborMin = hours * crewHourlyRate;
+      let laborMax = laborMin * 1.15;
+      let totalMin = minMaterials + laborMin;
+      let totalMax = maxMaterials + laborMax;
+
+      const zoneMultiplier = leadMeta.multiplier;
+      minMaterials *= zoneMultiplier;
+      maxMaterials *= zoneMultiplier;
+      laborMin *= zoneMultiplier;
+      laborMax *= zoneMultiplier;
+      totalMin *= zoneMultiplier;
+      totalMax *= zoneMultiplier;
+
+      internalAdjustments.push(`Market adjustment applied: x${zoneMultiplier.toFixed(2)}`);
+
+      return {
+        hours,
+        minMaterials,
+        maxMaterials,
+        laborMin,
+        laborMax,
+        totalMin,
+        totalMax,
+        materialsList: preset.materials,
+        adjustments,
+        internalAdjustments,
+        leadMeta
+      };
+    }
+
+    function getUploadedFiles() {
+      if (getCurrentProjectType() === "lighting_add_replace") {
+        return document.getElementById("projectFilesLighting").files;
+      }
+      return document.getElementById("projectFiles").files;
+    }
+
+    function getFormData() {
+      const type = getCurrentProjectType();
+
+      return {
+        projectType: type,
+        projectDisplayName: projectDisplayName.value,
+        fullName: document.getElementById("fullName").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        zipcode: document.getElementById("zipcode").value.trim(),
+        city: document.getElementById("city").value.trim(),
+        ownerStatus: document.getElementById("ownerStatus").value,
+        timeline: document.getElementById("timeline").value,
+
+        damageLocation: document.getElementById("damageLocation").value,
+        damageSize: document.getElementById("damageSize").value,
+        scopeContext: document.getElementById("scopeContext").value,
+        texture: document.getElementById("texture").value,
+        paintRequired: document.getElementById("paintRequired").value,
+        paintBlend: document.getElementById("paintBlend").value,
+        paintAvailable: document.getElementById("paintAvailable").value,
+        insulation: document.getElementById("insulation").value,
+        ceilingHeight: document.getElementById("ceilingHeight").value,
+        obstacles: document.getElementById("obstacles").value,
+        notes: document.getElementById("notes").value.trim(),
+
+        lightingType: lightingType.value,
+        lightingLocation: lightingLocation.value,
+        fixtureCount: fixtureCount.value,
+        fixtureType: fixtureType.value,
+        accessDifficulty: accessDifficulty.value,
+        fixtureSupplied: fixtureSupplied.value,
+        newSwitch: newSwitch.value,
+        wireRun: wireRun.value,
+        atticAccess: atticAccess.value,
+        repairIncluded: repairIncluded.value,
+        paintAfterRepair: paintAfterRepair.value,
+        paintLightingScope: paintLightingScope.value,
+        lightingHeight: lightingHeight.value,
+        lightingObstacles: lightingObstacles.value,
+        notesLighting: document.getElementById("notesLighting").value.trim()
+      };
+    }
+
+    async function submitLead(leadType, estimateData) {
+      const formData = getFormData();
+      const leadMeta = estimateData.leadMeta || classifyLead(formData);
+      const payload = new FormData();
+
+      payload.append("lead_type", leadType);
+      payload.append("project_template", formData.projectDisplayName);
+      payload.append("project_type_key", formData.projectType);
+      payload.append("page_name", "Project Cost Estimator");
+      payload.append("full_name", formData.fullName);
+      payload.append("phone", formData.phone);
+      payload.append("email", formData.email);
+      payload.append("zip_code", formData.zipcode);
+      payload.append("city", formData.city);
+      payload.append("relationship_to_property", formData.ownerStatus);
+      payload.append("timeline", formData.timeline);
+
+      payload.append("distance_band", leadMeta.distanceBand);
+      payload.append("service_zone", leadMeta.serviceZone);
+      payload.append("market_region", leadMeta.marketRegion);
+      payload.append("job_size", leadMeta.jobSize);
+      payload.append("lead_priority", leadMeta.leadPriority);
+      payload.append("pricing_multiplier", String(leadMeta.multiplier));
+
+      if (formData.projectType === "lighting_add_replace") {
+        payload.append("lighting_type", formData.lightingType);
+        payload.append("lighting_location", formData.lightingLocation);
+        payload.append("fixture_count", formData.fixtureCount);
+        payload.append("fixture_type", formData.fixtureType);
+        payload.append("access_difficulty", formData.accessDifficulty);
+        payload.append("fixture_supplied", formData.fixtureSupplied);
+        payload.append("new_switch", formData.newSwitch);
+        payload.append("wire_run", formData.wireRun);
+        payload.append("attic_access", formData.atticAccess);
+        payload.append("repair_included", formData.repairIncluded);
+        payload.append("paint_after_repair", formData.paintAfterRepair);
+        payload.append("paint_scope", formData.paintLightingScope);
+        payload.append("work_height", formData.lightingHeight);
+        payload.append("obstacles", formData.lightingObstacles);
+        payload.append("notes", formData.notesLighting);
+      } else {
+        payload.append("damage_location", formData.damageLocation);
+        payload.append("damage_size", formData.damageSize);
+        payload.append("scope_context", formData.scopeContext);
+        payload.append("texture", formData.texture);
+        payload.append("paint_required", formData.paintRequired);
+        payload.append("paint_area", formData.paintBlend);
+        payload.append("paint_available", formData.paintAvailable);
+        payload.append("insulation", formData.insulation);
+        payload.append("work_height", formData.ceilingHeight);
+        payload.append("obstacles", formData.obstacles);
+        payload.append("notes", formData.notes);
+      }
+
+      payload.append("estimated_materials", `${currency(estimateData.minMaterials)} – ${currency(estimateData.maxMaterials)}`);
+      payload.append("estimated_labor", `${currency(estimateData.laborMin)} – ${currency(estimateData.laborMax)}`);
+      payload.append("estimated_total_range", `${currency(estimateData.totalMin)} – ${currency(estimateData.totalMax)}`);
+      payload.append("estimated_hours", `${estimateData.hours} hours`);
+      payload.append("materials_considered", estimateData.materialsList.join(", "));
+      payload.append("calculation_summary", [...estimateData.adjustments, ...estimateData.internalAdjustments].join(" | "));
+
+      payload.append("_subject", `${leadType} LEAD – ${formData.projectDisplayName} – ${leadMeta.serviceZone.toUpperCase()} – ${leadMeta.leadPriority.toUpperCase()}`);
+
+      const files = getUploadedFiles();
+      if (files && files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+          payload.append("attachments", files[i]);
+        }
+      }
+
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        body: payload,
+        headers: { Accept: "application/json" }
+      });
+
+      if (!response.ok) throw new Error("Submission failed.");
+      return response;
+    }
+
+    function resetExperience() {
+      form.reset();
+      clearValidation(validationStep1);
+      clearValidation(validationStep2);
+      clearValidation(validationStep3);
+      clearValidation(validationStep4);
+
+      latestEstimate = null;
+      coldLeadSubmitted = false;
+      hotLeadSubmitted = false;
+
+      hotLeadBtn.disabled = false;
+      hotLeadBtn.textContent = "Get My Exact Quote";
+      doneBtn.disabled = false;
+      breakdownList.innerHTML = "";
+
+      setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
+      updateDrywallContextUI();
+      togglePaintBlendField();
+      updateLightingConditionalFields();
+      hideAllEndStates();
+      stepper.classList.remove("hidden");
+      showStep(1);
+    }
+
+    projectSelectorTrigger.addEventListener("click", toggleProjectSelector);
+
+    drywallProjectOption.addEventListener("click", function() {
+      setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
+    });
+
+    lightingProjectOption.addEventListener("click", function() {
+      setSelectedProject("lighting_add_replace", "Add or Replace a Light Fixture");
+    });
+
+    damageLocation.addEventListener("change", updateDrywallContextUI);
+    paintRequired.addEventListener("change", togglePaintBlendField);
+
+    lightingType.addEventListener("change", updateLightingConditionalFields);
+    lightingLocation.addEventListener("change", updateLightingConditionalFields);
+    accessDifficulty.addEventListener("change", updateLightingConditionalFields);
+    repairIncluded.addEventListener("change", updateLightingConditionalFields);
+    paintAfterRepair.addEventListener("change", updateLightingConditionalFields);
+
+    setupAccordions();
+
+    document.getElementById("nextToStep2").addEventListener("click", function () {
+      if (validateStep(1)) showStep(2);
+    });
+
+    document.getElementById("backToStep1").addEventListener("click", function () {
+      showStep(1);
+    });
+
+    document.getElementById("nextToStep3").addEventListener("click", function () {
+      if (validateStep(2)) showStep(3);
+    });
+
+    document.getElementById("backToStep2").addEventListener("click", function () {
+      showStep(2);
+    });
+
+    document.getElementById("nextToStep4").addEventListener("click", function () {
+      if (validateStep(3)) showStep(4);
+    });
+
+    document.getElementById("backToStep3").addEventListener("click", function () {
+      showStep(3);
+    });
+
+    form.addEventListener("submit", async function(e) {
+      e.preventDefault();
+      if (!validateStep(4)) return;
+
+      const formData = getFormData();
+
+      if (formData.projectType === "lighting_add_replace") {
+        latestEstimate = calculateLightingEstimate(formData);
+      } else {
+        latestEstimate = calculateDrywallEstimate(formData);
+      }
+
+      materialsCost.textContent = `${currency(latestEstimate.minMaterials)} – ${currency(latestEstimate.maxMaterials)}`;
+      laborCost.textContent = `${currency(latestEstimate.laborMin)} – ${currency(latestEstimate.laborMax)}`;
+      totalCost.textContent = `${currency(latestEstimate.totalMin)} – ${currency(latestEstimate.totalMax)}`;
+      resultsProjectName.textContent = `Project Type: ${formData.projectDisplayName}`;
+
+      breakdownList.innerHTML = "";
+      const summaryItems = [
+        `Estimated crew time: ${latestEstimate.hours} hours`,
+        `Materials considered: ${latestEstimate.materialsList.join(", ")}`
+      ];
+
+      [...summaryItems, ...latestEstimate.adjustments].forEach(item => {
+        if (!item) return;
+        const li = document.createElement("li");
+        li.textContent = item;
+        breakdownList.appendChild(li);
+      });
+
+      showStep(5);
+
+      if (!coldLeadSubmitted) {
+        try {
+          await submitLead("COLD", latestEstimate);
+          coldLeadSubmitted = true;
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    });
+
+    hotLeadBtn.addEventListener("click", async function() {
+      if (!latestEstimate) return;
+
+      if (hotLeadSubmitted) {
+        showHotCompletion();
+        return;
+      }
+
+      hotLeadBtn.disabled = true;
+      hotLeadBtn.textContent = "Sending...";
+      doneBtn.disabled = true;
+
+      try {
+        await submitLead("HOT", latestEstimate);
+        hotLeadSubmitted = true;
+        showHotCompletion();
+      } catch (error) {
+        console.error(error);
+        hotLeadBtn.disabled = false;
+        hotLeadBtn.textContent = "Get My Exact Quote";
+        doneBtn.disabled = false;
+        alert("We couldn't submit your request right now. Please try again.");
+      }
+    });
+
+    doneBtn.addEventListener("click", function() {
+      showDoneCompletion();
+    });
+
+    startNewFromHot.addEventListener("click", resetExperience);
+    startNewFromDone.addEventListener("click", resetExperience);
+
+    updateDrywallContextUI();
+    togglePaintBlendField();
+    updateLightingConditionalFields();
+    setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
+    hideAllEndStates();
+    showStep(1);
+  </script>
 </body>
 </html>
