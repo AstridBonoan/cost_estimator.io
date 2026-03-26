@@ -14,89 +14,138 @@
   <div class="container">
     <div class="card">
 
-      <!-- HEADER -->
+      <!-- HERO -->
       <div class="hero">
         <h1>Want to know how much your project will cost?</h1>
-        <p>Real contractor-based pricing. No guesswork.</p>
+        <p>Real contractor pricing. No guesswork. Built from real job experience.</p>
       </div>
 
-      <!-- FORM -->
-      <form id="estimatorForm">
+      <div class="content">
 
-        <!-- STEP 1 -->
-        <div class="step active" data-step="1">
-          <h2>Select Your Project</h2>
-
-          <select id="projectType">
-            <option value="drywall">Drywall Repair</option>
-            <option value="lighting">Lighting</option>
-            <option value="paint">Painting</option>
-          </select>
-
-          <button type="button" id="toStep2">Next</button>
+        <!-- STEPPER -->
+        <div class="stepper">
+          <div class="step-pill active">1. Project</div>
+          <div class="step-pill">2. Basics</div>
+          <div class="step-pill">3. Details</div>
+          <div class="step-pill">4. Results</div>
         </div>
 
-        <!-- STEP 2 -->
-        <div class="step" data-step="2">
-          <h2>Project Basics</h2>
+        <!-- FORM -->
+        <form id="estimatorForm">
 
-          <!-- DRYWALL -->
-          <div id="drywallSection">
-            <label>Damage Size</label>
-            <select id="damageSize">
-              <option value="small">Small</option>
-              <option value="medium">Medium</option>
-              <option value="large">Large</option>
-            </select>
+          <!-- STEP 1 -->
+          <div class="step active" data-step="1">
+
+            <h2>Select Your Project Type</h2>
+
+            <div class="selector-shell" id="selector">
+
+              <button type="button" class="selector-trigger" id="selectorTrigger">
+                <div>
+                  <strong id="selectedProject">Drywall Repair</strong>
+                  <span>Select or change your project</span>
+                </div>
+                <div class="selector-chevron">⌄</div>
+              </button>
+
+              <div class="selector-panel">
+
+                <!-- DRYWALL -->
+                <div class="project-option selectable active" data-value="drywall">
+                  <h4>Drywall Patch / Wall Repair</h4>
+                  <p>Fix holes, damage, patches, and ceilings.</p>
+                  <div class="badge live">Available</div>
+                </div>
+
+                <!-- LIGHTING -->
+                <div class="project-option selectable" data-value="lighting">
+                  <h4>Lighting Installation</h4>
+                  <p>Add or replace light fixtures.</p>
+                  <div class="badge live">Available</div>
+                </div>
+
+                <!-- PAINT -->
+                <div class="project-option selectable" data-value="paint">
+                  <h4>Paint One Room</h4>
+                  <p>Interior painting projects.</p>
+                  <div class="badge live">Available</div>
+                </div>
+
+              </div>
+            </div>
+
+            <input type="hidden" id="projectType" value="drywall" />
+
+            <button type="button" id="next1">Next</button>
           </div>
 
-          <!-- LIGHTING -->
-          <div id="lightingSection" class="hidden">
-            <label>Fixtures</label>
-            <select id="fixtureCount">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
+          <!-- STEP 2 -->
+          <div class="step" data-step="2">
+
+            <h2>Project Basics</h2>
+
+            <!-- DRYWALL -->
+            <div id="drywallSection">
+              <label>Damage Size</label>
+              <select id="damageSize">
+                <option value="small">Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
+              </select>
+            </div>
+
+            <!-- LIGHTING -->
+            <div id="lightingSection" class="hidden">
+              <label>How many fixtures?</label>
+              <select id="fixtureCount">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </div>
+
+            <!-- PAINT -->
+            <div id="paintSection" class="hidden">
+              <label>Room Size</label>
+              <select id="roomSize">
+                <option value="small">Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
+              </select>
+            </div>
+
+            <button type="button" id="back2">Back</button>
+            <button type="button" id="next2">Next</button>
           </div>
 
-          <!-- PAINT -->
-          <div id="paintSection" class="hidden">
-            <label>Room Size</label>
-            <select id="roomSize">
-              <option value="small">Small</option>
-              <option value="medium">Medium</option>
-              <option value="large">Large</option>
-            </select>
+          <!-- STEP 3 -->
+          <div class="step" data-step="3">
+
+            <h2>Customer Information</h2>
+
+            <input type="text" id="name" placeholder="Full Name" />
+            <input type="tel" id="phone" placeholder="Phone Number" />
+            <input type="email" id="email" placeholder="Email Address" />
+
+            <button type="button" id="back3">Back</button>
+            <button type="submit">Calculate Estimate</button>
           </div>
 
-          <button type="button" id="backTo1">Back</button>
-          <button type="button" id="toStep3">Next</button>
+        </form>
+
+        <!-- RESULTS -->
+        <div id="results" class="hidden">
+
+          <h2>Your Estimate</h2>
+
+          <p id="materials"></p>
+          <p id="labor"></p>
+          <p id="total"></p>
+
+          <button id="restart">Start New</button>
+
         </div>
 
-        <!-- STEP 3 -->
-        <div class="step" data-step="3">
-          <h2>Customer Info</h2>
-
-          <input type="text" id="name" placeholder="Full Name" />
-          <input type="tel" id="phone" placeholder="Phone" />
-          <input type="email" id="email" placeholder="Email" />
-
-          <button type="button" id="backTo2">Back</button>
-          <button type="submit">Calculate</button>
-        </div>
-
-      </form>
-
-      <!-- RESULTS -->
-      <div id="results" class="hidden">
-        <h2>Your Estimate</h2>
-
-        <p id="materials"></p>
-        <p id="labor"></p>
-        <p id="total"></p>
-
-        <button id="restart">Start New</button>
       </div>
 
     </div>
