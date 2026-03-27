@@ -698,3 +698,65 @@ button[type="submit"],
     font-size: 1.15rem;
   }
 }
+
+/* =========================
+   TAMAY BUTTON SYSTEM
+========================= */
+
+.btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* 🔵 PRIMARY (ACCION PRINCIPAL - DINERO) */
+.btn-primary {
+  background: linear-gradient(135deg, #0b1f3a, #13294b);
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(11, 31, 58, 0.35);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(11, 31, 58, 0.45);
+}
+
+/* 🟡 GOLD ACCENT (CTA FUERTE OPCIONAL) */
+.btn-gold {
+  background: linear-gradient(135deg, #c8a24a, #e5c97a);
+  color: #0b1f3a;
+  font-weight: 700;
+  box-shadow: 0 6px 18px rgba(200, 162, 74, 0.4);
+}
+
+.btn-gold:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(200, 162, 74, 0.6);
+}
+
+/* ⚪ SECONDARY */
+.btn-secondary {
+  background: #f1f5f9;
+  color: #0b1f3a;
+  border: 1px solid #e2e8f0;
+}
+
+.btn-secondary:hover {
+  background: #e2e8f0;
+}
+
+/* 🧊 MUTED */
+.btn-muted {
+  background: transparent;
+  color: #64748b;
+  border: 1px dashed #cbd5e1;
+}
+
+.btn-muted:hover {
+  background: #f8fafc;
+}
