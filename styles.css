@@ -155,6 +155,29 @@ p {
   color: var(--muted);
 }
 
+/* GLOBAL SECTION */
+.global-section {
+  background: #f8fafc;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 16px 14px;
+  margin: 0 0 18px;
+}
+
+.global-section .section-title {
+  margin-bottom: 10px;
+}
+
+.global-section .section-subtitle {
+  margin: 0 0 14px;
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+
+.global-section label {
+  margin-top: 0;
+}
+
 /* FIELDS */
 label {
   display: inline-block;
