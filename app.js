@@ -354,6 +354,9 @@ const validationStep4 = document.getElementById("validationStep4");
 const basicsSubtitle = document.getElementById("basicsSubtitle");
 const detailsSubtitle = document.getElementById("detailsSubtitle");
 
+const propertyType = document.getElementById("propertyType");
+const propertyTypeMessage = document.getElementById("propertyTypeMessage");
+
 const drywallBasicsSection = document.getElementById("drywallBasicsSection");
 const lightingBasicsSection = document.getElementById("lightingBasicsSection");
 const paintBasicsSection = document.getElementById("paintBasicsSection");
@@ -632,6 +635,43 @@ function updatePaintConditionalFields() {
   const showLead = ["before1980", "before1960", "notSure"].includes(paintYearBuilt.value);
   paintLeadPrepField.classList.toggle("hidden", !showLead);
   if (!showLead) paintLeadPrepMode.value = "standard";
+}
+
+function updatePropertyTypeMessage() {
+  if (!propertyType || !propertyTypeMessage) return;
+
+  const value = propertyType.value;
+
+  if (value === "house") {
+    propertyTypeMessage.textContent =
+      "Projects in single-family homes are typically more straightforward, with fewer restrictions and easier access for work.";
+    propertyTypeMessage.classList.remove("hidden");
+    return;
+  }
+
+  if (["condo", "hoa", "commercial"].includes(value)) {
+    propertyTypeMessage.textContent =
+      "Projects in managed properties often require licensed trades, insurance documentation, coordination with management, and building-specific approvals. This can affect logistics, scheduling, and cost.";
+    propertyTypeMessage.classList.remove("hidden");
+    return;
+  }
+
+  if (value === "multifamily") {
+    propertyTypeMessage.textContent =
+      "Projects in multi-family properties may involve additional coordination, access considerations, and property-specific requirements depending on the building setup.";
+    propertyTypeMessage.classList.remove("hidden");
+    return;
+  }
+
+  if (value === "notSure") {
+    propertyTypeMessage.textContent =
+      "Property type can affect access, coordination, paperwork, and pricing. If you are not sure, we will help confirm it during project review.";
+    propertyTypeMessage.classList.remove("hidden");
+    return;
+  }
+
+  propertyTypeMessage.textContent = "";
+  propertyTypeMessage.classList.add("hidden");
 }
 
 function updateProjectSpecificUI() {
@@ -1239,6 +1279,7 @@ function getFormData() {
     city: document.getElementById("city").value.trim(),
     ownerStatus: document.getElementById("ownerStatus").value,
     timeline: document.getElementById("timeline").value,
+    propertyType: propertyType ? propertyType.value : "house",
 
     damageLocation: damageLocation.value,
     damageSize: damageSize.value,
@@ -1301,6 +1342,7 @@ async function submitLead(leadType, estimateData) {
   payload.append("city", formData.city);
   payload.append("relationship_to_property", formData.ownerStatus);
   payload.append("timeline", formData.timeline);
+  payload.append("property_type_global", formData.propertyType);
 
   payload.append("distance_band", leadMeta.distanceBand);
   payload.append("service_zone", leadMeta.serviceZone);
@@ -1464,6 +1506,7 @@ function resetExperience() {
   togglePaintBlendField();
   updateLightingConditionalFields();
   updatePaintConditionalFields();
+  updatePropertyTypeMessage();
   hideAllEndStates();
   stepper.classList.remove("hidden");
   showStep(1);
@@ -1506,6 +1549,10 @@ paintAfterRepair.addEventListener("change", updateLightingConditionalFields);
 
 paintScopeCheckboxes.forEach((cb) => cb.addEventListener("change", updatePaintConditionalFields));
 paintYearBuilt.addEventListener("change", updatePaintConditionalFields);
+
+if (propertyType) {
+  propertyType.addEventListener("change", updatePropertyTypeMessage);
+}
 
 setupAccordions();
 
@@ -1596,6 +1643,7 @@ updateDrywallContextUI();
 togglePaintBlendField();
 updateLightingConditionalFields();
 updatePaintConditionalFields();
+updatePropertyTypeMessage();
 setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
 hideAllEndStates();
 showStep(1);
