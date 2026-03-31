@@ -104,6 +104,26 @@
                 Selected project: <strong id="selectedProjectMessageText">Drywall Patch / Wall Repair</strong>
               </div>
 
+              <!-- GLOBAL PROJECT LOCATION & REQUIREMENTS -->
+              <div class="global-section">
+                <h3 class="section-title">Project Location &amp; Requirements</h3>
+                <p class="section-subtitle">
+                  Understanding where your project is located helps us account for access, requirements, and overall project conditions.
+                </p>
+
+                <label for="propertyType">Where is this project located?</label>
+                <select id="propertyType">
+                  <option value="house">Single-family home</option>
+                  <option value="multifamily">Multi-family property (2–4 units)</option>
+                  <option value="condo">Condo / Co-op</option>
+                  <option value="hoa">HOA / managed building</option>
+                  <option value="commercial">Commercial space</option>
+                  <option value="notSure">Not sure</option>
+                </select>
+
+                <div class="micro-educational hidden" id="propertyTypeMessage"></div>
+              </div>
+
               <input type="hidden" id="projectType" value="drywall_patch_wall_repair" />
               <input type="hidden" id="projectDisplayName" value="Drywall Patch / Wall Repair" />
 
@@ -161,26 +181,6 @@
             <div class="step step-panel" data-step="3">
               <h2>Project Basics</h2>
               <p class="section-subtitle" id="basicsSubtitle">Tell us about the damaged area so we can build a more accurate estimate.</p>
-
-              <!-- GLOBAL PROJECT LOCATION & REQUIREMENTS -->
-              <div class="global-section">
-                <h3 class="section-title">Project Location &amp; Requirements</h3>
-                <p class="section-subtitle">
-                  Understanding where your project is located helps us account for access, requirements, and overall project conditions.
-                </p>
-
-                <label for="propertyType">Where is this project located?</label>
-                <select id="propertyType">
-                  <option value="house">Single-family home</option>
-                  <option value="multifamily">Multi-family property (2–4 units)</option>
-                  <option value="condo">Condo / Co-op</option>
-                  <option value="hoa">HOA / managed building</option>
-                  <option value="commercial">Commercial space</option>
-                  <option value="notSure">Not sure</option>
-                </select>
-
-                <div class="micro-educational hidden" id="propertyTypeMessage"></div>
-              </div>
 
               <!-- DRYWALL BASICS -->
               <div id="drywallBasicsSection">
