@@ -353,30 +353,200 @@
 
               <!-- PLUMBING BASICS -->
               <div id="plumbingBasicsSection" class="hidden">
-                <label for="plumbingReason">What best describes the reason for this project?</label>
-                <select id="plumbingReason">
-                  <option value="leak">It is leaking</option>
-                  <option value="notWorking">Not working properly</option>
-                  <option value="replace">Replace / upgrade</option>
-                  <option value="loose">Loose, unstable, or worn</option>
-                </select>
 
-                <label for="plumbingLocation">Where is this plumbing work located?</label>
-                <select id="plumbingLocation">
-                  <option value="bathroom">Bathroom</option>
-                  <option value="kitchen">Kitchen</option>
-                  <option value="laundry">Laundry</option>
-                  <option value="utility">Utility / Mechanical</option>
-                  <option value="basement">Basement</option>
-                  <option value="exterior">Exterior</option>
-                </select>
+                <!-- Replace Faucet -->
+                <div id="plumbingBasicsFaucet" class="hidden">
+                  <label for="plumbingFaucetReason">What best describes the reason for this project?</label>
+                  <select id="plumbingFaucetReason">
+                    <option value="leak">It is leaking</option>
+                    <option value="notWorking">Not working properly</option>
+                    <option value="replace">Replace / upgrade</option>
+                    <option value="loose">Loose / unstable / worn</option>
+                  </select>
 
-                <label for="plumbingSeverity">How would you describe the project right now?</label>
-                <select id="plumbingSeverity">
-                  <option value="simple">Simple replacement only</option>
-                  <option value="damage">There may be surrounding damage</option>
-                  <option value="active">Active issue that may affect other areas</option>
-                </select>
+                  <label for="plumbingFaucetLocation">Where is this plumbing work located?</label>
+                  <select id="plumbingFaucetLocation">
+                    <option value="kitchen">Kitchen</option>
+                    <option value="bathroom">Bathroom</option>
+                    <option value="laundry">Laundry</option>
+                    <option value="utilitySink">Utility / sink area</option>
+                  </select>
+
+                  <label for="plumbingFaucetSeverity">How would you describe the project right now?</label>
+                  <select id="plumbingFaucetSeverity">
+                    <option value="simple">Simple replacement only</option>
+                    <option value="damage">There may be surrounding damage</option>
+                    <option value="active">Active issue that may affect other areas</option>
+                  </select>
+                </div>
+
+                <!-- Replace Toilet -->
+                <div id="plumbingBasicsToilet" class="hidden">
+                  <label for="plumbingToiletReason">What best describes the reason for this project?</label>
+                  <select id="plumbingToiletReason">
+                    <option value="leak">It is leaking</option>
+                    <option value="notWorking">Not working properly</option>
+                    <option value="replace">Replace / upgrade</option>
+                    <option value="loose">Loose / unstable</option>
+                  </select>
+
+                  <label for="plumbingToiletLocation">Where is this plumbing work located?</label>
+                  <select id="plumbingToiletLocation">
+                    <option value="mainBath">Main bathroom</option>
+                    <option value="secondaryBath">Secondary bathroom</option>
+                    <option value="basementBath">Basement bathroom</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingToiletSeverity">How would you describe the project right now?</label>
+                  <select id="plumbingToiletSeverity">
+                    <option value="simple">Simple replacement only</option>
+                    <option value="damage">There may be surrounding damage</option>
+                    <option value="active">Active issue that may affect other areas</option>
+                  </select>
+                </div>
+
+                <!-- Replace Vanity -->
+                <div id="plumbingBasicsVanity" class="hidden">
+                  <label for="plumbingVanityReason">What best describes the reason for this project?</label>
+                  <select id="plumbingVanityReason">
+                    <option value="notWorking">Not working properly</option>
+                    <option value="replace">Replace / upgrade</option>
+                    <option value="loose">Loose / unstable / damaged</option>
+                    <option value="surroundingDamage">There may be damage around it</option>
+                  </select>
+
+                  <label for="plumbingVanityLocation">Where is this plumbing work located?</label>
+                  <select id="plumbingVanityLocation">
+                    <option value="bathroom">Bathroom</option>
+                    <option value="kitchen">Kitchen</option>
+                    <option value="laundry">Laundry</option>
+                  </select>
+
+                  <label for="plumbingVanitySeverity">How would you describe the project right now?</label>
+                  <select id="plumbingVanitySeverity">
+                    <option value="simple">Simple replacement only</option>
+                    <option value="damage">There may be surrounding damage</option>
+                    <option value="active">Active issue that may have affected other areas</option>
+                  </select>
+                </div>
+
+                <!-- Replace Garbage Disposal -->
+                <div id="plumbingBasicsDisposal" class="hidden">
+                  <label for="plumbingDisposalReason">What best describes the reason for this project?</label>
+                  <select id="plumbingDisposalReason">
+                    <option value="leak">It is leaking</option>
+                    <option value="notWorking">Not working properly</option>
+                    <option value="replace">Replace / upgrade</option>
+                    <option value="worn">Worn / damaged</option>
+                  </select>
+
+                  <label for="plumbingDisposalLocation">Where is this plumbing work located?</label>
+                  <select id="plumbingDisposalLocation">
+                    <option value="kitchen">Kitchen</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingDisposalSeverity">How would you describe the project right now?</label>
+                  <select id="plumbingDisposalSeverity">
+                    <option value="simple">Simple replacement only</option>
+                    <option value="damage">There may be surrounding damage</option>
+                    <option value="active">Active issue that may affect other areas</option>
+                  </select>
+                </div>
+
+                <!-- Replace Shutoff Valves -->
+                <div id="plumbingBasicsShutoff" class="hidden">
+                  <label for="plumbingShutoffReason">What best describes the reason for this project?</label>
+                  <select id="plumbingShutoffReason">
+                    <option value="leak">It is leaking</option>
+                    <option value="notWorking">Not working properly</option>
+                    <option value="replace">Replace / upgrade</option>
+                    <option value="hardToTurn">Worn / hard to turn</option>
+                  </select>
+
+                  <label for="plumbingShutoffLocation">Where is this plumbing work located?</label>
+                  <select id="plumbingShutoffLocation">
+                    <option value="bathroom">Bathroom</option>
+                    <option value="kitchen">Kitchen</option>
+                    <option value="laundry">Laundry</option>
+                    <option value="utility">Utility / mechanical</option>
+                    <option value="basement">Basement</option>
+                    <option value="exterior">Exterior</option>
+                  </select>
+
+                  <label for="plumbingShutoffSeverity">How would you describe the project right now?</label>
+                  <select id="plumbingShutoffSeverity">
+                    <option value="simple">Simple replacement only</option>
+                    <option value="damage">There may be surrounding damage</option>
+                    <option value="active">Active issue that may affect other areas</option>
+                  </select>
+                </div>
+
+                <!-- Fix Active Leak -->
+                <div id="plumbingBasicsLeak" class="hidden">
+                  <label for="plumbingLeakType">What best describes this issue?</label>
+                  <select id="plumbingLeakType">
+                    <option value="activeNow">Active leak right now</option>
+                    <option value="ongoingLeak">Ongoing leak that has been happening for some time</option>
+                    <option value="stainHiddenLeak">Water stain or signs of hidden leak</option>
+                    <option value="notSureWaterIssue">Not sure, but water is affecting the area</option>
+                  </select>
+
+                  <label for="plumbingLeakLocation">Where is the issue located?</label>
+                  <select id="plumbingLeakLocation">
+                    <option value="underSink">Under sink</option>
+                    <option value="behindWall">Behind wall</option>
+                    <option value="ceilingBetweenFloors">Ceiling / between floors</option>
+                    <option value="aroundToilet">Around toilet</option>
+                    <option value="tubShower">Around tub / shower</option>
+                    <option value="laundry">Laundry area</option>
+                    <option value="basementUtility">Basement / utility</option>
+                    <option value="exterior">Exterior</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingLeakCondition">How would you describe the situation right now?</label>
+                  <select id="plumbingLeakCondition">
+                    <option value="activelyLeakingNow">Water is actively leaking now</option>
+                    <option value="stoppedButDamageRemains">The leak has stopped, but damage may remain</option>
+                    <option value="wetOrStained">The area is wet / stained / affected</option>
+                    <option value="notSure">Not sure how active it is</option>
+                  </select>
+                </div>
+
+                <!-- Install New Plumbing Fixture -->
+                <div id="plumbingBasicsNewInstall" class="hidden">
+                  <label for="plumbingNewInstallGoal">What best describes this new installation?</label>
+                  <select id="plumbingNewInstallGoal">
+                    <option value="newFaucet">Add a new faucet where one does not exist now</option>
+                    <option value="newSinkVanity">Add a new sink / vanity</option>
+                    <option value="newToilet">Add a new toilet</option>
+                    <option value="newShowerFixture">Add a new shower fixture</option>
+                    <option value="futurePlumbingPoint">Add a new plumbing point for future use</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingNewInstallLocation">Where is this plumbing work located?</label>
+                  <select id="plumbingNewInstallLocation">
+                    <option value="bathroom">Bathroom</option>
+                    <option value="kitchen">Kitchen</option>
+                    <option value="laundry">Laundry</option>
+                    <option value="basement">Basement</option>
+                    <option value="utility">Utility / mechanical</option>
+                    <option value="exterior">Exterior</option>
+                    <option value="other">Other</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingNewInstallCondition">How would you describe the project right now?</label>
+                  <select id="plumbingNewInstallCondition">
+                    <option value="plumbingNearby">New fixture, but plumbing may already be nearby</option>
+                    <option value="somePlumbingNeeded">New fixture, and some plumbing must be added</option>
+                    <option value="openingLikelyNeeded">New fixture, and wall / floor opening may be needed</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+                </div>
               </div>
 
               <div class="validation" id="validationStep3"></div>
@@ -625,42 +795,363 @@
 
               <!-- PLUMBING DETAILS -->
               <div id="plumbingDetailsSection" class="hidden">
-                <label for="plumbingHasFixture">Do you already have the new fixture or main replacement item?</label>
-                <select id="plumbingHasFixture">
-                  <option value="yes">Yes</option>
-                  <option value="no">No</option>
-                  <option value="notSure">Not sure</option>
-                </select>
 
-                <label for="plumbingShutoffCondition">Are the shutoff valves working properly?</label>
-                <select id="plumbingShutoffCondition">
-                  <option value="yes">Yes</option>
-                  <option value="no">No</option>
-                  <option value="notSure">Not sure</option>
-                </select>
+                <!-- Replace Faucet -->
+                <div id="plumbingDetailsFaucet" class="hidden">
+                  <label for="plumbingFaucetHasFixture">Do you already have the new faucet?</label>
+                  <select id="plumbingFaucetHasFixture">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
 
-                <label for="plumbingVisibleDamage">Any visible damage around the area?</label>
-                <select id="plumbingVisibleDamage">
-                  <option value="no">No</option>
-                  <option value="minor">Minor</option>
-                  <option value="major">Major</option>
-                  <option value="notSure">Not sure</option>
-                </select>
+                  <label for="plumbingFaucetShutoffCondition">Are the shutoff valves working properly?</label>
+                  <select id="plumbingFaucetShutoffCondition">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
 
-                <label for="plumbingAccessDifficulty">How easy is access to the work area?</label>
-                <select id="plumbingAccessDifficulty">
-                  <option value="easy">Easy</option>
-                  <option value="moderate">Moderate</option>
-                  <option value="difficult">Difficult</option>
-                  <option value="notSure">Not sure</option>
-                </select>
+                  <label for="plumbingFaucetAccessDifficulty">Is access to the work area easy or difficult?</label>
+                  <select id="plumbingFaucetAccessDifficulty">
+                    <option value="easy">Easy</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="difficult">Difficult</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
 
-                <label for="projectFilesPlumbing">Upload photos or PDFs (optional)</label>
-                <input type="file" id="projectFilesPlumbing" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple />
-                <div class="small-note">You can upload project photos or PDF files to help us better understand the plumbing work.</div>
+                  <label for="plumbingFaucetVisibleDamage">If there is damage, does it appear minor or major?</label>
+                  <select id="plumbingFaucetVisibleDamage">
+                    <option value="no">No visible damage</option>
+                    <option value="minor">Minor</option>
+                    <option value="major">Major</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
 
-                <label for="notesPlumbing">Additional Notes</label>
-                <textarea id="notesPlumbing" placeholder="Describe any details we should know about the plumbing project."></textarea>
+                  <label for="projectFilesPlumbingFaucet">Upload photos or PDFs (optional)</label>
+                  <input type="file" id="projectFilesPlumbingFaucet" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple />
+                  <div class="small-note">You can upload project photos or PDF files to help us better understand the faucet replacement.</div>
+
+                  <label for="notesPlumbingFaucet">Additional Notes</label>
+                  <textarea id="notesPlumbingFaucet" placeholder="Describe any details we should know about the faucet project."></textarea>
+                </div>
+
+                <!-- Replace Toilet -->
+                <div id="plumbingDetailsToilet" class="hidden">
+                  <label for="plumbingToiletLoose">Is the toilet loose, rocking, or uneven?</label>
+                  <select id="plumbingToiletLoose">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingToiletFloorIssue">Do you see any cracked tile or flooring issues around the toilet?</label>
+                  <select id="plumbingToiletFloorIssue">
+                    <option value="no">No</option>
+                    <option value="crackedTile">Cracked tile</option>
+                    <option value="softFloor">Soft floor</option>
+                    <option value="uneven">Uneven floor</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingToiletHasFixture">Do you already have the new toilet?</label>
+                  <select id="plumbingToiletHasFixture">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingToiletRepairScope">Would you like simple replacement only, or should we also account for surrounding repairs if needed?</label>
+                  <select id="plumbingToiletRepairScope">
+                    <option value="installOnly">Simple replacement only</option>
+                    <option value="includeRepairsIfNeeded">Account for surrounding repairs if needed</option>
+                  </select>
+
+                  <label for="plumbingToiletAccessDifficulty">Is access easy or difficult?</label>
+                  <select id="plumbingToiletAccessDifficulty">
+                    <option value="easy">Easy</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="difficult">Difficult</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="projectFilesPlumbingToilet">Upload photos or PDFs (optional)</label>
+                  <input type="file" id="projectFilesPlumbingToilet" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple />
+                  <div class="small-note">You can upload project photos or PDF files to help us better understand the toilet replacement.</div>
+
+                  <label for="notesPlumbingToilet">Additional Notes</label>
+                  <textarea id="notesPlumbingToilet" placeholder="Describe any details we should know about the toilet project."></textarea>
+                </div>
+
+                <!-- Replace Vanity -->
+                <div id="plumbingDetailsVanity" class="hidden">
+                  <label for="plumbingVanityIncluded">What is included in the vanity project?</label>
+                  <select id="plumbingVanityIncluded">
+                    <option value="vanityOnly">Vanity only</option>
+                    <option value="vanityTop">Vanity with top</option>
+                    <option value="vanityTopFaucet">Vanity with top and faucet</option>
+                  </select>
+
+                  <label for="plumbingVanitySameSize">Is the new vanity the same size as the existing one?</label>
+                  <select id="plumbingVanitySameSize">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingVanityHasFixture">Do you already have the vanity?</label>
+                  <select id="plumbingVanityHasFixture">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingVanityFinishTouchup">Do you expect wall, tile, or floor touch-up work around the vanity area?</label>
+                  <select id="plumbingVanityFinishTouchup">
+                    <option value="no">No</option>
+                    <option value="wall">Wall</option>
+                    <option value="tile">Tile</option>
+                    <option value="floor">Floor</option>
+                    <option value="multiple">Multiple areas</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingVanityLeakDamage">Any signs of plumbing leaks or water damage inside, under, or behind the vanity?</label>
+                  <select id="plumbingVanityLeakDamage">
+                    <option value="no">No</option>
+                    <option value="minor">Minor</option>
+                    <option value="major">Major</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingVanityScope">Would you like installation only, or should we account for related plumbing components if needed?</label>
+                  <select id="plumbingVanityScope">
+                    <option value="installOnly">Installation only</option>
+                    <option value="includeRelatedPlumbing">Account for related plumbing components if needed</option>
+                  </select>
+
+                  <label for="projectFilesPlumbingVanity">Upload photos or PDFs (optional)</label>
+                  <input type="file" id="projectFilesPlumbingVanity" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple />
+                  <div class="small-note">You can upload project photos or PDF files to help us better understand the vanity replacement.</div>
+
+                  <label for="notesPlumbingVanity">Additional Notes</label>
+                  <textarea id="notesPlumbingVanity" placeholder="Describe any details we should know about the vanity project."></textarea>
+                </div>
+
+                <!-- Replace Garbage Disposal -->
+                <div id="plumbingDetailsDisposal" class="hidden">
+                  <label for="plumbingDisposalHasFixture">Do you already have the new garbage disposal?</label>
+                  <select id="plumbingDisposalHasFixture">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingDisposalAreaDamage">Any visible leak, cabinet damage, or water damage around the sink area?</label>
+                  <select id="plumbingDisposalAreaDamage">
+                    <option value="no">No</option>
+                    <option value="cabinetDamage">Cabinet damage</option>
+                    <option value="waterDamage">Water damage</option>
+                    <option value="both">Both</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingDisposalPowerReady">Does the sink area already have proper power connection?</label>
+                  <select id="plumbingDisposalPowerReady">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingDisposalScope">Would you like replacement only, or should we account for surrounding sink-area issues if needed?</label>
+                  <select id="plumbingDisposalScope">
+                    <option value="replaceOnly">Replacement only</option>
+                    <option value="includeSinkAreaIssuesIfNeeded">Account for surrounding sink-area issues if needed</option>
+                  </select>
+
+                  <label for="plumbingDisposalAccessDifficulty">Is access easy or difficult?</label>
+                  <select id="plumbingDisposalAccessDifficulty">
+                    <option value="easy">Easy</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="difficult">Difficult</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="projectFilesPlumbingDisposal">Upload photos or PDFs (optional)</label>
+                  <input type="file" id="projectFilesPlumbingDisposal" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple />
+                  <div class="small-note">You can upload project photos or PDF files to help us better understand the garbage disposal project.</div>
+
+                  <label for="notesPlumbingDisposal">Additional Notes</label>
+                  <textarea id="notesPlumbingDisposal" placeholder="Describe any details we should know about the garbage disposal project."></textarea>
+                </div>
+
+                <!-- Replace Shutoff Valves -->
+                <div id="plumbingDetailsShutoff" class="hidden">
+                  <label for="plumbingValveCount">How many shutoff valves need to be replaced?</label>
+                  <select id="plumbingValveCount">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4plus">4+</option>
+                  </select>
+
+                  <label for="plumbingValveAccess">Are the valves easy to access?</label>
+                  <select id="plumbingValveAccess">
+                    <option value="easy">Easy</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="difficult">Difficult</option>
+                  </select>
+
+                  <label for="plumbingValveCondition">Do the valves appear old, stuck, or seized?</label>
+                  <select id="plumbingValveCondition">
+                    <option value="normal">Normal</option>
+                    <option value="old">Old</option>
+                    <option value="stuck">Stuck</option>
+                    <option value="seized">Seized</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingValvePartOfOtherProject">Is this part of another plumbing project too?</label>
+                  <select id="plumbingValvePartOfOtherProject">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                  </select>
+
+                  <label for="plumbingValveScope">Would you like valve replacement only, or should we account for nearby plumbing issues if needed?</label>
+                  <select id="plumbingValveScope">
+                    <option value="valveOnly">Valve replacement only</option>
+                    <option value="includeNearbyIssuesIfNeeded">Account for nearby plumbing issues if needed</option>
+                  </select>
+
+                  <label for="projectFilesPlumbingShutoff">Upload photos or PDFs (optional)</label>
+                  <input type="file" id="projectFilesPlumbingShutoff" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple />
+                  <div class="small-note">You can upload project photos or PDF files to help us better understand the shutoff valve project.</div>
+
+                  <label for="notesPlumbingShutoff">Additional Notes</label>
+                  <textarea id="notesPlumbingShutoff" placeholder="Describe any details we should know about the shutoff valve project."></textarea>
+                </div>
+
+                <!-- Fix Active Leak -->
+                <div id="plumbingDetailsLeak" class="hidden">
+                  <label for="plumbingLeakDuration">How long do you think this has been happening?</label>
+                  <select id="plumbingLeakDuration">
+                    <option value="today">Today</option>
+                    <option value="fewDays">A few days</option>
+                    <option value="weekPlus">A week or more</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingLeakAffectedSurfaces">Has water affected nearby surfaces or finishes?</label>
+                  <select id="plumbingLeakAffectedSurfaces">
+                    <option value="no">No</option>
+                    <option value="wall">Wall</option>
+                    <option value="ceiling">Ceiling</option>
+                    <option value="floor">Floor</option>
+                    <option value="cabinet">Cabinet</option>
+                    <option value="multiple">Multiple areas</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingLeakDamageSigns">Do you see signs of wall, ceiling, floor, or cabinet damage?</label>
+                  <select id="plumbingLeakDamageSigns">
+                    <option value="no">No</option>
+                    <option value="minor">Minor</option>
+                    <option value="major">Major</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingLeakOpenAccessWork">Would you like us to account for opening and access work if needed?</label>
+                  <select id="plumbingLeakOpenAccessWork">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingLeakRepairAfterStop">Would you like us to account for repairs after the leak is stopped if needed?</label>
+                  <select id="plumbingLeakRepairAfterStop">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingLeakAccessDifficulty">Is access easy or difficult?</label>
+                  <select id="plumbingLeakAccessDifficulty">
+                    <option value="easy">Easy</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="difficult">Difficult</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="projectFilesPlumbingLeak">Upload photos or PDFs (optional)</label>
+                  <input type="file" id="projectFilesPlumbingLeak" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple />
+                  <div class="small-note">You can upload project photos or PDF files to help us better understand the leak issue.</div>
+
+                  <label for="notesPlumbingLeak">Additional Notes</label>
+                  <textarea id="notesPlumbingLeak" placeholder="Describe any details we should know about the leak issue."></textarea>
+                </div>
+
+                <!-- Install New Plumbing Fixture -->
+                <div id="plumbingDetailsNewInstall" class="hidden">
+                  <label for="plumbingNewInstallFixtureType">What are you installing?</label>
+                  <select id="plumbingNewInstallFixtureType">
+                    <option value="faucet">Faucet</option>
+                    <option value="sink">Sink</option>
+                    <option value="vanity">Vanity</option>
+                    <option value="toilet">Toilet</option>
+                    <option value="showerFixture">Shower fixture</option>
+                    <option value="hoseBib">Hose bib / exterior faucet</option>
+                    <option value="other">Other</option>
+                  </select>
+
+                  <label for="plumbingNewInstallSupplyAvailable">Is there already nearby water supply available?</label>
+                  <select id="plumbingNewInstallSupplyAvailable">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingNewInstallDrainAvailable">Is there already nearby drain line available?</label>
+                  <select id="plumbingNewInstallDrainAvailable">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingNewInstallOpeningNeeded">Will wall, floor, or cabinet opening likely be needed?</label>
+                  <select id="plumbingNewInstallOpeningNeeded">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingNewInstallHasFixture">Do you already have the new fixture?</label>
+                  <select id="plumbingNewInstallHasFixture">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingNewInstallAccessDifficulty">Is access easy or difficult?</label>
+                  <select id="plumbingNewInstallAccessDifficulty">
+                    <option value="easy">Easy</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="difficult">Difficult</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+
+                  <label for="plumbingNewInstallRepairScope">Would you like installation only, or should we also account for related finish repairs if needed?</label>
+                  <select id="plumbingNewInstallRepairScope">
+                    <option value="installOnly">Installation only</option>
+                    <option value="includeFinishRepairsIfNeeded">Account for related finish repairs if needed</option>
+                  </select>
+
+                  <label for="projectFilesPlumbingNewInstall">Upload photos or PDFs (optional)</label>
+                  <input type="file" id="projectFilesPlumbingNewInstall" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple />
+                  <div class="small-note">You can upload project photos or PDF files to help us better understand the new plumbing installation.</div>
+
+                  <label for="notesPlumbingNewInstall">Additional Notes</label>
+                  <textarea id="notesPlumbingNewInstall" placeholder="Describe any details we should know about the new plumbing installation."></textarea>
+                </div>
               </div>
 
               <div class="validation" id="validationStep4"></div>
