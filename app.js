@@ -229,14 +229,23 @@ const PRICING = {
     materials: ["Paint", "Primer", "Caulk", "Masking tape", "Plastic / protection materials", "Patch / prep consumables"]
   },
 
+  plumbing: {
+    materials: {
+      faucet: ["Supply lines", "Faucet connectors", "Sealant / plumber's putty", "Minor consumables"],
+      toilet: ["Wax ring / seal", "Closet bolts", "Supply line", "Minor consumables"],
+      vanity: ["P-trap parts", "Supply lines", "Caulk / sealant", "Minor consumables"],
+      garbageDisposal: ["Disposal connection kit", "Discharge fittings", "Electrical connection consumables", "Minor consumables"],
+      shutoff: ["Shutoff valve(s)", "Compression fittings", "Minor consumables"],
+      leak: ["Repair fittings", "Pipe section / connector materials", "Sealants", "Minor consumables"],
+      newFixture: ["Basic fittings", "Connection materials", "Mounting / fastening consumables", "Minor consumables"]
+    }
+  },
+
   serviceZoneMultipliers: { core: 1.0, extended: 1.08, outer: 1.15, distant: 1.22 }
 };
 
 const PROPERTY_TYPE_CONFIG = {
-  house: {
-    multiplier: 1.0,
-    message: ""
-  },
+  house: { multiplier: 1.0, message: "" },
   multifamily: {
     multiplier: 1.05,
     message: "Multi-unit properties may involve coordination between units, tighter access, and additional protection requirements."
@@ -373,6 +382,14 @@ const drywallProjectOption = document.getElementById("drywallProjectOption");
 const lightingProjectOption = document.getElementById("lightingProjectOption");
 const paintProjectOption = document.getElementById("paintProjectOption");
 
+const plumbingFaucetProjectOption = document.getElementById("plumbingFaucetProjectOption");
+const plumbingToiletProjectOption = document.getElementById("plumbingToiletProjectOption");
+const plumbingVanityProjectOption = document.getElementById("plumbingVanityProjectOption");
+const plumbingDisposalProjectOption = document.getElementById("plumbingDisposalProjectOption");
+const plumbingShutoffProjectOption = document.getElementById("plumbingShutoffProjectOption");
+const plumbingLeakProjectOption = document.getElementById("plumbingLeakProjectOption");
+const plumbingNewFixtureProjectOption = document.getElementById("plumbingNewFixtureProjectOption");
+
 const validationStep1 = document.getElementById("validationStep1");
 const validationStep2 = document.getElementById("validationStep2");
 const validationStep3 = document.getElementById("validationStep3");
@@ -387,10 +404,12 @@ const propertyTypeMessage = document.getElementById("propertyTypeMessage");
 const drywallBasicsSection = document.getElementById("drywallBasicsSection");
 const lightingBasicsSection = document.getElementById("lightingBasicsSection");
 const paintBasicsSection = document.getElementById("paintBasicsSection");
+const plumbingBasicsSection = document.getElementById("plumbingBasicsSection");
 
 const drywallDetailsSection = document.getElementById("drywallDetailsSection");
 const lightingDetailsSection = document.getElementById("lightingDetailsSection");
 const paintDetailsSection = document.getElementById("paintDetailsSection");
+const plumbingDetailsSection = document.getElementById("plumbingDetailsSection");
 
 const damageLocation = document.getElementById("damageLocation");
 const damageSize = document.getElementById("damageSize");
@@ -455,6 +474,16 @@ const paintLeadPrepField = document.getElementById("paintLeadPrepField");
 const paintNotes = document.getElementById("paintNotes");
 const projectFilesPaint = document.getElementById("projectFilesPaint");
 
+const plumbingReason = document.getElementById("plumbingReason");
+const plumbingLocation = document.getElementById("plumbingLocation");
+const plumbingSeverity = document.getElementById("plumbingSeverity");
+const plumbingHasFixture = document.getElementById("plumbingHasFixture");
+const plumbingShutoffCondition = document.getElementById("plumbingShutoffCondition");
+const plumbingVisibleDamage = document.getElementById("plumbingVisibleDamage");
+const plumbingAccessDifficulty = document.getElementById("plumbingAccessDifficulty");
+const notesPlumbing = document.getElementById("notesPlumbing");
+const projectFilesPlumbing = document.getElementById("projectFilesPlumbing");
+
 const nextToStep2 = document.getElementById("nextToStep2");
 const backToStep1 = document.getElementById("backToStep1");
 const nextToStep3 = document.getElementById("nextToStep3");
@@ -497,7 +526,6 @@ function updateStepper(step) {
   stepPills.forEach((pill, index) => {
     const pillStep = index + 1;
     pill.classList.remove("active", "done");
-
     if (pillStep < step) pill.classList.add("done");
     else if (pillStep === step) pill.classList.add("active");
   });
@@ -565,15 +593,28 @@ function setupAccordions() {
 
 function updatePropertyTypeMessage() {
   const config = PROPERTY_TYPE_CONFIG[propertyTypeGlobal.value] || PROPERTY_TYPE_CONFIG.house;
-
   if (!config.message) {
     propertyTypeMessage.textContent = "";
     propertyTypeMessage.classList.add("hidden");
     return;
   }
-
   propertyTypeMessage.textContent = config.message;
   propertyTypeMessage.classList.remove("hidden");
+}
+
+function allProjectOptions() {
+  return [
+    drywallProjectOption,
+    lightingProjectOption,
+    paintProjectOption,
+    plumbingFaucetProjectOption,
+    plumbingToiletProjectOption,
+    plumbingVanityProjectOption,
+    plumbingDisposalProjectOption,
+    plumbingShutoffProjectOption,
+    plumbingLeakProjectOption,
+    plumbingNewFixtureProjectOption
+  ].filter(Boolean);
 }
 
 function setSelectedProject(projectKey, displayName) {
@@ -583,7 +624,7 @@ function setSelectedProject(projectKey, displayName) {
   selectedProjectSubLabel.textContent = "Project selected. Continue when ready.";
   selectedProjectMessageText.textContent = displayName;
 
-  [drywallProjectOption, lightingProjectOption, paintProjectOption].forEach((option) => {
+  allProjectOptions().forEach((option) => {
     option.classList.toggle("active", option.dataset.value === projectKey);
   });
 
@@ -601,11 +642,9 @@ function updateDrywallContextUI() {
   const ctx = getDrywallContext();
   const previousScope = scopeContext.value;
   const previousPaint = paintBlend.value;
-
   scopeContextLabel.textContent = ctx.scopeLabel;
   paintBlendLabel.textContent = ctx.paintLabel;
   workHeightLabel.textContent = ctx.heightLabel;
-
   setOptions(scopeContext, ctx.scopeOptions, previousScope);
   setOptions(paintBlend, ctx.paintOptions, previousPaint);
 }
@@ -677,47 +716,53 @@ function updatePaintConditionalFields() {
   if (!showLead) paintLeadPrepMode.value = "standard";
 }
 
+function isPlumbingProject(type) {
+  return type.startsWith("plumbing_");
+}
+
 function updateProjectSpecificUI() {
   const type = projectType.value;
+
+  drywallBasicsSection.classList.add("hidden");
+  lightingBasicsSection.classList.add("hidden");
+  paintBasicsSection.classList.add("hidden");
+  plumbingBasicsSection.classList.add("hidden");
+
+  drywallDetailsSection.classList.add("hidden");
+  lightingDetailsSection.classList.add("hidden");
+  paintDetailsSection.classList.add("hidden");
+  plumbingDetailsSection.classList.add("hidden");
 
   if (type === "lighting_add_replace") {
     basicsSubtitle.textContent = "Tell us about the lighting project so we can build a more accurate estimate.";
     detailsSubtitle.textContent = "A few final details help us refine the lighting estimate more accurately.";
-
-    drywallBasicsSection.classList.add("hidden");
     lightingBasicsSection.classList.remove("hidden");
-    paintBasicsSection.classList.add("hidden");
-
-    drywallDetailsSection.classList.add("hidden");
     lightingDetailsSection.classList.remove("hidden");
-    paintDetailsSection.classList.add("hidden");
-
     updateLightingConditionalFields();
-  } else if (type === "paint_one_room") {
+    return;
+  }
+
+  if (type === "paint_one_room") {
     basicsSubtitle.textContent = "Tell us about the room painting project so we can build a more accurate estimate.";
     detailsSubtitle.textContent = "A few final details help us refine the painting estimate more accurately.";
-
-    drywallBasicsSection.classList.add("hidden");
-    lightingBasicsSection.classList.add("hidden");
     paintBasicsSection.classList.remove("hidden");
-
-    drywallDetailsSection.classList.add("hidden");
-    lightingDetailsSection.classList.add("hidden");
     paintDetailsSection.classList.remove("hidden");
-
     updatePaintConditionalFields();
-  } else {
-    basicsSubtitle.textContent = "Tell us about the damaged area so we can build a more accurate estimate.";
-    detailsSubtitle.textContent = "A few final details help us refine the estimate more accurately.";
-
-    drywallBasicsSection.classList.remove("hidden");
-    lightingBasicsSection.classList.add("hidden");
-    paintBasicsSection.classList.add("hidden");
-
-    drywallDetailsSection.classList.remove("hidden");
-    lightingDetailsSection.classList.add("hidden");
-    paintDetailsSection.classList.add("hidden");
+    return;
   }
+
+  if (isPlumbingProject(type)) {
+    basicsSubtitle.textContent = "Tell us about the plumbing project so we can build a more accurate estimate.";
+    detailsSubtitle.textContent = "A few final details help us refine the plumbing estimate more accurately.";
+    plumbingBasicsSection.classList.remove("hidden");
+    plumbingDetailsSection.classList.remove("hidden");
+    return;
+  }
+
+  basicsSubtitle.textContent = "Tell us about the damaged area so we can build a more accurate estimate.";
+  detailsSubtitle.textContent = "A few final details help us refine the estimate more accurately.";
+  drywallBasicsSection.classList.remove("hidden");
+  drywallDetailsSection.classList.remove("hidden");
 }
 
 function classifyZipBand(zipcodeRaw) {
@@ -769,6 +814,14 @@ function classifyJobSize(formData) {
     return "small";
   }
 
+  if (isPlumbingProject(formData.projectType)) {
+    if (["plumbing_replace_vanity", "plumbing_fix_active_leak", "plumbing_install_new_fixture"].includes(formData.projectType)) {
+      return "medium";
+    }
+    if (formData.plumbingSeverity === "active" || formData.plumbingVisibleDamage === "major") return "medium";
+    return "small";
+  }
+
   if (["large", "xlarge"].includes(formData.damageSize)) return "large";
   if (formData.damageSize === "medium") return "medium";
   return "small";
@@ -787,10 +840,28 @@ function classifyLead(formData) {
   return { ...zipMeta, jobSize, leadPriority: priority };
 }
 
+function applyMarketAndPropertyAdjustments(baseEstimate, formData, leadMeta) {
+  const propertyConfig = PROPERTY_TYPE_CONFIG[formData.propertyType] || PROPERTY_TYPE_CONFIG.house;
+  const zoneMultiplier = leadMeta.multiplier;
+  const propertyMultiplier = propertyConfig.multiplier;
+  const finalMultiplier = zoneMultiplier * propertyMultiplier;
+
+  baseEstimate.minMaterials *= finalMultiplier;
+  baseEstimate.maxMaterials *= finalMultiplier;
+  baseEstimate.laborMin *= finalMultiplier;
+  baseEstimate.laborMax *= finalMultiplier;
+  baseEstimate.totalMin *= finalMultiplier;
+  baseEstimate.totalMax *= finalMultiplier;
+
+  baseEstimate.internalAdjustments.push(`Market adjustment applied: x${zoneMultiplier.toFixed(2)}`);
+  baseEstimate.internalAdjustments.push(`Property type adjustment: x${propertyMultiplier.toFixed(2)}`);
+
+  return baseEstimate;
+}
+
 function calculateDrywallEstimate(formData) {
   const ctx = drywallContextConfig[formData.damageLocation === "ceiling" ? "ceiling" : "wall"];
   const leadMeta = classifyLead(formData);
-  const propertyConfig = PROPERTY_TYPE_CONFIG[formData.propertyType] || PROPERTY_TYPE_CONFIG.house;
   const crewHourlyRate = PRICING.labor.general.ratePerPerson * PRICING.labor.general.crewSize;
   const preset = PRICING.drywall[formData.damageSize];
 
@@ -928,26 +999,12 @@ function calculateDrywallEstimate(formData) {
 
   hours = Math.round(hours * 10) / 10;
 
-  let laborMin = hours * crewHourlyRate;
-  let laborMax = laborMin * 1.15;
-  let totalMin = minMaterials + laborMin;
-  let totalMax = maxMaterials + laborMax;
+  const laborMin = hours * crewHourlyRate;
+  const laborMax = laborMin * 1.15;
+  const totalMin = minMaterials + laborMin;
+  const totalMax = maxMaterials + laborMax;
 
-  const zoneMultiplier = leadMeta.multiplier;
-  const propertyMultiplier = propertyConfig.multiplier;
-  const finalMultiplier = zoneMultiplier * propertyMultiplier;
-
-  minMaterials *= finalMultiplier;
-  maxMaterials *= finalMultiplier;
-  laborMin *= finalMultiplier;
-  laborMax *= finalMultiplier;
-  totalMin *= finalMultiplier;
-  totalMax *= finalMultiplier;
-
-  internalAdjustments.push(`Market adjustment applied: x${zoneMultiplier.toFixed(2)}`);
-  internalAdjustments.push(`Property type adjustment: x${propertyMultiplier.toFixed(2)}`);
-
-  return {
+  return applyMarketAndPropertyAdjustments({
     hours,
     minMaterials,
     maxMaterials,
@@ -959,7 +1016,7 @@ function calculateDrywallEstimate(formData) {
     adjustments,
     internalAdjustments,
     leadMeta
-  };
+  }, formData, leadMeta);
 }
 
 function getFixtureCountMultiplier(count) {
@@ -973,7 +1030,6 @@ function getFixtureCountMultiplier(count) {
 
 function calculateLightingEstimate(formData) {
   const leadMeta = classifyLead(formData);
-  const propertyConfig = PROPERTY_TYPE_CONFIG[formData.propertyType] || PROPERTY_TYPE_CONFIG.house;
   const crewHourlyRate = PRICING.labor.electrical.ratePerPerson * PRICING.labor.electrical.crewSize;
   const preset = formData.lightingType === "replace" ? PRICING.lighting.replace : PRICING.lighting.add;
 
@@ -1101,26 +1157,12 @@ function calculateLightingEstimate(formData) {
 
   hours = Math.round(hours * 10) / 10;
 
-  let laborMin = hours * crewHourlyRate;
-  let laborMax = laborMin * 1.15;
-  let totalMin = minMaterials + laborMin;
-  let totalMax = maxMaterials + laborMax;
+  const laborMin = hours * crewHourlyRate;
+  const laborMax = laborMin * 1.15;
+  const totalMin = minMaterials + laborMin;
+  const totalMax = maxMaterials + laborMax;
 
-  const zoneMultiplier = leadMeta.multiplier;
-  const propertyMultiplier = propertyConfig.multiplier;
-  const finalMultiplier = zoneMultiplier * propertyMultiplier;
-
-  minMaterials *= finalMultiplier;
-  maxMaterials *= finalMultiplier;
-  laborMin *= finalMultiplier;
-  laborMax *= finalMultiplier;
-  totalMin *= finalMultiplier;
-  totalMax *= finalMultiplier;
-
-  internalAdjustments.push(`Market adjustment applied: x${zoneMultiplier.toFixed(2)}`);
-  internalAdjustments.push(`Property type adjustment: x${propertyMultiplier.toFixed(2)}`);
-
-  return {
+  return applyMarketAndPropertyAdjustments({
     hours,
     minMaterials,
     maxMaterials,
@@ -1132,12 +1174,11 @@ function calculateLightingEstimate(formData) {
     adjustments,
     internalAdjustments,
     leadMeta
-  };
+  }, formData, leadMeta);
 }
 
 function calculatePaintEstimate(formData) {
   const leadMeta = classifyLead(formData);
-  const propertyConfig = PROPERTY_TYPE_CONFIG[formData.propertyType] || PROPERTY_TYPE_CONFIG.house;
   const crewHourlyRate = PRICING.labor.general.ratePerPerson * PRICING.labor.general.crewSize;
 
   let minMaterials = 0;
@@ -1245,26 +1286,12 @@ function calculatePaintEstimate(formData) {
 
   hours = Math.round(hours * 10) / 10;
 
-  let laborMin = hours * crewHourlyRate;
-  let laborMax = laborMin * 1.15;
-  let totalMin = minMaterials + laborMin;
-  let totalMax = maxMaterials + laborMax;
+  const laborMin = hours * crewHourlyRate;
+  const laborMax = laborMin * 1.15;
+  const totalMin = minMaterials + laborMin;
+  const totalMax = maxMaterials + laborMax;
 
-  const zoneMultiplier = leadMeta.multiplier;
-  const propertyMultiplier = propertyConfig.multiplier;
-  const finalMultiplier = zoneMultiplier * propertyMultiplier;
-
-  minMaterials *= finalMultiplier;
-  maxMaterials *= finalMultiplier;
-  laborMin *= finalMultiplier;
-  laborMax *= finalMultiplier;
-  totalMin *= finalMultiplier;
-  totalMax *= finalMultiplier;
-
-  internalAdjustments.push(`Market adjustment applied: x${zoneMultiplier.toFixed(2)}`);
-  internalAdjustments.push(`Property type adjustment: x${propertyMultiplier.toFixed(2)}`);
-
-  return {
+  return applyMarketAndPropertyAdjustments({
     hours,
     minMaterials,
     maxMaterials,
@@ -1276,12 +1303,286 @@ function calculatePaintEstimate(formData) {
     adjustments,
     internalAdjustments,
     leadMeta
-  };
+  }, formData, leadMeta);
+}
+
+function calculatePlumbingEstimate(formData) {
+  const leadMeta = classifyLead(formData);
+  const adjustments = [];
+  const internalAdjustments = [
+    `Service zone: ${leadMeta.serviceZone}`,
+    `Distance band: ${leadMeta.distanceBand}`,
+    `Lead priority: ${leadMeta.leadPriority}`
+  ];
+
+  let hours = 0;
+  let minMaterials = 0;
+  let maxMaterials = 0;
+  let laborMin = 0;
+  let laborMax = 0;
+  let materialsList = [];
+
+  switch (formData.projectType) {
+    case "plumbing_replace_faucet": {
+      hours = 2.0;
+      laborMin = 250;
+      laborMax = 250;
+      materialsList = PRICING.plumbing.materials.faucet;
+      adjustments.push("Base: faucet replacement");
+
+      if (formData.plumbingHasFixture === "no") {
+        minMaterials += 40;
+        maxMaterials += 180;
+        adjustments.push("Fixture allowance included");
+      }
+
+      if (formData.plumbingShutoffCondition === "no") {
+        laborMin += 60;
+        laborMax += 120;
+        minMaterials += 25;
+        maxMaterials += 50;
+        adjustments.push("Shutoff valve issue adjustment");
+      }
+
+      if (formData.plumbingSeverity === "active") {
+        laborMin += 100;
+        laborMax += 150;
+        adjustments.push("Active issue adjustment");
+      }
+      break;
+    }
+
+    case "plumbing_replace_toilet": {
+      hours = 3.0;
+      laborMin = 300;
+      laborMax = 350;
+      materialsList = PRICING.plumbing.materials.toilet;
+      adjustments.push("Base: toilet replacement");
+
+      if (formData.plumbingHasFixture === "no") {
+        minMaterials += 120;
+        maxMaterials += 250;
+        adjustments.push("Toilet allowance included");
+      }
+
+      if (formData.plumbingVisibleDamage === "minor") {
+        laborMin += 100;
+        laborMax += 180;
+        minMaterials += 40;
+        maxMaterials += 90;
+        adjustments.push("Minor surrounding floor / finish issue");
+      }
+
+      if (formData.plumbingVisibleDamage === "major") {
+        laborMin += 250;
+        laborMax += 400;
+        minMaterials += 90;
+        maxMaterials += 180;
+        adjustments.push("Major surrounding floor / finish issue");
+      }
+
+      if (formData.plumbingSeverity === "active") {
+        laborMin += 50;
+        laborMax += 100;
+        adjustments.push("Active issue adjustment");
+      }
+      break;
+    }
+
+    case "plumbing_replace_vanity": {
+      hours = 4.5;
+      laborMin = 400;
+      laborMax = 500;
+      materialsList = PRICING.plumbing.materials.vanity;
+      adjustments.push("Base: vanity replacement");
+
+      if (formData.plumbingHasFixture === "no") {
+        minMaterials += 150;
+        maxMaterials += 300;
+        adjustments.push("Vanity / fixture allowance included");
+      }
+
+      if (formData.plumbingShutoffCondition === "no") {
+        laborMin += 50;
+        laborMax += 100;
+        minMaterials += 20;
+        maxMaterials += 45;
+        adjustments.push("Shutoff valve adjustment");
+      }
+
+      if (formData.plumbingVisibleDamage === "minor") {
+        laborMin += 75;
+        laborMax += 150;
+        adjustments.push("Minor surrounding finish issue");
+      }
+
+      if (formData.plumbingVisibleDamage === "major") {
+        laborMin += 180;
+        laborMax += 300;
+        adjustments.push("Major surrounding finish issue");
+      }
+      break;
+    }
+
+    case "plumbing_replace_garbage_disposal": {
+      hours = 2.5;
+      laborMin = 250;
+      laborMax = 325;
+      materialsList = PRICING.plumbing.materials.garbageDisposal;
+      adjustments.push("Base: garbage disposal replacement");
+
+      if (formData.plumbingHasFixture === "no") {
+        minMaterials += 120;
+        maxMaterials += 250;
+        adjustments.push("Garbage disposal allowance included");
+      }
+
+      if (formData.plumbingVisibleDamage === "minor") {
+        laborMin += 40;
+        laborMax += 90;
+        adjustments.push("Minor sink-area / cabinet condition adjustment");
+      }
+
+      if (formData.plumbingVisibleDamage === "major") {
+        laborMin += 120;
+        laborMax += 220;
+        adjustments.push("Major sink-area / cabinet condition adjustment");
+      }
+      break;
+    }
+
+    case "plumbing_replace_shutoff_valves": {
+      hours = 2.0;
+      laborMin = 250;
+      laborMax = 250;
+      minMaterials += 20;
+      maxMaterials += 45;
+      materialsList = PRICING.plumbing.materials.shutoff;
+      adjustments.push("Base: shutoff valve replacement");
+
+      if (formData.plumbingShutoffCondition === "no") {
+        laborMin += 0;
+        laborMax += 0;
+      }
+
+      if (formData.plumbingAccessDifficulty === "moderate") {
+        laborMin += 40;
+        laborMax += 80;
+        adjustments.push("Moderate access adjustment");
+      }
+
+      if (formData.plumbingAccessDifficulty === "difficult") {
+        laborMin += 75;
+        laborMax += 150;
+        adjustments.push("Difficult access adjustment");
+      }
+
+      if (formData.plumbingVisibleDamage === "major") {
+        laborMin += 60;
+        laborMax += 120;
+        adjustments.push("Damage / complexity adjustment");
+      }
+      break;
+    }
+
+    case "plumbing_fix_active_leak": {
+      materialsList = PRICING.plumbing.materials.leak;
+      adjustments.push("Base: active leak response");
+
+      if (formData.plumbingAccessDifficulty === "difficult") {
+        hours = 5.5;
+        laborMin = 500;
+        laborMax = 700;
+        minMaterials += 40;
+        maxMaterials += 120;
+        adjustments.push("Behind-wall / difficult-access leak range");
+      } else {
+        hours = 3.5;
+        laborMin = 350;
+        laborMax = 500;
+        minMaterials += 20;
+        maxMaterials += 80;
+        adjustments.push("Accessible leak range");
+      }
+
+      if (formData.plumbingVisibleDamage === "minor") {
+        laborMin += 40;
+        laborMax += 100;
+        adjustments.push("Minor affected-area condition");
+      }
+
+      if (formData.plumbingVisibleDamage === "major") {
+        laborMin += 100;
+        laborMax += 180;
+        adjustments.push("Major affected-area condition");
+      }
+      break;
+    }
+
+    case "plumbing_install_new_fixture": {
+      hours = 5.0;
+      laborMin = 450;
+      laborMax = 700;
+      materialsList = PRICING.plumbing.materials.newFixture;
+      adjustments.push("Base: new plumbing fixture installation");
+
+      if (formData.plumbingHasFixture === "no") {
+        minMaterials += 60;
+        maxMaterials += 180;
+        adjustments.push("Fixture allowance included");
+      }
+
+      if (formData.plumbingAccessDifficulty === "moderate") {
+        laborMin += 100;
+        laborMax += 180;
+        adjustments.push("Moderate access / routing adjustment");
+      }
+
+      if (formData.plumbingAccessDifficulty === "difficult") {
+        laborMin += 220;
+        laborMax += 400;
+        adjustments.push("Difficult access / routing adjustment");
+      }
+
+      if (formData.plumbingVisibleDamage === "major") {
+        laborMin += 60;
+        laborMax += 140;
+        adjustments.push("Finish / surrounding issue adjustment");
+      }
+      break;
+    }
+
+    default: {
+      hours = 2.0;
+      laborMin = 250;
+      laborMax = 350;
+      materialsList = ["Minor plumbing consumables"];
+      adjustments.push("Base plumbing estimate");
+    }
+  }
+
+  const totalMin = minMaterials + laborMin;
+  const totalMax = maxMaterials + laborMax;
+
+  return applyMarketAndPropertyAdjustments({
+    hours,
+    minMaterials,
+    maxMaterials,
+    laborMin,
+    laborMax,
+    totalMin,
+    totalMax,
+    materialsList,
+    adjustments,
+    internalAdjustments,
+    leadMeta
+  }, formData, leadMeta);
 }
 
 function getUploadedFiles() {
   if (projectType.value === "lighting_add_replace") return projectFilesLighting.files;
   if (projectType.value === "paint_one_room") return projectFilesPaint.files;
+  if (isPlumbingProject(projectType.value)) return projectFilesPlumbing.files;
   return projectFiles.files;
 }
 
@@ -1340,7 +1641,16 @@ function getFormData() {
     paintObstacles: paintObstacles.value,
     paintYearBuilt: paintYearBuilt.value,
     paintLeadPrepMode: paintLeadPrepMode.value,
-    paintNotes: paintNotes.value.trim()
+    paintNotes: paintNotes.value.trim(),
+
+    plumbingReason: plumbingReason.value,
+    plumbingLocation: plumbingLocation.value,
+    plumbingSeverity: plumbingSeverity.value,
+    plumbingHasFixture: plumbingHasFixture.value,
+    plumbingShutoffCondition: plumbingShutoffCondition.value,
+    plumbingVisibleDamage: plumbingVisibleDamage.value,
+    plumbingAccessDifficulty: plumbingAccessDifficulty.value,
+    notesPlumbing: notesPlumbing.value.trim()
   };
 }
 
@@ -1400,6 +1710,15 @@ async function submitLead(leadType, estimateData) {
     payload.append("year_built", formData.paintYearBuilt);
     payload.append("lead_prep_mode", formData.paintLeadPrepMode);
     payload.append("notes", formData.paintNotes);
+  } else if (isPlumbingProject(formData.projectType)) {
+    payload.append("plumbing_reason", formData.plumbingReason);
+    payload.append("plumbing_location", formData.plumbingLocation);
+    payload.append("plumbing_severity", formData.plumbingSeverity);
+    payload.append("plumbing_has_fixture", formData.plumbingHasFixture);
+    payload.append("plumbing_shutoff_condition", formData.plumbingShutoffCondition);
+    payload.append("plumbing_visible_damage", formData.plumbingVisibleDamage);
+    payload.append("plumbing_access_difficulty", formData.plumbingAccessDifficulty);
+    payload.append("notes", formData.notesPlumbing);
   } else {
     payload.append("damage_location", formData.damageLocation);
     payload.append("damage_size", formData.damageSize);
@@ -1554,6 +1873,34 @@ paintProjectOption.addEventListener("click", () => {
   setSelectedProject("paint_one_room", "Paint One Room");
 });
 
+plumbingFaucetProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_replace_faucet", "Replace Faucet");
+});
+
+plumbingToiletProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_replace_toilet", "Replace Toilet");
+});
+
+plumbingVanityProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_replace_vanity", "Replace Vanity");
+});
+
+plumbingDisposalProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_replace_garbage_disposal", "Replace Garbage Disposal");
+});
+
+plumbingShutoffProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_replace_shutoff_valves", "Replace Shutoff Valves");
+});
+
+plumbingLeakProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_fix_active_leak", "Fix Active Leak");
+});
+
+plumbingNewFixtureProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_install_new_fixture", "Install New Plumbing Fixture");
+});
+
 propertyTypeGlobal.addEventListener("change", updatePropertyTypeMessage);
 
 damageLocation.addEventListener("change", updateDrywallContextUI);
@@ -1606,6 +1953,8 @@ form.addEventListener("submit", async (e) => {
     latestEstimate = calculateLightingEstimate(formData);
   } else if (formData.projectType === "paint_one_room") {
     latestEstimate = calculatePaintEstimate(formData);
+  } else if (isPlumbingProject(formData.projectType)) {
+    latestEstimate = calculatePlumbingEstimate(formData);
   } else {
     latestEstimate = calculateDrywallEstimate(formData);
   }
