@@ -97,6 +97,59 @@
                       </div>
                     </div>
                   </div>
+
+                  <div class="accordion-group open" data-accordion="plumbing">
+                    <button type="button" class="accordion-button">
+                      <div>
+                        <div>Plumbing</div>
+                        <div class="meta">Available now</div>
+                      </div>
+                      <div class="acc-icon">&#9662;</div>
+                    </button>
+                    <div class="accordion-content">
+                      <div class="project-option selectable" id="plumbingFaucetProjectOption" data-value="plumbing_replace_faucet" data-display="Replace Faucet">
+                        <h4>Replace Faucet</h4>
+                        <p>Replace an existing faucet due to leaks, wear, damage, or upgrade needs.</p>
+                        <div class="badge live">Available</div>
+                      </div>
+
+                      <div class="project-option selectable" id="plumbingToiletProjectOption" data-value="plumbing_replace_toilet" data-display="Replace Toilet">
+                        <h4>Replace Toilet</h4>
+                        <p>Replace an existing toilet and account for surrounding conditions if needed.</p>
+                        <div class="badge live">Available</div>
+                      </div>
+
+                      <div class="project-option selectable" id="plumbingVanityProjectOption" data-value="plumbing_replace_vanity" data-display="Replace Vanity">
+                        <h4>Replace Vanity</h4>
+                        <p>Replace an existing vanity and reconnect the related plumbing components.</p>
+                        <div class="badge live">Available</div>
+                      </div>
+
+                      <div class="project-option selectable" id="plumbingDisposalProjectOption" data-value="plumbing_replace_garbage_disposal" data-display="Replace Garbage Disposal">
+                        <h4>Replace Garbage Disposal</h4>
+                        <p>Replace an existing garbage disposal and account for power or sink-area conditions if needed.</p>
+                        <div class="badge live">Available</div>
+                      </div>
+
+                      <div class="project-option selectable" id="plumbingShutoffProjectOption" data-value="plumbing_replace_shutoff_valves" data-display="Replace Shutoff Valves">
+                        <h4>Replace Shutoff Valves</h4>
+                        <p>Replace one or more shutoff valves under fixtures or sink areas.</p>
+                        <div class="badge live">Available</div>
+                      </div>
+
+                      <div class="project-option selectable" id="plumbingLeakProjectOption" data-value="plumbing_fix_active_leak" data-display="Fix Active Leak">
+                        <h4>Fix Active Leak</h4>
+                        <p>Stop an active plumbing issue and account for visible or concealed access conditions.</p>
+                        <div class="badge live">Available</div>
+                      </div>
+
+                      <div class="project-option selectable" id="plumbingNewFixtureProjectOption" data-value="plumbing_install_new_fixture" data-display="Install New Plumbing Fixture">
+                        <h4>Install New Plumbing Fixture</h4>
+                        <p>Install new plumbing where no fixture currently exists or where layout changes are needed.</p>
+                        <div class="badge live">Available</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -295,6 +348,34 @@
                   <option value="no">No</option>
                   <option value="yes">Yes</option>
                   <option value="notSure">Not sure</option>
+                </select>
+              </div>
+
+              <!-- PLUMBING BASICS -->
+              <div id="plumbingBasicsSection" class="hidden">
+                <label for="plumbingReason">What best describes the reason for this project?</label>
+                <select id="plumbingReason">
+                  <option value="leak">It is leaking</option>
+                  <option value="notWorking">Not working properly</option>
+                  <option value="replace">Replace / upgrade</option>
+                  <option value="loose">Loose, unstable, or worn</option>
+                </select>
+
+                <label for="plumbingLocation">Where is this plumbing work located?</label>
+                <select id="plumbingLocation">
+                  <option value="bathroom">Bathroom</option>
+                  <option value="kitchen">Kitchen</option>
+                  <option value="laundry">Laundry</option>
+                  <option value="utility">Utility / Mechanical</option>
+                  <option value="basement">Basement</option>
+                  <option value="exterior">Exterior</option>
+                </select>
+
+                <label for="plumbingSeverity">How would you describe the project right now?</label>
+                <select id="plumbingSeverity">
+                  <option value="simple">Simple replacement only</option>
+                  <option value="damage">There may be surrounding damage</option>
+                  <option value="active">Active issue that may affect other areas</option>
                 </select>
               </div>
 
@@ -540,6 +621,46 @@
 
                 <label for="paintNotes">Additional Notes</label>
                 <textarea id="paintNotes" placeholder="Describe any details we should know about the painting project."></textarea>
+              </div>
+
+              <!-- PLUMBING DETAILS -->
+              <div id="plumbingDetailsSection" class="hidden">
+                <label for="plumbingHasFixture">Do you already have the new fixture or main replacement item?</label>
+                <select id="plumbingHasFixture">
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                  <option value="notSure">Not sure</option>
+                </select>
+
+                <label for="plumbingShutoffCondition">Are the shutoff valves working properly?</label>
+                <select id="plumbingShutoffCondition">
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                  <option value="notSure">Not sure</option>
+                </select>
+
+                <label for="plumbingVisibleDamage">Any visible damage around the area?</label>
+                <select id="plumbingVisibleDamage">
+                  <option value="no">No</option>
+                  <option value="minor">Minor</option>
+                  <option value="major">Major</option>
+                  <option value="notSure">Not sure</option>
+                </select>
+
+                <label for="plumbingAccessDifficulty">How easy is access to the work area?</label>
+                <select id="plumbingAccessDifficulty">
+                  <option value="easy">Easy</option>
+                  <option value="moderate">Moderate</option>
+                  <option value="difficult">Difficult</option>
+                  <option value="notSure">Not sure</option>
+                </select>
+
+                <label for="projectFilesPlumbing">Upload photos or PDFs (optional)</label>
+                <input type="file" id="projectFilesPlumbing" accept=".jpg,.jpeg,.png,.webp,.pdf" multiple />
+                <div class="small-note">You can upload project photos or PDF files to help us better understand the plumbing work.</div>
+
+                <label for="notesPlumbing">Additional Notes</label>
+                <textarea id="notesPlumbing" placeholder="Describe any details we should know about the plumbing project."></textarea>
               </div>
 
               <div class="validation" id="validationStep4"></div>
