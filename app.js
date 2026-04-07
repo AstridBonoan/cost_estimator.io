@@ -2469,6 +2469,489 @@ form.addEventListener("submit", async (e) => {
   }
 
   renderEstimate(latestEstimate, formData);
+  function updatePlumbingConditionalUI() {
+  const type = projectType.value;
+
+  hideAllPlumbingSubsections();
+
+  if (!isPlumbingProject(type)) return;
+
+  plumbingBasicsSection.classList.remove("hidden");
+  plumbingDetailsSection.classList.remove("hidden");
+  showPlumbingSectionsByProject(type);
+}
+
+function calculatePlumbingEstimate(formData) {
+  const leadMeta = classifyLead(formData);
+  const adjustments = [];
+  const internalAdjustments = [];
+
+  internalAdjustments.push(`Service zone: ${leadMeta.serviceZone}`);
+  internalAdjustments.push(`Distance band: ${leadMeta.distanceBand}`);
+  internalAdjustments.push(`Lead priority: ${leadMeta.leadPriority}`);
+
+  let minMaterials = 0;
+  let maxMaterials = 0;
+  let laborMin = 0;
+  let laborMax = 0;
+  let hours = 0;
+  let materialsList = [];
+
+  if (formData.projectType === "plumbing_replace_faucet") {
+    const cfg = PRICING.plumbing.faucet;
+
+    laborMin += cfg.baseLaborMin;
+    laborMax += cfg.baseLaborMax;
+    hours += cfg.hours;
+    materialsList = cfg.materials;
+    adjustments.push("Base faucet replacement");
+
+    if (formData.plumbingHasFixture === "no") {
+      minMaterials += cfg.fixtureAllowanceMin;
+      maxMaterials += cfg.fixtureAllowanceMax;
+      adjustments.push("Fixture allowance included");
+    } else if (formData.plumbingHasFixture === "notSure") {
+      minMaterials += cfg.fixtureAllowanceMin * 0.5;
+      maxMaterials += cfg.fixtureAllowanceMax * 0.7;
+      adjustments.push("Fixture allowance may be needed");
+    }
+
+    if (formData.plumbingShutoffCondition === "no") {
+      laborMin += cfg.shutoffAddLaborMin;
+      laborMax += cfg.shutoffAddLaborMax;
+      minMaterials += cfg.shutoffAddMatMin;
+      maxMaterials += cfg.shutoffAddMatMax;
+      adjustments.push("Shutoff valves may need replacement");
+    } else if (formData.plumbingShutoffCondition === "notSure") {
+      laborMin += 30;
+      laborMax += 60;
+      minMaterials += 10;
+      maxMaterials += 25;
+      adjustments.push("Shutoff condition to be confirmed");
+    }
+
+    if (formData.plumbingSeverity === "active") {
+      laborMin += cfg.activeIssueAddLaborMin;
+      laborMax += cfg.activeIssueAddLaborMax;
+      adjustments.push("Active plumbing issue adjustment");
+    } else if (formData.plumbingSeverity === "damage") {
+      laborMin += 60;
+      laborMax += 120;
+      adjustments.push("Possible surrounding damage adjustment");
+    }
+
+    const accessAdj = cfg.access[formData.plumbingAccessDifficulty] || cfg.access.notSure;
+    laborMin += accessAdj.laborMin;
+    laborMax += accessAdj.laborMax;
+    if (formData.plumbingAccessDifficulty !== "easy") {
+      adjustments.push("Access difficulty adjustment");
+    }
+
+    if (formData.plumbingVisibleDamage === "minor") {
+      laborMin += 40;
+      laborMax += 90;
+      minMaterials += 15;
+      maxMaterials += 40;
+      adjustments.push("Minor visible damage");
+    } else if (formData.plumbingVisibleDamage === "major") {
+      laborMin += 100;
+      laborMax += 220;
+      minMaterials += 35;
+      maxMaterials += 90;
+      adjustments.push("Major visible damage");
+    } else if (formData.plumbingVisibleDamage === "notSure") {
+      laborMin += 50;
+      laborMax += 110;
+      minMaterials += 20;
+      maxMaterials += 50;
+      adjustments.push("Visible damage to be confirmed");
+    }
+  }
+
+  else if (formData.projectType === "plumbing_replace_toilet") {
+    const cfg = PRICING.plumbing.toilet;
+
+    laborMin += cfg.baseLaborMin;
+    laborMax += cfg.baseLaborMax;
+    hours += cfg.hours;
+    minMaterials += 25;
+    maxMaterials += 60;
+    materialsList = cfg.materials;
+    adjustments.push("Base toilet replacement");
+
+    if (formData.plumbingHasFixture === "no") {
+      minMaterials += cfg.fixtureAllowanceMin;
+      maxMaterials += cfg.fixtureAllowanceMax;
+      adjustments.push("Toilet fixture allowance included");
+    } else if (formData.plumbingHasFixture === "notSure") {
+      minMaterials += 60;
+      maxMaterials += 140;
+      adjustments.push("Fixture allowance may be needed");
+    }
+
+    const floorAdj = cfg.floorIssue[formData.plumbingFloorIssue] || cfg.floorIssue.notSure;
+    laborMin += floorAdj.laborMin;
+    laborMax += floorAdj.laborMax;
+    minMaterials += floorAdj.matMin;
+    maxMaterials += floorAdj.matMax;
+    if (formData.plumbingFloorIssue !== "no") {
+      adjustments.push("Floor condition adjustment");
+    }
+
+    const looseAdj = cfg.loose[formData.plumbingLoose] || cfg.loose.notSure;
+    laborMin += looseAdj.laborMin;
+    laborMax += looseAdj.laborMax;
+    if (formData.plumbingLoose !== "no") {
+      adjustments.push("Loose / rocking toilet adjustment");
+    }
+
+    const accessAdj = cfg.access[formData.plumbingAccessDifficulty] || cfg.access.notSure;
+    laborMin += accessAdj.laborMin;
+    laborMax += accessAdj.laborMax;
+    if (formData.plumbingAccessDifficulty !== "easy") {
+      adjustments.push("Access difficulty adjustment");
+    }
+
+    if (formData.plumbingRepairScope === "includeRepairsIfNeeded") {
+      laborMin += 60;
+      laborMax += 140;
+      minMaterials += 20;
+      maxMaterials += 60;
+      adjustments.push("Surrounding repairs allowed if needed");
+    }
+
+    if (formData.plumbingSeverity === "active") {
+      laborMin += 80;
+      laborMax += 160;
+      adjustments.push("Active issue adjustment");
+    } else if (formData.plumbingSeverity === "damage") {
+      laborMin += 50;
+      laborMax += 110;
+      adjustments.push("Possible surrounding damage");
+    }
+  }
+
+  else if (formData.projectType === "plumbing_replace_vanity") {
+    const cfg = PRICING.plumbing.vanity;
+
+    laborMin += cfg.baseLaborMin;
+    laborMax += cfg.baseLaborMax;
+    hours += cfg.hours;
+    minMaterials += 35;
+    maxMaterials += 90;
+    materialsList = cfg.materials;
+    adjustments.push("Base vanity replacement");
+
+    if (formData.plumbingHasFixture === "no") {
+      minMaterials += cfg.fixtureAllowanceMin;
+      maxMaterials += cfg.fixtureAllowanceMax;
+      adjustments.push("Vanity allowance included");
+    } else if (formData.plumbingHasFixture === "notSure") {
+      minMaterials += 80;
+      maxMaterials += 180;
+      adjustments.push("Vanity allowance may be needed");
+    }
+
+    const sameSizeAdj = cfg.sameSize[formData.plumbingSameSize] || cfg.sameSize.notSure;
+    laborMin += sameSizeAdj.laborMin;
+    laborMax += sameSizeAdj.laborMax;
+    if (formData.plumbingSameSize !== "yes") {
+      adjustments.push("Size / fit adjustment");
+    }
+
+    const touchAdj = cfg.touchup[formData.plumbingFinishTouchup] || cfg.touchup.notSure;
+    laborMin += touchAdj.laborMin;
+    laborMax += touchAdj.laborMax;
+    if (formData.plumbingFinishTouchup !== "no") {
+      adjustments.push("Finish touch-up adjustment");
+    }
+
+    const leakAdj = cfg.leakDamage[formData.plumbingLeakDamage] || cfg.leakDamage.notSure;
+    laborMin += leakAdj.laborMin;
+    laborMax += leakAdj.laborMax;
+    minMaterials += leakAdj.matMin;
+    maxMaterials += leakAdj.matMax;
+    if (formData.plumbingLeakDamage !== "no") {
+      adjustments.push("Leak / water damage adjustment");
+    }
+
+    if (formData.plumbingScope === "includeRelatedPlumbing") {
+      laborMin += 70;
+      laborMax += 150;
+      minMaterials += 20;
+      maxMaterials += 50;
+      adjustments.push("Related plumbing components allowed");
+    }
+
+    if (formData.plumbingIncluded === "vanityTop") {
+      laborMin += 40;
+      laborMax += 80;
+      adjustments.push("Vanity with top");
+    } else if (formData.plumbingIncluded === "vanityTopFaucet") {
+      laborMin += 90;
+      laborMax += 180;
+      adjustments.push("Vanity with top and faucet");
+    }
+  }
+
+  else if (formData.projectType === "plumbing_replace_garbage_disposal") {
+    const cfg = PRICING.plumbing.garbageDisposal;
+
+    laborMin += cfg.baseLaborMin;
+    laborMax += cfg.baseLaborMax;
+    hours += cfg.hours;
+    minMaterials += 20;
+    maxMaterials += 50;
+    materialsList = cfg.materials;
+    adjustments.push("Base garbage disposal replacement");
+
+    if (formData.plumbingHasFixture === "no") {
+      minMaterials += cfg.fixtureAllowanceMin;
+      maxMaterials += cfg.fixtureAllowanceMax;
+      adjustments.push("Garbage disposal allowance included");
+    } else if (formData.plumbingHasFixture === "notSure") {
+      minMaterials += 60;
+      maxMaterials += 140;
+      adjustments.push("Fixture allowance may be needed");
+    }
+
+    const areaAdj = cfg.areaDamage[formData.plumbingAreaDamage] || cfg.areaDamage.notSure;
+    laborMin += areaAdj.laborMin;
+    laborMax += areaAdj.laborMax;
+    if (formData.plumbingAreaDamage !== "no") {
+      adjustments.push("Sink area damage adjustment");
+    }
+
+    const powerAdj = cfg.powerReady[formData.plumbingPowerReady] || cfg.powerReady.notSure;
+    laborMin += powerAdj.laborMin;
+    laborMax += powerAdj.laborMax;
+    minMaterials += powerAdj.matMin;
+    maxMaterials += powerAdj.matMax;
+    if (formData.plumbingPowerReady !== "yes") {
+      adjustments.push("Power readiness adjustment");
+    }
+
+    const accessAdj = cfg.access[formData.plumbingAccessDifficulty] || cfg.access.notSure;
+    laborMin += accessAdj.laborMin;
+    laborMax += accessAdj.laborMax;
+    if (formData.plumbingAccessDifficulty !== "easy") {
+      adjustments.push("Access difficulty adjustment");
+    }
+
+    if (formData.plumbingScope === "includeSinkAreaIssuesIfNeeded") {
+      laborMin += 60;
+      laborMax += 130;
+      minMaterials += 15;
+      maxMaterials += 40;
+      adjustments.push("Sink-area issues allowed if needed");
+    }
+  }
+
+  else if (formData.projectType === "plumbing_replace_shutoff_valves") {
+    const cfg = PRICING.plumbing.shutoff;
+    const valveCount = formData.plumbingValveCount === "4plus" ? 4 : parseInt(formData.plumbingValveCount || "1", 10);
+
+    let laborMultiplier = 1;
+    if (valveCount === 2) {
+      laborMultiplier = 1 + cfg.secondValveMultiplier;
+    } else if (valveCount >= 3) {
+      laborMultiplier = 1 + cfg.secondValveMultiplier + ((valveCount - 2) * cfg.extraValveMultiplier);
+    }
+
+    laborMin += cfg.baseOneLaborMin * laborMultiplier;
+    laborMax += cfg.baseOneLaborMax * laborMultiplier;
+    hours += 1.5 * laborMultiplier;
+    minMaterials += cfg.baseMatMin * valveCount;
+    maxMaterials += cfg.baseMatMax * valveCount;
+    materialsList = cfg.materials;
+    adjustments.push(`Base shutoff valve replacement for ${valveCount} valve(s)`);
+
+    const accessAdj = cfg.access[formData.plumbingValveAccess] || cfg.access.moderate;
+    laborMin += accessAdj.laborMin;
+    laborMax += accessAdj.laborMax;
+    if (formData.plumbingValveAccess !== "easy") {
+      adjustments.push("Valve access adjustment");
+    }
+
+    const condAdj = cfg.condition[formData.plumbingValveCondition] || cfg.condition.notSure;
+    laborMin += condAdj.laborMin;
+    laborMax += condAdj.laborMax;
+    if (formData.plumbingValveCondition !== "normal") {
+      adjustments.push("Valve condition adjustment");
+    }
+
+    if (formData.plumbingValvePartOfOtherProject === "yes") {
+      laborMin -= 40;
+      laborMax -= 40;
+      adjustments.push("Bundled with another plumbing project");
+    }
+
+    if (formData.plumbingScope === "includeNearbyIssuesIfNeeded") {
+      laborMin += 50;
+      laborMax += 120;
+      minMaterials += 10;
+      maxMaterials += 35;
+      adjustments.push("Nearby plumbing issues allowed if needed");
+    }
+  }
+
+  else if (formData.projectType === "plumbing_fix_active_leak") {
+    const cfg = PRICING.plumbing.leak;
+    const accessType = (cfg.access[formData.plumbingAccessDifficulty] || cfg.access.notSure).type;
+
+    if (accessType === "accessible") {
+      laborMin += cfg.accessibleLaborMin;
+      laborMax += cfg.accessibleLaborMax;
+      minMaterials += cfg.accessibleMatMin;
+      maxMaterials += cfg.accessibleMatMax;
+      hours += cfg.accessibleHours;
+      adjustments.push("Accessible leak repair base");
+    } else {
+      laborMin += cfg.behindWallLaborMin;
+      laborMax += cfg.behindWallLaborMax;
+      minMaterials += cfg.behindWallMatMin;
+      maxMaterials += cfg.behindWallMatMax;
+      hours += cfg.behindWallHours;
+      adjustments.push("Concealed / behind-wall leak base");
+    }
+
+    const accessAdj = cfg.access[formData.plumbingAccessDifficulty] || cfg.access.notSure;
+    laborMin += accessAdj.laborMin || 0;
+    laborMax += accessAdj.laborMax || 0;
+
+    const durationAdj = cfg.duration[formData.plumbingLeakDuration] || cfg.duration.notSure;
+    laborMin += durationAdj.laborMin;
+    laborMax += durationAdj.laborMax;
+    if (formData.plumbingLeakDuration !== "today") {
+      adjustments.push("Leak duration adjustment");
+    }
+
+    const surfAdj = cfg.affectedSurfaces[formData.plumbingAffectedSurfaces] || cfg.affectedSurfaces.notSure;
+    laborMin += surfAdj.laborMin;
+    laborMax += surfAdj.laborMax;
+    if (formData.plumbingAffectedSurfaces !== "no") {
+      adjustments.push("Affected surfaces adjustment");
+    }
+
+    const dmgAdj = cfg.damageSigns[formData.plumbingDamageSigns] || cfg.damageSigns.notSure;
+    laborMin += dmgAdj.laborMin;
+    laborMax += dmgAdj.laborMax;
+    if (formData.plumbingDamageSigns !== "no") {
+      adjustments.push("Damage signs adjustment");
+    }
+
+    const openAdj = cfg.openAccessWork[formData.plumbingOpenAccessWork] || cfg.openAccessWork.notSure;
+    laborMin += openAdj.laborMin;
+    laborMax += openAdj.laborMax;
+    if (formData.plumbingOpenAccessWork !== "no") {
+      adjustments.push("Opening / access work allowed");
+    }
+
+    const repairAdj = cfg.repairAfterStop[formData.plumbingRepairAfterStop] || cfg.repairAfterStop.notSure;
+    laborMin += repairAdj.laborMin;
+    laborMax += repairAdj.laborMax;
+    if (formData.plumbingRepairAfterStop !== "no") {
+      adjustments.push("Post-leak repairs allowed");
+    }
+  }
+
+  else if (formData.projectType === "plumbing_install_new_fixture") {
+    const cfg = PRICING.plumbing.newFixture;
+
+    laborMin += cfg.baseLaborMin;
+    laborMax += cfg.baseLaborMax;
+    hours += cfg.hours;
+    minMaterials += 30;
+    maxMaterials += 80;
+    materialsList = cfg.materials;
+    adjustments.push("Base new plumbing fixture installation");
+
+    if (formData.plumbingHasFixture === "no") {
+      minMaterials += cfg.fixtureAllowanceMin;
+      maxMaterials += cfg.fixtureAllowanceMax;
+      adjustments.push("Fixture allowance included");
+    } else if (formData.plumbingHasFixture === "notSure") {
+      minMaterials += 40;
+      maxMaterials += 100;
+      adjustments.push("Fixture allowance may be needed");
+    }
+
+    const supplyAdj = cfg.supplyAvailable[formData.plumbingSupplyAvailable] || cfg.supplyAvailable.notSure;
+    laborMin += supplyAdj.laborMin;
+    laborMax += supplyAdj.laborMax;
+    if (formData.plumbingSupplyAvailable !== "yes") {
+      adjustments.push("Water supply adjustment");
+    }
+
+    const drainAdj = cfg.drainAvailable[formData.plumbingDrainAvailable] || cfg.drainAvailable.notSure;
+    laborMin += drainAdj.laborMin;
+    laborMax += drainAdj.laborMax;
+    if (formData.plumbingDrainAvailable !== "yes") {
+      adjustments.push("Drain line adjustment");
+    }
+
+    const openingAdj = cfg.openingNeeded[formData.plumbingOpeningNeeded] || cfg.openingNeeded.notSure;
+    laborMin += openingAdj.laborMin;
+    laborMax += openingAdj.laborMax;
+    if (formData.plumbingOpeningNeeded !== "no") {
+      adjustments.push("Opening work adjustment");
+    }
+
+    const accessAdj = cfg.access[formData.plumbingAccessDifficulty] || cfg.access.notSure;
+    laborMin += accessAdj.laborMin;
+    laborMax += accessAdj.laborMax;
+    if (formData.plumbingAccessDifficulty !== "easy") {
+      adjustments.push("Access difficulty adjustment");
+    }
+
+    const repairAdj = cfg.repairScope[formData.plumbingRepairScope] || cfg.repairScope.installOnly;
+    laborMin += repairAdj.laborMin;
+    laborMax += repairAdj.laborMax;
+    if (formData.plumbingRepairScope === "includeFinishRepairsIfNeeded") {
+      adjustments.push("Finish repairs allowed if needed");
+    }
+
+    if (formData.plumbingSeverity === "openingLikelyNeeded") {
+      laborMin += 70;
+      laborMax += 140;
+      adjustments.push("Likely opening / layout complexity");
+    } else if (formData.plumbingSeverity === "somePlumbingNeeded") {
+      laborMin += 50;
+      laborMax += 110;
+      adjustments.push("Some new plumbing work needed");
+    }
+
+    if (formData.plumbingFixtureType) {
+      adjustments.push(`Fixture type: ${formData.plumbingFixtureType}`);
+    }
+  }
+
+  minMaterials = Math.max(0, minMaterials);
+  maxMaterials = Math.max(minMaterials, maxMaterials);
+  laborMin = Math.max(0, laborMin);
+  laborMax = Math.max(laborMin, laborMax);
+
+  const totalMin = minMaterials + laborMin;
+  const totalMax = maxMaterials + laborMax;
+
+  return applyMarketAndPropertyAdjustments(
+    {
+      hours: Math.round(hours * 10) / 10,
+      minMaterials,
+      maxMaterials,
+      laborMin,
+      laborMax,
+      totalMin,
+      totalMax,
+      materialsList,
+      adjustments,
+      internalAdjustments,
+      leadMeta
+    },
+    formData,
+    leadMeta
+  );
+}
   showStep(5);
 
   if (!coldLeadSubmitted) {
