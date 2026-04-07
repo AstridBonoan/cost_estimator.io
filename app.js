@@ -230,14 +230,214 @@ const PRICING = {
   },
 
   plumbing: {
-    materials: {
-      faucet: ["Supply lines", "Faucet connectors", "Sealant / plumber's putty", "Minor consumables"],
-      toilet: ["Wax ring / seal", "Closet bolts", "Supply line", "Minor consumables"],
-      vanity: ["P-trap parts", "Supply lines", "Caulk / sealant", "Minor consumables"],
-      garbageDisposal: ["Disposal connection kit", "Discharge fittings", "Electrical connection consumables", "Minor consumables"],
-      shutoff: ["Shutoff valve(s)", "Compression fittings", "Minor consumables"],
-      leak: ["Repair fittings", "Pipe section / connector materials", "Sealants", "Minor consumables"],
-      newFixture: ["Basic fittings", "Connection materials", "Mounting / fastening consumables", "Minor consumables"]
+    faucet: {
+      baseLaborMin: 250,
+      baseLaborMax: 250,
+      hours: 2.0,
+      fixtureAllowanceMin: 40,
+      fixtureAllowanceMax: 180,
+      shutoffAddLaborMin: 60,
+      shutoffAddLaborMax: 120,
+      shutoffAddMatMin: 25,
+      shutoffAddMatMax: 50,
+      activeIssueAddLaborMin: 100,
+      activeIssueAddLaborMax: 150,
+      access: {
+        easy: { laborMin: 0, laborMax: 0 },
+        moderate: { laborMin: 35, laborMax: 75 },
+        difficult: { laborMin: 75, laborMax: 140 },
+        notSure: { laborMin: 40, laborMax: 90 }
+      },
+      materials: ["Supply lines", "Faucet connectors", "Sealant / plumber's putty", "Minor consumables"]
+    },
+
+    toilet: {
+      baseLaborMin: 250,
+      baseLaborMax: 350,
+      hours: 3.0,
+      fixtureAllowanceMin: 120,
+      fixtureAllowanceMax: 250,
+      floorIssue: {
+        no: { laborMin: 0, laborMax: 0, matMin: 0, matMax: 0 },
+        crackedTile: { laborMin: 250, laborMax: 450, matMin: 90, matMax: 220 },
+        softFloor: { laborMin: 350, laborMax: 650, matMin: 140, matMax: 320 },
+        uneven: { laborMin: 120, laborMax: 250, matMin: 30, matMax: 90 },
+        notSure: { laborMin: 150, laborMax: 300, matMin: 40, matMax: 120 }
+      },
+      loose: {
+        yes: { laborMin: 50, laborMax: 100 },
+        no: { laborMin: 0, laborMax: 0 },
+        notSure: { laborMin: 25, laborMax: 60 }
+      },
+      access: {
+        easy: { laborMin: 0, laborMax: 0 },
+        moderate: { laborMin: 40, laborMax: 90 },
+        difficult: { laborMin: 90, laborMax: 180 },
+        notSure: { laborMin: 50, laborMax: 110 }
+      },
+      materials: ["Wax ring / seal", "Closet bolts", "Supply line", "Minor consumables"]
+    },
+
+    vanity: {
+      baseLaborMin: 400,
+      baseLaborMax: 500,
+      hours: 4.5,
+      fixtureAllowanceMin: 150,
+      fixtureAllowanceMax: 300,
+      sameSize: {
+        yes: { laborMin: 0, laborMax: 0 },
+        no: { laborMin: 120, laborMax: 260 },
+        notSure: { laborMin: 80, laborMax: 180 }
+      },
+      touchup: {
+        no: { laborMin: 0, laborMax: 0 },
+        wall: { laborMin: 60, laborMax: 140 },
+        tile: { laborMin: 180, laborMax: 350 },
+        floor: { laborMin: 120, laborMax: 260 },
+        multiple: { laborMin: 220, laborMax: 450 },
+        notSure: { laborMin: 90, laborMax: 180 }
+      },
+      leakDamage: {
+        no: { laborMin: 0, laborMax: 0, matMin: 0, matMax: 0 },
+        minor: { laborMin: 75, laborMax: 160, matMin: 20, matMax: 60 },
+        major: { laborMin: 180, laborMax: 320, matMin: 60, matMax: 160 },
+        notSure: { laborMin: 90, laborMax: 180, matMin: 25, matMax: 80 }
+      },
+      materials: ["P-trap parts", "Supply lines", "Caulk / sealant", "Minor consumables"]
+    },
+
+    garbageDisposal: {
+      baseLaborMin: 250,
+      baseLaborMax: 325,
+      hours: 2.5,
+      fixtureAllowanceMin: 120,
+      fixtureAllowanceMax: 250,
+      areaDamage: {
+        no: { laborMin: 0, laborMax: 0 },
+        cabinetDamage: { laborMin: 50, laborMax: 110 },
+        waterDamage: { laborMin: 75, laborMax: 150 },
+        both: { laborMin: 120, laborMax: 220 },
+        notSure: { laborMin: 60, laborMax: 130 }
+      },
+      powerReady: {
+        yes: { laborMin: 0, laborMax: 0, matMin: 0, matMax: 0 },
+        no: { laborMin: 120, laborMax: 260, matMin: 30, matMax: 90 },
+        notSure: { laborMin: 60, laborMax: 140, matMin: 15, matMax: 50 }
+      },
+      access: {
+        easy: { laborMin: 0, laborMax: 0 },
+        moderate: { laborMin: 35, laborMax: 80 },
+        difficult: { laborMin: 80, laborMax: 160 },
+        notSure: { laborMin: 40, laborMax: 90 }
+      },
+      materials: ["Disposal connection kit", "Discharge fittings", "Electrical connection consumables", "Minor consumables"]
+    },
+
+    shutoff: {
+      baseOneLaborMin: 250,
+      baseOneLaborMax: 250,
+      secondValveMultiplier: 0.5,
+      extraValveMultiplier: 0.4,
+      baseMatMin: 20,
+      baseMatMax: 45,
+      access: {
+        easy: { laborMin: 0, laborMax: 0 },
+        moderate: { laborMin: 40, laborMax: 80 },
+        difficult: { laborMin: 75, laborMax: 150 }
+      },
+      condition: {
+        normal: { laborMin: 0, laborMax: 0 },
+        old: { laborMin: 20, laborMax: 40 },
+        stuck: { laborMin: 40, laborMax: 90 },
+        seized: { laborMin: 75, laborMax: 160 },
+        notSure: { laborMin: 30, laborMax: 70 }
+      },
+      materials: ["Shutoff valve(s)", "Compression fittings", "Minor consumables"]
+    },
+
+    leak: {
+      accessibleLaborMin: 350,
+      accessibleLaborMax: 500,
+      accessibleHours: 3.5,
+      behindWallLaborMin: 500,
+      behindWallLaborMax: 700,
+      behindWallHours: 5.5,
+      accessibleMatMin: 20,
+      accessibleMatMax: 80,
+      behindWallMatMin: 40,
+      behindWallMatMax: 120,
+      duration: {
+        today: { laborMin: 0, laborMax: 0 },
+        fewDays: { laborMin: 40, laborMax: 80 },
+        weekPlus: { laborMin: 75, laborMax: 150 },
+        notSure: { laborMin: 30, laborMax: 70 }
+      },
+      affectedSurfaces: {
+        no: { laborMin: 0, laborMax: 0 },
+        wall: { laborMin: 60, laborMax: 140 },
+        ceiling: { laborMin: 80, laborMax: 180 },
+        floor: { laborMin: 80, laborMax: 180 },
+        cabinet: { laborMin: 60, laborMax: 140 },
+        multiple: { laborMin: 140, laborMax: 300 },
+        notSure: { laborMin: 60, laborMax: 130 }
+      },
+      damageSigns: {
+        no: { laborMin: 0, laborMax: 0 },
+        minor: { laborMin: 40, laborMax: 100 },
+        major: { laborMin: 100, laborMax: 220 },
+        notSure: { laborMin: 50, laborMax: 120 }
+      },
+      openAccessWork: {
+        yes: { laborMin: 120, laborMax: 260 },
+        no: { laborMin: 0, laborMax: 0 },
+        notSure: { laborMin: 70, laborMax: 160 }
+      },
+      repairAfterStop: {
+        yes: { laborMin: 100, laborMax: 220 },
+        no: { laborMin: 0, laborMax: 0 },
+        notSure: { laborMin: 60, laborMax: 140 }
+      },
+      access: {
+        easy: { type: "accessible" },
+        moderate: { type: "accessible", laborMin: 40, laborMax: 90 },
+        difficult: { type: "behindWall" },
+        notSure: { type: "behindWall", laborMin: 0, laborMax: 0 }
+      },
+      materials: ["Repair fittings", "Pipe section / connector materials", "Sealants", "Minor consumables"]
+    },
+
+    newFixture: {
+      baseLaborMin: 450,
+      baseLaborMax: 700,
+      hours: 5.0,
+      fixtureAllowanceMin: 60,
+      fixtureAllowanceMax: 180,
+      supplyAvailable: {
+        yes: { laborMin: 0, laborMax: 0 },
+        no: { laborMin: 120, laborMax: 260 },
+        notSure: { laborMin: 60, laborMax: 140 }
+      },
+      drainAvailable: {
+        yes: { laborMin: 0, laborMax: 0 },
+        no: { laborMin: 140, laborMax: 320 },
+        notSure: { laborMin: 70, laborMax: 160 }
+      },
+      openingNeeded: {
+        yes: { laborMin: 120, laborMax: 260 },
+        no: { laborMin: 0, laborMax: 0 },
+        notSure: { laborMin: 70, laborMax: 160 }
+      },
+      access: {
+        easy: { laborMin: 0, laborMax: 0 },
+        moderate: { laborMin: 100, laborMax: 180 },
+        difficult: { laborMin: 220, laborMax: 400 },
+        notSure: { laborMin: 120, laborMax: 220 }
+      },
+      repairScope: {
+        installOnly: { laborMin: 0, laborMax: 0 },
+        includeFinishRepairsIfNeeded: { laborMin: 60, laborMax: 140 }
+      },
+      materials: ["Basic fittings", "Connection materials", "Mounting / fastening consumables", "Minor consumables"]
     }
   },
 
@@ -346,44 +546,6 @@ const lightingPaintScopeConfig = {
   }
 };
 
-const PLUMBING_TEMPLATE_CONFIG = {
-  plumbing_replace_faucet: {
-    basicsId: "plumbingBasicsFaucet",
-    detailsId: "plumbingDetailsFaucet",
-    display: "Replace Faucet"
-  },
-  plumbing_replace_toilet: {
-    basicsId: "plumbingBasicsToilet",
-    detailsId: "plumbingDetailsToilet",
-    display: "Replace Toilet"
-  },
-  plumbing_replace_vanity: {
-    basicsId: "plumbingBasicsVanity",
-    detailsId: "plumbingDetailsVanity",
-    display: "Replace Vanity"
-  },
-  plumbing_replace_garbage_disposal: {
-    basicsId: "plumbingBasicsDisposal",
-    detailsId: "plumbingDetailsDisposal",
-    display: "Replace Garbage Disposal"
-  },
-  plumbing_replace_shutoff_valves: {
-    basicsId: "plumbingBasicsShutoff",
-    detailsId: "plumbingDetailsShutoff",
-    display: "Replace Shutoff Valves"
-  },
-  plumbing_fix_active_leak: {
-    basicsId: "plumbingBasicsLeak",
-    detailsId: "plumbingDetailsLeak",
-    display: "Fix Active Leak"
-  },
-  plumbing_install_new_fixture: {
-    basicsId: "plumbingBasicsNewInstall",
-    detailsId: "plumbingDetailsNewInstall",
-    display: "Install New Plumbing Fixture"
-  }
-};
-
 let currentStep = 1;
 let latestEstimate = null;
 let coldLeadSubmitted = false;
@@ -419,7 +581,6 @@ const projectSelectorTrigger = document.getElementById("projectSelectorTrigger")
 const drywallProjectOption = document.getElementById("drywallProjectOption");
 const lightingProjectOption = document.getElementById("lightingProjectOption");
 const paintProjectOption = document.getElementById("paintProjectOption");
-
 const plumbingFaucetProjectOption = document.getElementById("plumbingFaucetProjectOption");
 const plumbingToiletProjectOption = document.getElementById("plumbingToiletProjectOption");
 const plumbingVanityProjectOption = document.getElementById("plumbingVanityProjectOption");
@@ -512,6 +673,7 @@ const paintLeadPrepField = document.getElementById("paintLeadPrepField");
 const paintNotes = document.getElementById("paintNotes");
 const projectFilesPaint = document.getElementById("projectFilesPaint");
 
+// Plumbing basics
 const plumbingBasicsFaucet = document.getElementById("plumbingBasicsFaucet");
 const plumbingBasicsToilet = document.getElementById("plumbingBasicsToilet");
 const plumbingBasicsVanity = document.getElementById("plumbingBasicsVanity");
@@ -520,6 +682,35 @@ const plumbingBasicsShutoff = document.getElementById("plumbingBasicsShutoff");
 const plumbingBasicsLeak = document.getElementById("plumbingBasicsLeak");
 const plumbingBasicsNewInstall = document.getElementById("plumbingBasicsNewInstall");
 
+const plumbingFaucetReason = document.getElementById("plumbingFaucetReason");
+const plumbingFaucetLocation = document.getElementById("plumbingFaucetLocation");
+const plumbingFaucetSeverity = document.getElementById("plumbingFaucetSeverity");
+
+const plumbingToiletReason = document.getElementById("plumbingToiletReason");
+const plumbingToiletLocation = document.getElementById("plumbingToiletLocation");
+const plumbingToiletSeverity = document.getElementById("plumbingToiletSeverity");
+
+const plumbingVanityReason = document.getElementById("plumbingVanityReason");
+const plumbingVanityLocation = document.getElementById("plumbingVanityLocation");
+const plumbingVanitySeverity = document.getElementById("plumbingVanitySeverity");
+
+const plumbingDisposalReason = document.getElementById("plumbingDisposalReason");
+const plumbingDisposalLocation = document.getElementById("plumbingDisposalLocation");
+const plumbingDisposalSeverity = document.getElementById("plumbingDisposalSeverity");
+
+const plumbingShutoffReason = document.getElementById("plumbingShutoffReason");
+const plumbingShutoffLocation = document.getElementById("plumbingShutoffLocation");
+const plumbingShutoffSeverity = document.getElementById("plumbingShutoffSeverity");
+
+const plumbingLeakType = document.getElementById("plumbingLeakType");
+const plumbingLeakLocation = document.getElementById("plumbingLeakLocation");
+const plumbingLeakCondition = document.getElementById("plumbingLeakCondition");
+
+const plumbingNewInstallGoal = document.getElementById("plumbingNewInstallGoal");
+const plumbingNewInstallLocation = document.getElementById("plumbingNewInstallLocation");
+const plumbingNewInstallCondition = document.getElementById("plumbingNewInstallCondition");
+
+// Plumbing details
 const plumbingDetailsFaucet = document.getElementById("plumbingDetailsFaucet");
 const plumbingDetailsToilet = document.getElementById("plumbingDetailsToilet");
 const plumbingDetailsVanity = document.getElementById("plumbingDetailsVanity");
@@ -527,6 +718,65 @@ const plumbingDetailsDisposal = document.getElementById("plumbingDetailsDisposal
 const plumbingDetailsShutoff = document.getElementById("plumbingDetailsShutoff");
 const plumbingDetailsLeak = document.getElementById("plumbingDetailsLeak");
 const plumbingDetailsNewInstall = document.getElementById("plumbingDetailsNewInstall");
+
+const plumbingFaucetHasFixture = document.getElementById("plumbingFaucetHasFixture");
+const plumbingFaucetShutoffCondition = document.getElementById("plumbingFaucetShutoffCondition");
+const plumbingFaucetAccessDifficulty = document.getElementById("plumbingFaucetAccessDifficulty");
+const plumbingFaucetVisibleDamage = document.getElementById("plumbingFaucetVisibleDamage");
+const projectFilesPlumbingFaucet = document.getElementById("projectFilesPlumbingFaucet");
+const notesPlumbingFaucet = document.getElementById("notesPlumbingFaucet");
+
+const plumbingToiletLoose = document.getElementById("plumbingToiletLoose");
+const plumbingToiletFloorIssue = document.getElementById("plumbingToiletFloorIssue");
+const plumbingToiletHasFixture = document.getElementById("plumbingToiletHasFixture");
+const plumbingToiletRepairScope = document.getElementById("plumbingToiletRepairScope");
+const plumbingToiletAccessDifficulty = document.getElementById("plumbingToiletAccessDifficulty");
+const projectFilesPlumbingToilet = document.getElementById("projectFilesPlumbingToilet");
+const notesPlumbingToilet = document.getElementById("notesPlumbingToilet");
+
+const plumbingVanityIncluded = document.getElementById("plumbingVanityIncluded");
+const plumbingVanitySameSize = document.getElementById("plumbingVanitySameSize");
+const plumbingVanityHasFixture = document.getElementById("plumbingVanityHasFixture");
+const plumbingVanityFinishTouchup = document.getElementById("plumbingVanityFinishTouchup");
+const plumbingVanityLeakDamage = document.getElementById("plumbingVanityLeakDamage");
+const plumbingVanityScope = document.getElementById("plumbingVanityScope");
+const projectFilesPlumbingVanity = document.getElementById("projectFilesPlumbingVanity");
+const notesPlumbingVanity = document.getElementById("notesPlumbingVanity");
+
+const plumbingDisposalHasFixture = document.getElementById("plumbingDisposalHasFixture");
+const plumbingDisposalAreaDamage = document.getElementById("plumbingDisposalAreaDamage");
+const plumbingDisposalPowerReady = document.getElementById("plumbingDisposalPowerReady");
+const plumbingDisposalScope = document.getElementById("plumbingDisposalScope");
+const plumbingDisposalAccessDifficulty = document.getElementById("plumbingDisposalAccessDifficulty");
+const projectFilesPlumbingDisposal = document.getElementById("projectFilesPlumbingDisposal");
+const notesPlumbingDisposal = document.getElementById("notesPlumbingDisposal");
+
+const plumbingValveCount = document.getElementById("plumbingValveCount");
+const plumbingValveAccess = document.getElementById("plumbingValveAccess");
+const plumbingValveCondition = document.getElementById("plumbingValveCondition");
+const plumbingValvePartOfOtherProject = document.getElementById("plumbingValvePartOfOtherProject");
+const plumbingValveScope = document.getElementById("plumbingValveScope");
+const projectFilesPlumbingShutoff = document.getElementById("projectFilesPlumbingShutoff");
+const notesPlumbingShutoff = document.getElementById("notesPlumbingShutoff");
+
+const plumbingLeakDuration = document.getElementById("plumbingLeakDuration");
+const plumbingLeakAffectedSurfaces = document.getElementById("plumbingLeakAffectedSurfaces");
+const plumbingLeakDamageSigns = document.getElementById("plumbingLeakDamageSigns");
+const plumbingLeakOpenAccessWork = document.getElementById("plumbingLeakOpenAccessWork");
+const plumbingLeakRepairAfterStop = document.getElementById("plumbingLeakRepairAfterStop");
+const plumbingLeakAccessDifficulty = document.getElementById("plumbingLeakAccessDifficulty");
+const projectFilesPlumbingLeak = document.getElementById("projectFilesPlumbingLeak");
+const notesPlumbingLeak = document.getElementById("notesPlumbingLeak");
+
+const plumbingNewInstallFixtureType = document.getElementById("plumbingNewInstallFixtureType");
+const plumbingNewInstallSupplyAvailable = document.getElementById("plumbingNewInstallSupplyAvailable");
+const plumbingNewInstallDrainAvailable = document.getElementById("plumbingNewInstallDrainAvailable");
+const plumbingNewInstallOpeningNeeded = document.getElementById("plumbingNewInstallOpeningNeeded");
+const plumbingNewInstallHasFixture = document.getElementById("plumbingNewInstallHasFixture");
+const plumbingNewInstallAccessDifficulty = document.getElementById("plumbingNewInstallAccessDifficulty");
+const plumbingNewInstallRepairScope = document.getElementById("plumbingNewInstallRepairScope");
+const projectFilesPlumbingNewInstall = document.getElementById("projectFilesPlumbingNewInstall");
+const notesPlumbingNewInstall = document.getElementById("notesPlumbingNewInstall");
 
 const nextToStep2 = document.getElementById("nextToStep2");
 const backToStep1 = document.getElementById("backToStep1");
@@ -646,8 +896,88 @@ function updatePropertyTypeMessage() {
   propertyTypeMessage.classList.remove("hidden");
 }
 
+function allProjectOptions() {
+  return [
+    drywallProjectOption,
+    lightingProjectOption,
+    paintProjectOption,
+    plumbingFaucetProjectOption,
+    plumbingToiletProjectOption,
+    plumbingVanityProjectOption,
+    plumbingDisposalProjectOption,
+    plumbingShutoffProjectOption,
+    plumbingLeakProjectOption,
+    plumbingNewFixtureProjectOption
+  ].filter(Boolean);
+}
+
 function isPlumbingProject(type) {
-  return typeof type === "string" && type.startsWith("plumbing_");
+  return type && type.startsWith("plumbing_");
+}
+
+function hideAllPlumbingSubsections() {
+  [
+    plumbingBasicsFaucet,
+    plumbingBasicsToilet,
+    plumbingBasicsVanity,
+    plumbingBasicsDisposal,
+    plumbingBasicsShutoff,
+    plumbingBasicsLeak,
+    plumbingBasicsNewInstall,
+    plumbingDetailsFaucet,
+    plumbingDetailsToilet,
+    plumbingDetailsVanity,
+    plumbingDetailsDisposal,
+    plumbingDetailsShutoff,
+    plumbingDetailsLeak,
+    plumbingDetailsNewInstall
+  ].forEach((el) => {
+    if (el) el.classList.add("hidden");
+  });
+}
+
+function showPlumbingSectionsByProject(type) {
+  hideAllPlumbingSubsections();
+
+  if (type === "plumbing_replace_faucet") {
+    plumbingBasicsFaucet.classList.remove("hidden");
+    plumbingDetailsFaucet.classList.remove("hidden");
+  } else if (type === "plumbing_replace_toilet") {
+    plumbingBasicsToilet.classList.remove("hidden");
+    plumbingDetailsToilet.classList.remove("hidden");
+  } else if (type === "plumbing_replace_vanity") {
+    plumbingBasicsVanity.classList.remove("hidden");
+    plumbingDetailsVanity.classList.remove("hidden");
+  } else if (type === "plumbing_replace_garbage_disposal") {
+    plumbingBasicsDisposal.classList.remove("hidden");
+    plumbingDetailsDisposal.classList.remove("hidden");
+  } else if (type === "plumbing_replace_shutoff_valves") {
+    plumbingBasicsShutoff.classList.remove("hidden");
+    plumbingDetailsShutoff.classList.remove("hidden");
+  } else if (type === "plumbing_fix_active_leak") {
+    plumbingBasicsLeak.classList.remove("hidden");
+    plumbingDetailsLeak.classList.remove("hidden");
+  } else if (type === "plumbing_install_new_fixture") {
+    plumbingBasicsNewInstall.classList.remove("hidden");
+    plumbingDetailsNewInstall.classList.remove("hidden");
+  }
+}
+
+function setSelectedProject(projectKey, displayName) {
+  projectType.value = projectKey;
+  projectDisplayName.value = displayName;
+  selectedProjectLabel.textContent = displayName;
+  selectedProjectSubLabel.textContent = "Project selected. Continue when ready.";
+  selectedProjectMessageText.textContent = displayName;
+
+  allProjectOptions().forEach((option) => {
+    option.classList.toggle("active", option.dataset.value === projectKey);
+  });
+
+  projectSelectorShell.classList.remove("open");
+  projectSelectorTrigger.setAttribute("aria-expanded", "false");
+  clearValidation(validationStep1);
+  updateProjectSpecificUI();
 }
 
 function getDrywallContext() {
@@ -658,11 +988,9 @@ function updateDrywallContextUI() {
   const ctx = getDrywallContext();
   const previousScope = scopeContext.value;
   const previousPaint = paintBlend.value;
-
   scopeContextLabel.textContent = ctx.scopeLabel;
   paintBlendLabel.textContent = ctx.paintLabel;
   workHeightLabel.textContent = ctx.heightLabel;
-
   setOptions(scopeContext, ctx.scopeOptions, previousScope);
   setOptions(paintBlend, ctx.paintOptions, previousPaint);
 }
@@ -715,9 +1043,7 @@ function updateLightingConditionalFields() {
 }
 
 function getSelectedPaintScopes() {
-  return Array.from(paintScopeCheckboxes)
-    .filter((cb) => cb.checked)
-    .map((cb) => cb.value);
+  return Array.from(paintScopeCheckboxes).filter((cb) => cb.checked).map((cb) => cb.value);
 }
 
 function updatePaintConditionalFields() {
@@ -736,80 +1062,6 @@ function updatePaintConditionalFields() {
   if (!showLead) paintLeadPrepMode.value = "standard";
 }
 
-function hideAllPlumbingBasicsTemplates() {
-  [
-    plumbingBasicsFaucet,
-    plumbingBasicsToilet,
-    plumbingBasicsVanity,
-    plumbingBasicsDisposal,
-    plumbingBasicsShutoff,
-    plumbingBasicsLeak,
-    plumbingBasicsNewInstall
-  ].forEach((el) => {
-    if (el) el.classList.add("hidden");
-  });
-}
-
-function hideAllPlumbingDetailsTemplates() {
-  [
-    plumbingDetailsFaucet,
-    plumbingDetailsToilet,
-    plumbingDetailsVanity,
-    plumbingDetailsDisposal,
-    plumbingDetailsShutoff,
-    plumbingDetailsLeak,
-    plumbingDetailsNewInstall
-  ].forEach((el) => {
-    if (el) el.classList.add("hidden");
-  });
-}
-
-function updatePlumbingTemplateVisibility() {
-  hideAllPlumbingBasicsTemplates();
-  hideAllPlumbingDetailsTemplates();
-
-  const config = PLUMBING_TEMPLATE_CONFIG[projectType.value];
-  if (!config) return;
-
-  const basicsEl = document.getElementById(config.basicsId);
-  const detailsEl = document.getElementById(config.detailsId);
-
-  if (basicsEl) basicsEl.classList.remove("hidden");
-  if (detailsEl) detailsEl.classList.remove("hidden");
-}
-
-function allProjectOptions() {
-  return [
-    drywallProjectOption,
-    lightingProjectOption,
-    paintProjectOption,
-    plumbingFaucetProjectOption,
-    plumbingToiletProjectOption,
-    plumbingVanityProjectOption,
-    plumbingDisposalProjectOption,
-    plumbingShutoffProjectOption,
-    plumbingLeakProjectOption,
-    plumbingNewFixtureProjectOption
-  ].filter(Boolean);
-}
-
-function setSelectedProject(projectKey, displayName) {
-  projectType.value = projectKey;
-  projectDisplayName.value = displayName;
-  selectedProjectLabel.textContent = displayName;
-  selectedProjectSubLabel.textContent = "Project selected. Continue when ready.";
-  selectedProjectMessageText.textContent = displayName;
-
-  allProjectOptions().forEach((option) => {
-    option.classList.toggle("active", option.dataset.value === projectKey);
-  });
-
-  projectSelectorShell.classList.remove("open");
-  projectSelectorTrigger.setAttribute("aria-expanded", "false");
-  clearValidation(validationStep1);
-  updateProjectSpecificUI();
-}
-
 function updateProjectSpecificUI() {
   const type = projectType.value;
 
@@ -823,8 +1075,7 @@ function updateProjectSpecificUI() {
   paintDetailsSection.classList.add("hidden");
   plumbingDetailsSection.classList.add("hidden");
 
-  hideAllPlumbingBasicsTemplates();
-  hideAllPlumbingDetailsTemplates();
+  hideAllPlumbingSubsections();
 
   if (type === "lighting_add_replace") {
     basicsSubtitle.textContent = "Tell us about the lighting project so we can build a more accurate estimate.";
@@ -849,7 +1100,7 @@ function updateProjectSpecificUI() {
     detailsSubtitle.textContent = "A few final details help us refine the plumbing estimate more accurately.";
     plumbingBasicsSection.classList.remove("hidden");
     plumbingDetailsSection.classList.remove("hidden");
-    updatePlumbingTemplateVisibility();
+    showPlumbingSectionsByProject(type);
     return;
   }
 
@@ -857,204 +1108,7 @@ function updateProjectSpecificUI() {
   detailsSubtitle.textContent = "A few final details help us refine the estimate more accurately.";
   drywallBasicsSection.classList.remove("hidden");
   drywallDetailsSection.classList.remove("hidden");
-  updateDrywallContextUI();
-  togglePaintBlendField();
 }
-
-function validateStep(step) {
-  if (step === 1) {
-    clearValidation(validationStep1);
-    if (!projectType.value) {
-      showValidation(validationStep1, "Please select a project type before continuing.");
-      return false;
-    }
-  }
-
-  if (step === 2) {
-    clearValidation(validationStep2);
-    const fullName = document.getElementById("fullName").value.trim();
-    const phone = document.getElementById("phone").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const zipcode = document.getElementById("zipcode").value.trim();
-
-    if (!fullName || !phone || !email || !zipcode) {
-      showValidation(validationStep2, "Please complete name, phone, email, and ZIP code before continuing.");
-      return false;
-    }
-  }
-
-  if (step === 3) {
-    clearValidation(validationStep3);
-
-    if (projectType.value === "paint_one_room" && getSelectedPaintScopes().length === 0) {
-      showValidation(validationStep3, "Please select at least one area to paint before continuing.");
-      return false;
-    }
-  }
-
-  if (step === 4) {
-    clearValidation(validationStep4);
-  }
-
-  return true;
-}
-
-function renderEstimate(estimateData, formData) {
-  materialsOutput.textContent = `Estimated Materials: ${currency(estimateData.minMaterials)} - ${currency(estimateData.maxMaterials)}`;
-  laborOutput.textContent = `Estimated Labor: ${currency(estimateData.laborMin)} - ${currency(estimateData.laborMax)}`;
-  totalOutput.textContent = `Estimated Total Range: ${currency(estimateData.totalMin)} - ${currency(estimateData.totalMax)}`;
-  resultsProjectName.textContent = `Project Type: ${formData.projectDisplayName}`;
-
-  breakdownList.innerHTML = "";
-  const summaryItems = [
-    `Estimated crew time: ${estimateData.hours} hours`,
-    `Materials considered: ${estimateData.materialsList.join(", ")}`
-  ];
-
-  [...summaryItems, ...estimateData.adjustments].forEach((item) => {
-    if (!item) return;
-    const li = document.createElement("li");
-    li.textContent = item;
-    breakdownList.appendChild(li);
-  });
-}
-
-function resetExperience() {
-  form.reset();
-
-  clearValidation(validationStep1);
-  clearValidation(validationStep2);
-  clearValidation(validationStep3);
-  clearValidation(validationStep4);
-
-  latestEstimate = null;
-  coldLeadSubmitted = false;
-  hotLeadSubmitted = false;
-
-  if (hotLeadBtn) {
-    hotLeadBtn.disabled = false;
-    hotLeadBtn.textContent = "Get My Exact Quote";
-  }
-
-  if (doneBtn) {
-    doneBtn.disabled = false;
-  }
-
-  breakdownList.innerHTML = "";
-
-  setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
-  updateDrywallContextUI();
-  togglePaintBlendField();
-  updateLightingConditionalFields();
-  updatePaintConditionalFields();
-  updatePropertyTypeMessage();
-  hideAllEndStates();
-  stepper.classList.remove("hidden");
-  showStep(1);
-}
-
-projectSelectorTrigger.addEventListener("click", (e) => {
-  e.stopPropagation();
-  toggleProjectSelector();
-});
-
-document.addEventListener("click", (e) => {
-  if (!projectSelectorShell.contains(e.target)) {
-    projectSelectorShell.classList.remove("open");
-    projectSelectorTrigger.setAttribute("aria-expanded", "false");
-  }
-});
-
-drywallProjectOption.addEventListener("click", () => {
-  setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
-});
-
-lightingProjectOption.addEventListener("click", () => {
-  setSelectedProject("lighting_add_replace", "Add or Replace a Light Fixture");
-});
-
-paintProjectOption.addEventListener("click", () => {
-  setSelectedProject("paint_one_room", "Paint One Room");
-});
-
-plumbingFaucetProjectOption.addEventListener("click", () => {
-  setSelectedProject("plumbing_replace_faucet", "Replace Faucet");
-});
-
-plumbingToiletProjectOption.addEventListener("click", () => {
-  setSelectedProject("plumbing_replace_toilet", "Replace Toilet");
-});
-
-plumbingVanityProjectOption.addEventListener("click", () => {
-  setSelectedProject("plumbing_replace_vanity", "Replace Vanity");
-});
-
-plumbingDisposalProjectOption.addEventListener("click", () => {
-  setSelectedProject("plumbing_replace_garbage_disposal", "Replace Garbage Disposal");
-});
-
-plumbingShutoffProjectOption.addEventListener("click", () => {
-  setSelectedProject("plumbing_replace_shutoff_valves", "Replace Shutoff Valves");
-});
-
-plumbingLeakProjectOption.addEventListener("click", () => {
-  setSelectedProject("plumbing_fix_active_leak", "Fix Active Leak");
-});
-
-plumbingNewFixtureProjectOption.addEventListener("click", () => {
-  setSelectedProject("plumbing_install_new_fixture", "Install New Plumbing Fixture");
-});
-
-propertyTypeGlobal.addEventListener("change", updatePropertyTypeMessage);
-
-damageLocation.addEventListener("change", updateDrywallContextUI);
-paintRequired.addEventListener("change", togglePaintBlendField);
-
-lightingType.addEventListener("change", updateLightingConditionalFields);
-lightingLocation.addEventListener("change", updateLightingConditionalFields);
-accessDifficulty.addEventListener("change", updateLightingConditionalFields);
-wireRun.addEventListener("change", updateLightingConditionalFields);
-atticAccess.addEventListener("change", updateLightingConditionalFields);
-repairIncluded.addEventListener("change", updateLightingConditionalFields);
-paintAfterRepair.addEventListener("change", updateLightingConditionalFields);
-
-paintScopeCheckboxes.forEach((cb) => cb.addEventListener("change", updatePaintConditionalFields));
-paintYearBuilt.addEventListener("change", updatePaintConditionalFields);
-
-setupAccordions();
-
-nextToStep2.addEventListener("click", () => {
-  if (validateStep(1)) showStep(2);
-});
-
-backToStep1.addEventListener("click", () => {
-  showStep(1);
-});
-
-nextToStep3.addEventListener("click", () => {
-  if (validateStep(2)) showStep(3);
-});
-
-backToStep2.addEventListener("click", () => {
-  showStep(2);
-});
-
-nextToStep4.addEventListener("click", () => {
-  if (validateStep(3)) showStep(4);
-});
-
-backToStep3.addEventListener("click", () => {
-  showStep(3);
-});
-
-updateDrywallContextUI();
-togglePaintBlendField();
-updateLightingConditionalFields();
-updatePaintConditionalFields();
-updatePropertyTypeMessage();
-setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
-hideAllEndStates();
-showStep(1);
 function classifyZipBand(zipcodeRaw) {
   const zip = String(zipcodeRaw || "").trim().slice(0, 5);
 
@@ -1169,17 +1223,12 @@ function classifyLead(formData) {
   const jobSize = classifyJobSize(formData);
 
   let priority = "low";
-
   if (zipMeta.serviceZone === "core") priority = "high";
   else if (zipMeta.serviceZone === "extended") priority = jobSize === "small" ? "medium" : "high";
   else if (zipMeta.serviceZone === "outer") priority = jobSize === "large" ? "medium" : "low";
   else priority = jobSize === "large" ? "medium" : "low";
 
-  return {
-    ...zipMeta,
-    jobSize,
-    leadPriority: priority
-  };
+  return { ...zipMeta, jobSize, leadPriority: priority };
 }
 
 function applyMarketAndPropertyAdjustments(baseEstimate, formData, leadMeta) {
@@ -1631,7 +1680,9 @@ function calculatePaintEstimate(formData) {
   maxMaterials *= countMultiplier;
 
   if (formData.paintRoomCount !== "1") {
-    adjustments.push(`Quantity adjustment for ${formData.paintRoomCount === "5plus" ? "5+" : formData.paintRoomCount} rooms`);
+    adjustments.push(
+      `Quantity adjustment for ${formData.paintRoomCount === "5plus" ? "5+" : formData.paintRoomCount} rooms`
+    );
   }
 
   hours = Math.round(hours * 10) / 10;
@@ -1659,554 +1710,369 @@ function calculatePaintEstimate(formData) {
     leadMeta
   );
 }
-
-function calculatePlumbingEstimate(formData) {
-  const leadMeta = classifyLead(formData);
-  const adjustments = [];
-  const internalAdjustments = [
-    `Service zone: ${leadMeta.serviceZone}`,
-    `Distance band: ${leadMeta.distanceBand}`,
-    `Lead priority: ${leadMeta.leadPriority}`
-  ];
-
-  let hours = 0;
-  let minMaterials = 0;
-  let maxMaterials = 0;
-  let laborMin = 0;
-  let laborMax = 0;
-  let materialsList = [];
-
-  switch (formData.projectType) {
-    case "plumbing_replace_faucet": {
-      hours = 2.0;
-      laborMin = 250;
-      laborMax = 325;
-      materialsList = PRICING.plumbing.materials.faucet;
-      adjustments.push("Base: faucet replacement");
-
-      if (formData.plumbingFaucetHasFixture === "no") {
-        minMaterials += 40;
-        maxMaterials += 180;
-        adjustments.push("Fixture allowance included");
-      }
-
-      if (formData.plumbingFaucetShutoffCondition === "no") {
-        laborMin += 60;
-        laborMax += 120;
-        minMaterials += 25;
-        maxMaterials += 50;
-        adjustments.push("Shutoff valve issue adjustment");
-      }
-
-      if (formData.plumbingFaucetAccessDifficulty === "moderate") {
-        laborMin += 25;
-        laborMax += 60;
-        adjustments.push("Moderate access adjustment");
-      }
-
-      if (formData.plumbingFaucetAccessDifficulty === "difficult") {
-        laborMin += 60;
-        laborMax += 120;
-        adjustments.push("Difficult access adjustment");
-      }
-
-      if (formData.plumbingFaucetVisibleDamage === "minor") {
-        laborMin += 30;
-        laborMax += 75;
-        adjustments.push("Minor surrounding condition adjustment");
-      }
-
-      if (formData.plumbingFaucetVisibleDamage === "major") {
-        laborMin += 90;
-        laborMax += 180;
-        adjustments.push("Major surrounding condition adjustment");
-      }
-
-      if (formData.plumbingFaucetSeverity === "active") {
-        laborMin += 60;
-        laborMax += 120;
-        adjustments.push("Active issue adjustment");
-      }
-      break;
-    }
-
-    case "plumbing_replace_toilet": {
-      hours = 3.0;
-      laborMin = 300;
-      laborMax = 380;
-      materialsList = PRICING.plumbing.materials.toilet;
-      adjustments.push("Base: toilet replacement");
-
-      if (formData.plumbingToiletHasFixture === "no") {
-        minMaterials += 120;
-        maxMaterials += 250;
-        adjustments.push("Toilet allowance included");
-      }
-
-      if (formData.plumbingToiletLoose === "yes") {
-        laborMin += 40;
-        laborMax += 90;
-        adjustments.push("Loose / rocking toilet adjustment");
-      }
-
-      if (formData.plumbingToiletFloorIssue === "crackedTile") {
-        laborMin += 60;
-        laborMax += 120;
-        adjustments.push("Cracked tile condition noted");
-      }
-
-      if (formData.plumbingToiletFloorIssue === "softFloor") {
-        laborMin += 120;
-        laborMax += 240;
-        adjustments.push("Soft floor condition noted");
-      }
-
-      if (formData.plumbingToiletFloorIssue === "uneven") {
-        laborMin += 60;
-        laborMax += 140;
-        adjustments.push("Uneven floor condition noted");
-      }
-
-      if (formData.plumbingToiletRepairScope === "includeRepairsIfNeeded") {
-        laborMin += 60;
-        laborMax += 140;
-        adjustments.push("Allowance for surrounding repairs if needed");
-      }
-
-      if (formData.plumbingToiletAccessDifficulty === "moderate") {
-        laborMin += 25;
-        laborMax += 60;
-        adjustments.push("Moderate access adjustment");
-      }
-
-      if (formData.plumbingToiletAccessDifficulty === "difficult") {
-        laborMin += 70;
-        laborMax += 140;
-        adjustments.push("Difficult access adjustment");
-      }
-
-      if (formData.plumbingToiletSeverity === "active") {
-        laborMin += 50;
-        laborMax += 100;
-        adjustments.push("Active issue adjustment");
-      }
-      break;
-    }
-
-    case "plumbing_replace_vanity": {
-      hours = 4.5;
-      laborMin = 400;
-      laborMax = 550;
-      materialsList = PRICING.plumbing.materials.vanity;
-      adjustments.push("Base: vanity replacement");
-
-      if (formData.plumbingVanityHasFixture === "no") {
-        minMaterials += 150;
-        maxMaterials += 350;
-        adjustments.push("Vanity / fixture allowance included");
-      }
-
-      if (formData.plumbingVanityIncluded === "vanityTop") {
-        laborMin += 40;
-        laborMax += 90;
-        adjustments.push("Vanity with top adjustment");
-      }
-
-      if (formData.plumbingVanityIncluded === "vanityTopFaucet") {
-        laborMin += 70;
-        laborMax += 140;
-        adjustments.push("Vanity with top and faucet adjustment");
-      }
-
-      if (formData.plumbingVanitySameSize === "no") {
-        laborMin += 80;
-        laborMax += 180;
-        adjustments.push("Different vanity size adjustment");
-      }
-
-      if (formData.plumbingVanityFinishTouchup === "wall") {
-        laborMin += 40;
-        laborMax += 90;
-        adjustments.push("Wall touch-up condition noted");
-      }
-
-      if (formData.plumbingVanityFinishTouchup === "tile") {
-        laborMin += 70;
-        laborMax += 150;
-        adjustments.push("Tile touch-up condition noted");
-      }
-
-      if (formData.plumbingVanityFinishTouchup === "floor") {
-        laborMin += 60;
-        laborMax += 140;
-        adjustments.push("Floor touch-up condition noted");
-      }
-
-      if (formData.plumbingVanityFinishTouchup === "multiple") {
-        laborMin += 120;
-        laborMax += 240;
-        adjustments.push("Multiple finish touch-up areas noted");
-      }
-
-      if (formData.plumbingVanityLeakDamage === "minor") {
-        laborMin += 60;
-        laborMax += 120;
-        adjustments.push("Minor leak / water damage condition");
-      }
-
-      if (formData.plumbingVanityLeakDamage === "major") {
-        laborMin += 140;
-        laborMax += 280;
-        adjustments.push("Major leak / water damage condition");
-      }
-
-      if (formData.plumbingVanityScope === "includeRelatedPlumbing") {
-        laborMin += 60;
-        laborMax += 140;
-        adjustments.push("Allowance for related plumbing components");
-      }
-
-      if (formData.plumbingVanitySeverity === "active") {
-        laborMin += 50;
-        laborMax += 100;
-        adjustments.push("Active issue adjustment");
-      }
-      break;
-    }
-
-    case "plumbing_replace_garbage_disposal": {
-      hours = 2.5;
-      laborMin = 250;
-      laborMax = 340;
-      materialsList = PRICING.plumbing.materials.garbageDisposal;
-      adjustments.push("Base: garbage disposal replacement");
-
-      if (formData.plumbingDisposalHasFixture === "no") {
-        minMaterials += 120;
-        maxMaterials += 250;
-        adjustments.push("Garbage disposal allowance included");
-      }
-
-      if (formData.plumbingDisposalAreaDamage === "cabinetDamage") {
-        laborMin += 40;
-        laborMax += 100;
-        adjustments.push("Cabinet damage condition noted");
-      }
-
-      if (formData.plumbingDisposalAreaDamage === "waterDamage") {
-        laborMin += 50;
-        laborMax += 120;
-        adjustments.push("Water damage condition noted");
-      }
-
-      if (formData.plumbingDisposalAreaDamage === "both") {
-        laborMin += 100;
-        laborMax += 200;
-        adjustments.push("Cabinet and water damage condition noted");
-      }
-
-      if (formData.plumbingDisposalPowerReady === "no") {
-        laborMin += 80;
-        laborMax += 180;
-        adjustments.push("Power readiness issue noted");
-      }
-
-      if (formData.plumbingDisposalScope === "includeSinkAreaIssuesIfNeeded") {
-        laborMin += 60;
-        laborMax += 140;
-        adjustments.push("Allowance for surrounding sink-area issues");
-      }
-
-      if (formData.plumbingDisposalAccessDifficulty === "moderate") {
-        laborMin += 25;
-        laborMax += 60;
-        adjustments.push("Moderate access adjustment");
-      }
-
-      if (formData.plumbingDisposalAccessDifficulty === "difficult") {
-        laborMin += 60;
-        laborMax += 120;
-        adjustments.push("Difficult access adjustment");
-      }
-
-      if (formData.plumbingDisposalSeverity === "active") {
-        laborMin += 40;
-        laborMax += 90;
-        adjustments.push("Active issue adjustment");
-      }
-      break;
-    }
-
-    case "plumbing_replace_shutoff_valves": {
-      hours = 2.0;
-      laborMin = 250;
-      laborMax = 320;
-      minMaterials += 20;
-      maxMaterials += 60;
-      materialsList = PRICING.plumbing.materials.shutoff;
-      adjustments.push("Base: shutoff valve replacement");
-
-      const valveCountMap = {
-        "1": 1,
-        "2": 1.7,
-        "3": 2.35,
-        "4plus": 3.1
+function getCurrentPlumbingBasicsValues() {
+  switch (projectType.value) {
+    case "plumbing_replace_faucet":
+      return {
+        plumbingReason: document.getElementById("plumbingFaucetReason")?.value || "",
+        plumbingLocation: document.getElementById("plumbingFaucetLocation")?.value || "",
+        plumbingSeverity: document.getElementById("plumbingFaucetSeverity")?.value || ""
       };
 
-      const valveMultiplier = valveCountMap[formData.plumbingValveCount] || 1;
-      laborMin *= valveMultiplier;
-      laborMax *= valveMultiplier;
-      minMaterials *= valveMultiplier;
-      maxMaterials *= valveMultiplier;
-      hours = Math.round((hours * valveMultiplier) * 10) / 10;
+    case "plumbing_replace_toilet":
+      return {
+        plumbingReason: document.getElementById("plumbingToiletReason")?.value || "",
+        plumbingLocation: document.getElementById("plumbingToiletLocation")?.value || "",
+        plumbingSeverity: document.getElementById("plumbingToiletSeverity")?.value || ""
+      };
 
-      if (formData.plumbingValveCount !== "1") {
-        adjustments.push(`Quantity adjustment for ${formData.plumbingValveCount} shutoff valves`);
-      }
+    case "plumbing_replace_vanity":
+      return {
+        plumbingReason: document.getElementById("plumbingVanityReason")?.value || "",
+        plumbingLocation: document.getElementById("plumbingVanityLocation")?.value || "",
+        plumbingSeverity: document.getElementById("plumbingVanitySeverity")?.value || ""
+      };
 
-      if (formData.plumbingValveAccess === "moderate") {
-        laborMin += 40;
-        laborMax += 80;
-        adjustments.push("Moderate access adjustment");
-      }
+    case "plumbing_replace_garbage_disposal":
+      return {
+        plumbingReason: document.getElementById("plumbingDisposalReason")?.value || "",
+        plumbingLocation: document.getElementById("plumbingDisposalLocation")?.value || "",
+        plumbingSeverity: document.getElementById("plumbingDisposalSeverity")?.value || ""
+      };
 
-      if (formData.plumbingValveAccess === "difficult") {
-        laborMin += 75;
-        laborMax += 150;
-        adjustments.push("Difficult access adjustment");
-      }
+    case "plumbing_replace_shutoff_valves":
+      return {
+        plumbingReason: document.getElementById("plumbingShutoffReason")?.value || "",
+        plumbingLocation: document.getElementById("plumbingShutoffLocation")?.value || "",
+        plumbingSeverity: document.getElementById("plumbingShutoffSeverity")?.value || ""
+      };
 
-      if (["old", "stuck", "seized"].includes(formData.plumbingValveCondition)) {
-        laborMin += 35;
-        laborMax += 90;
-        adjustments.push("Old / stuck valve condition adjustment");
-      }
+    case "plumbing_fix_active_leak":
+      return {
+        plumbingReason: document.getElementById("plumbingLeakType")?.value || "",
+        plumbingLocation: document.getElementById("plumbingLeakLocation")?.value || "",
+        plumbingSeverity: document.getElementById("plumbingLeakCondition")?.value || ""
+      };
 
-      if (formData.plumbingValvePartOfOtherProject === "yes") {
-        adjustments.push("Part of another plumbing project");
-      }
+    case "plumbing_install_new_fixture":
+      return {
+        plumbingReason: document.getElementById("plumbingNewInstallGoal")?.value || "",
+        plumbingLocation: document.getElementById("plumbingNewInstallLocation")?.value || "",
+        plumbingSeverity: document.getElementById("plumbingNewInstallCondition")?.value || ""
+      };
 
-      if (formData.plumbingValveScope === "includeNearbyIssuesIfNeeded") {
-        laborMin += 50;
-        laborMax += 110;
-        adjustments.push("Allowance for nearby plumbing issues");
-      }
-
-      if (formData.plumbingShutoffSeverity === "active") {
-        laborMin += 40;
-        laborMax += 90;
-        adjustments.push("Active issue adjustment");
-      }
-      break;
-    }
-
-    case "plumbing_fix_active_leak": {
-      materialsList = PRICING.plumbing.materials.leak;
-      adjustments.push("Base: active leak response");
-
-      if (formData.plumbingLeakAccessDifficulty === "difficult") {
-        hours = 5.5;
-        laborMin = 500;
-        laborMax = 750;
-        minMaterials += 40;
-        maxMaterials += 120;
-        adjustments.push("Behind-wall / difficult-access leak range");
-      } else if (formData.plumbingLeakAccessDifficulty === "moderate") {
-        hours = 4.25;
-        laborMin = 400;
-        laborMax = 600;
-        minMaterials += 30;
-        maxMaterials += 100;
-        adjustments.push("Moderate-access leak range");
-      } else {
-        hours = 3.5;
-        laborMin = 350;
-        laborMax = 500;
-        minMaterials += 20;
-        maxMaterials += 80;
-        adjustments.push("Accessible leak range");
-      }
-
-      if (formData.plumbingLeakDuration === "fewDays") {
-        laborMin += 40;
-        laborMax += 90;
-        adjustments.push("Leak duration adjustment");
-      }
-
-      if (formData.plumbingLeakDuration === "weekPlus") {
-        laborMin += 90;
-        laborMax += 180;
-        adjustments.push("Extended leak duration adjustment");
-      }
-
-      if (formData.plumbingLeakAffectedSurfaces === "multiple") {
-        laborMin += 100;
-        laborMax += 220;
-        adjustments.push("Multiple affected surfaces noted");
-      } else if (
-        ["wall", "ceiling", "floor", "cabinet"].includes(formData.plumbingLeakAffectedSurfaces)
-      ) {
-        laborMin += 40;
-        laborMax += 100;
-        adjustments.push("Affected surface condition noted");
-      }
-
-      if (formData.plumbingLeakDamageSigns === "minor") {
-        laborMin += 40;
-        laborMax += 100;
-        adjustments.push("Minor damage signs noted");
-      }
-
-      if (formData.plumbingLeakDamageSigns === "major") {
-        laborMin += 120;
-        laborMax += 240;
-        adjustments.push("Major damage signs noted");
-      }
-
-      if (formData.plumbingLeakOpenAccessWork === "yes") {
-        laborMin += 80;
-        laborMax += 180;
-        adjustments.push("Allowance for opening / access work");
-      }
-
-      if (formData.plumbingLeakRepairAfterStop === "yes") {
-        laborMin += 90;
-        laborMax += 200;
-        adjustments.push("Allowance for repairs after leak is stopped");
-      }
-      break;
-    }
-
-    case "plumbing_install_new_fixture": {
-      hours = 5.0;
-      laborMin = 450;
-      laborMax = 700;
-      materialsList = PRICING.plumbing.materials.newFixture;
-      adjustments.push("Base: new plumbing fixture installation");
-
-      if (formData.plumbingNewInstallHasFixture === "no") {
-        minMaterials += 60;
-        maxMaterials += 220;
-        adjustments.push("Fixture allowance included");
-      }
-
-      if (formData.plumbingNewInstallSupplyAvailable === "no") {
-        laborMin += 120;
-        laborMax += 240;
-        adjustments.push("New supply line work likely needed");
-      }
-
-      if (formData.plumbingNewInstallDrainAvailable === "no") {
-        laborMin += 140;
-        laborMax += 280;
-        adjustments.push("New drain line work likely needed");
-      }
-
-      if (formData.plumbingNewInstallOpeningNeeded === "yes") {
-        laborMin += 100;
-        laborMax += 220;
-        adjustments.push("Opening / access work likely needed");
-      }
-
-      if (formData.plumbingNewInstallAccessDifficulty === "moderate") {
-        laborMin += 80;
-        laborMax += 160;
-        adjustments.push("Moderate access / routing adjustment");
-      }
-
-      if (formData.plumbingNewInstallAccessDifficulty === "difficult") {
-        laborMin += 220;
-        laborMax += 400;
-        adjustments.push("Difficult access / routing adjustment");
-      }
-
-      if (formData.plumbingNewInstallRepairScope === "includeFinishRepairsIfNeeded") {
-        laborMin += 80;
-        laborMax += 180;
-        adjustments.push("Allowance for related finish repairs");
-      }
-
-      if (formData.plumbingNewInstallCondition === "somePlumbingNeeded") {
-        laborMin += 80;
-        laborMax += 160;
-        adjustments.push("Some added plumbing work indicated");
-      }
-
-      if (formData.plumbingNewInstallCondition === "openingLikelyNeeded") {
-        laborMin += 140;
-        laborMax += 280;
-        adjustments.push("Wall / floor opening likely needed");
-      }
-      break;
-    }
-
-    default: {
-      hours = 2.0;
-      laborMin = 250;
-      laborMax = 350;
-      materialsList = ["Minor plumbing consumables"];
-      adjustments.push("Base plumbing estimate");
-    }
+    default:
+      return {
+        plumbingReason: "",
+        plumbingLocation: "",
+        plumbingSeverity: ""
+      };
   }
+}
 
-  const totalMin = minMaterials + laborMin;
-  const totalMax = maxMaterials + laborMax;
+function getCurrentPlumbingDetailsValues() {
+  switch (projectType.value) {
+    case "plumbing_replace_faucet":
+      return {
+        plumbingHasFixture: document.getElementById("plumbingFaucetHasFixture")?.value || "",
+        plumbingShutoffCondition: document.getElementById("plumbingFaucetShutoffCondition")?.value || "",
+        plumbingAccessDifficulty: document.getElementById("plumbingFaucetAccessDifficulty")?.value || "",
+        plumbingVisibleDamage: document.getElementById("plumbingFaucetVisibleDamage")?.value || "",
+        plumbingNotes: document.getElementById("notesPlumbingFaucet")?.value.trim() || "",
 
-  return applyMarketAndPropertyAdjustments(
-    {
-      hours,
-      minMaterials,
-      maxMaterials,
-      laborMin,
-      laborMax,
-      totalMin,
-      totalMax,
-      materialsList,
-      adjustments,
-      internalAdjustments,
-      leadMeta
-    },
-    formData,
-    leadMeta
-  );
+        plumbingLoose: "",
+        plumbingFloorIssue: "",
+        plumbingRepairScope: "",
+        plumbingIncluded: "",
+        plumbingSameSize: "",
+        plumbingFinishTouchup: "",
+        plumbingLeakDamage: "",
+        plumbingScope: "",
+        plumbingAreaDamage: "",
+        plumbingPowerReady: "",
+        plumbingValveCount: "",
+        plumbingValveAccess: "",
+        plumbingValveCondition: "",
+        plumbingValvePartOfOtherProject: "",
+        plumbingLeakDuration: "",
+        plumbingAffectedSurfaces: "",
+        plumbingDamageSigns: "",
+        plumbingOpenAccessWork: "",
+        plumbingRepairAfterStop: "",
+        plumbingFixtureType: "",
+        plumbingSupplyAvailable: "",
+        plumbingDrainAvailable: "",
+        plumbingOpeningNeeded: ""
+      };
+
+    case "plumbing_replace_toilet":
+      return {
+        plumbingHasFixture: document.getElementById("plumbingToiletHasFixture")?.value || "",
+        plumbingShutoffCondition: "notSure",
+        plumbingAccessDifficulty: document.getElementById("plumbingToiletAccessDifficulty")?.value || "",
+        plumbingVisibleDamage: document.getElementById("plumbingToiletFloorIssue")?.value || "",
+        plumbingNotes: document.getElementById("notesPlumbingToilet")?.value.trim() || "",
+
+        plumbingLoose: document.getElementById("plumbingToiletLoose")?.value || "",
+        plumbingFloorIssue: document.getElementById("plumbingToiletFloorIssue")?.value || "",
+        plumbingRepairScope: document.getElementById("plumbingToiletRepairScope")?.value || "",
+        plumbingIncluded: "",
+        plumbingSameSize: "",
+        plumbingFinishTouchup: "",
+        plumbingLeakDamage: "",
+        plumbingScope: "",
+        plumbingAreaDamage: "",
+        plumbingPowerReady: "",
+        plumbingValveCount: "",
+        plumbingValveAccess: "",
+        plumbingValveCondition: "",
+        plumbingValvePartOfOtherProject: "",
+        plumbingLeakDuration: "",
+        plumbingAffectedSurfaces: "",
+        plumbingDamageSigns: "",
+        plumbingOpenAccessWork: "",
+        plumbingRepairAfterStop: "",
+        plumbingFixtureType: "",
+        plumbingSupplyAvailable: "",
+        plumbingDrainAvailable: "",
+        plumbingOpeningNeeded: ""
+      };
+
+    case "plumbing_replace_vanity":
+      return {
+        plumbingHasFixture: document.getElementById("plumbingVanityHasFixture")?.value || "",
+        plumbingShutoffCondition: "notSure",
+        plumbingAccessDifficulty: "notSure",
+        plumbingVisibleDamage: document.getElementById("plumbingVanityLeakDamage")?.value || "",
+        plumbingNotes: document.getElementById("notesPlumbingVanity")?.value.trim() || "",
+
+        plumbingLoose: "",
+        plumbingFloorIssue: "",
+        plumbingRepairScope: "",
+        plumbingIncluded: document.getElementById("plumbingVanityIncluded")?.value || "",
+        plumbingSameSize: document.getElementById("plumbingVanitySameSize")?.value || "",
+        plumbingFinishTouchup: document.getElementById("plumbingVanityFinishTouchup")?.value || "",
+        plumbingLeakDamage: document.getElementById("plumbingVanityLeakDamage")?.value || "",
+        plumbingScope: document.getElementById("plumbingVanityScope")?.value || "",
+        plumbingAreaDamage: "",
+        plumbingPowerReady: "",
+        plumbingValveCount: "",
+        plumbingValveAccess: "",
+        plumbingValveCondition: "",
+        plumbingValvePartOfOtherProject: "",
+        plumbingLeakDuration: "",
+        plumbingAffectedSurfaces: "",
+        plumbingDamageSigns: "",
+        plumbingOpenAccessWork: "",
+        plumbingRepairAfterStop: "",
+        plumbingFixtureType: "",
+        plumbingSupplyAvailable: "",
+        plumbingDrainAvailable: "",
+        plumbingOpeningNeeded: ""
+      };
+
+    case "plumbing_replace_garbage_disposal":
+      return {
+        plumbingHasFixture: document.getElementById("plumbingDisposalHasFixture")?.value || "",
+        plumbingShutoffCondition: "notSure",
+        plumbingAccessDifficulty: document.getElementById("plumbingDisposalAccessDifficulty")?.value || "",
+        plumbingVisibleDamage: document.getElementById("plumbingDisposalAreaDamage")?.value || "",
+        plumbingNotes: document.getElementById("notesPlumbingDisposal")?.value.trim() || "",
+
+        plumbingLoose: "",
+        plumbingFloorIssue: "",
+        plumbingRepairScope: "",
+        plumbingIncluded: "",
+        plumbingSameSize: "",
+        plumbingFinishTouchup: "",
+        plumbingLeakDamage: "",
+        plumbingScope: document.getElementById("plumbingDisposalScope")?.value || "",
+        plumbingAreaDamage: document.getElementById("plumbingDisposalAreaDamage")?.value || "",
+        plumbingPowerReady: document.getElementById("plumbingDisposalPowerReady")?.value || "",
+        plumbingValveCount: "",
+        plumbingValveAccess: "",
+        plumbingValveCondition: "",
+        plumbingValvePartOfOtherProject: "",
+        plumbingLeakDuration: "",
+        plumbingAffectedSurfaces: "",
+        plumbingDamageSigns: "",
+        plumbingOpenAccessWork: "",
+        plumbingRepairAfterStop: "",
+        plumbingFixtureType: "",
+        plumbingSupplyAvailable: "",
+        plumbingDrainAvailable: "",
+        plumbingOpeningNeeded: ""
+      };
+
+    case "plumbing_replace_shutoff_valves":
+      return {
+        plumbingHasFixture: "yes",
+        plumbingShutoffCondition: document.getElementById("plumbingValveCondition")?.value || "",
+        plumbingAccessDifficulty: document.getElementById("plumbingValveAccess")?.value || "",
+        plumbingVisibleDamage: "no",
+        plumbingNotes: document.getElementById("notesPlumbingShutoff")?.value.trim() || "",
+
+        plumbingLoose: "",
+        plumbingFloorIssue: "",
+        plumbingRepairScope: "",
+        plumbingIncluded: "",
+        plumbingSameSize: "",
+        plumbingFinishTouchup: "",
+        plumbingLeakDamage: "",
+        plumbingScope: document.getElementById("plumbingValveScope")?.value || "",
+        plumbingAreaDamage: "",
+        plumbingPowerReady: "",
+        plumbingValveCount: document.getElementById("plumbingValveCount")?.value || "",
+        plumbingValveAccess: document.getElementById("plumbingValveAccess")?.value || "",
+        plumbingValveCondition: document.getElementById("plumbingValveCondition")?.value || "",
+        plumbingValvePartOfOtherProject: document.getElementById("plumbingValvePartOfOtherProject")?.value || "",
+        plumbingLeakDuration: "",
+        plumbingAffectedSurfaces: "",
+        plumbingDamageSigns: "",
+        plumbingOpenAccessWork: "",
+        plumbingRepairAfterStop: "",
+        plumbingFixtureType: "",
+        plumbingSupplyAvailable: "",
+        plumbingDrainAvailable: "",
+        plumbingOpeningNeeded: ""
+      };
+
+    case "plumbing_fix_active_leak":
+      return {
+        plumbingHasFixture: "notSure",
+        plumbingShutoffCondition: "notSure",
+        plumbingAccessDifficulty: document.getElementById("plumbingLeakAccessDifficulty")?.value || "",
+        plumbingVisibleDamage: document.getElementById("plumbingLeakDamageSigns")?.value || "",
+        plumbingNotes: document.getElementById("notesPlumbingLeak")?.value.trim() || "",
+
+        plumbingLoose: "",
+        plumbingFloorIssue: "",
+        plumbingRepairScope: "",
+        plumbingIncluded: "",
+        plumbingSameSize: "",
+        plumbingFinishTouchup: "",
+        plumbingLeakDamage: "",
+        plumbingScope: "",
+        plumbingAreaDamage: "",
+        plumbingPowerReady: "",
+        plumbingValveCount: "",
+        plumbingValveAccess: "",
+        plumbingValveCondition: "",
+        plumbingValvePartOfOtherProject: "",
+        plumbingLeakDuration: document.getElementById("plumbingLeakDuration")?.value || "",
+        plumbingAffectedSurfaces: document.getElementById("plumbingLeakAffectedSurfaces")?.value || "",
+        plumbingDamageSigns: document.getElementById("plumbingLeakDamageSigns")?.value || "",
+        plumbingOpenAccessWork: document.getElementById("plumbingLeakOpenAccessWork")?.value || "",
+        plumbingRepairAfterStop: document.getElementById("plumbingLeakRepairAfterStop")?.value || "",
+        plumbingFixtureType: "",
+        plumbingSupplyAvailable: "",
+        plumbingDrainAvailable: "",
+        plumbingOpeningNeeded: ""
+      };
+
+    case "plumbing_install_new_fixture":
+      return {
+        plumbingHasFixture: document.getElementById("plumbingNewInstallHasFixture")?.value || "",
+        plumbingShutoffCondition: "notSure",
+        plumbingAccessDifficulty: document.getElementById("plumbingNewInstallAccessDifficulty")?.value || "",
+        plumbingVisibleDamage: "no",
+        plumbingNotes: document.getElementById("notesPlumbingNewInstall")?.value.trim() || "",
+
+        plumbingLoose: "",
+        plumbingFloorIssue: "",
+        plumbingRepairScope: document.getElementById("plumbingNewInstallRepairScope")?.value || "",
+        plumbingIncluded: "",
+        plumbingSameSize: "",
+        plumbingFinishTouchup: "",
+        plumbingLeakDamage: "",
+        plumbingScope: "",
+        plumbingAreaDamage: "",
+        plumbingPowerReady: "",
+        plumbingValveCount: "",
+        plumbingValveAccess: "",
+        plumbingValveCondition: "",
+        plumbingValvePartOfOtherProject: "",
+        plumbingLeakDuration: "",
+        plumbingAffectedSurfaces: "",
+        plumbingDamageSigns: "",
+        plumbingOpenAccessWork: "",
+        plumbingRepairAfterStop: "",
+        plumbingFixtureType: document.getElementById("plumbingNewInstallFixtureType")?.value || "",
+        plumbingSupplyAvailable: document.getElementById("plumbingNewInstallSupplyAvailable")?.value || "",
+        plumbingDrainAvailable: document.getElementById("plumbingNewInstallDrainAvailable")?.value || "",
+        plumbingOpeningNeeded: document.getElementById("plumbingNewInstallOpeningNeeded")?.value || ""
+      };
+
+    default:
+      return {
+        plumbingHasFixture: "",
+        plumbingShutoffCondition: "",
+        plumbingAccessDifficulty: "",
+        plumbingVisibleDamage: "",
+        plumbingNotes: "",
+
+        plumbingLoose: "",
+        plumbingFloorIssue: "",
+        plumbingRepairScope: "",
+        plumbingIncluded: "",
+        plumbingSameSize: "",
+        plumbingFinishTouchup: "",
+        plumbingLeakDamage: "",
+        plumbingScope: "",
+        plumbingAreaDamage: "",
+        plumbingPowerReady: "",
+        plumbingValveCount: "",
+        plumbingValveAccess: "",
+        plumbingValveCondition: "",
+        plumbingValvePartOfOtherProject: "",
+        plumbingLeakDuration: "",
+        plumbingAffectedSurfaces: "",
+        plumbingDamageSigns: "",
+        plumbingOpenAccessWork: "",
+        plumbingRepairAfterStop: "",
+        plumbingFixtureType: "",
+        plumbingSupplyAvailable: "",
+        plumbingDrainAvailable: "",
+        plumbingOpeningNeeded: ""
+      };
+  }
+}
+
+function getCurrentPlumbingFilesInput() {
+  switch (projectType.value) {
+    case "plumbing_replace_faucet":
+      return document.getElementById("projectFilesPlumbingFaucet");
+    case "plumbing_replace_toilet":
+      return document.getElementById("projectFilesPlumbingToilet");
+    case "plumbing_replace_vanity":
+      return document.getElementById("projectFilesPlumbingVanity");
+    case "plumbing_replace_garbage_disposal":
+      return document.getElementById("projectFilesPlumbingDisposal");
+    case "plumbing_replace_shutoff_valves":
+      return document.getElementById("projectFilesPlumbingShutoff");
+    case "plumbing_fix_active_leak":
+      return document.getElementById("projectFilesPlumbingLeak");
+    case "plumbing_install_new_fixture":
+      return document.getElementById("projectFilesPlumbingNewInstall");
+    default:
+      return null;
+  }
 }
 
 function getUploadedFiles() {
   if (projectType.value === "lighting_add_replace") return projectFilesLighting.files;
   if (projectType.value === "paint_one_room") return projectFilesPaint.files;
-
-  if (projectType.value === "plumbing_replace_faucet") {
-    return document.getElementById("projectFilesPlumbingFaucet").files;
+  if (isPlumbingProject(projectType.value)) {
+    const plumbingFilesInput = getCurrentPlumbingFilesInput();
+    return plumbingFilesInput ? plumbingFilesInput.files : null;
   }
-
-  if (projectType.value === "plumbing_replace_toilet") {
-    return document.getElementById("projectFilesPlumbingToilet").files;
-  }
-
-  if (projectType.value === "plumbing_replace_vanity") {
-    return document.getElementById("projectFilesPlumbingVanity").files;
-  }
-
-  if (projectType.value === "plumbing_replace_garbage_disposal") {
-    return document.getElementById("projectFilesPlumbingDisposal").files;
-  }
-
-  if (projectType.value === "plumbing_replace_shutoff_valves") {
-    return document.getElementById("projectFilesPlumbingShutoff").files;
-  }
-
-  if (projectType.value === "plumbing_fix_active_leak") {
-    return document.getElementById("projectFilesPlumbingLeak").files;
-  }
-
-  if (projectType.value === "plumbing_install_new_fixture") {
-    return document.getElementById("projectFilesPlumbingNewInstall").files;
-  }
-
   return projectFiles.files;
 }
 
 function getFormData() {
+  const plumbingBasics = getCurrentPlumbingBasicsValues();
+  const plumbingDetails = getCurrentPlumbingDetailsValues();
+
   return {
     projectType: projectType.value,
     projectDisplayName: projectDisplayName.value,
@@ -2263,78 +2129,8 @@ function getFormData() {
     paintLeadPrepMode: paintLeadPrepMode.value,
     paintNotes: paintNotes.value.trim(),
 
-    plumbingFaucetReason: document.getElementById("plumbingFaucetReason")?.value || "",
-    plumbingFaucetLocation: document.getElementById("plumbingFaucetLocation")?.value || "",
-    plumbingFaucetSeverity: document.getElementById("plumbingFaucetSeverity")?.value || "",
-    plumbingFaucetHasFixture: document.getElementById("plumbingFaucetHasFixture")?.value || "",
-    plumbingFaucetShutoffCondition: document.getElementById("plumbingFaucetShutoffCondition")?.value || "",
-    plumbingFaucetAccessDifficulty: document.getElementById("plumbingFaucetAccessDifficulty")?.value || "",
-    plumbingFaucetVisibleDamage: document.getElementById("plumbingFaucetVisibleDamage")?.value || "",
-    notesPlumbingFaucet: document.getElementById("notesPlumbingFaucet")?.value.trim() || "",
-
-    plumbingToiletReason: document.getElementById("plumbingToiletReason")?.value || "",
-    plumbingToiletLocation: document.getElementById("plumbingToiletLocation")?.value || "",
-    plumbingToiletSeverity: document.getElementById("plumbingToiletSeverity")?.value || "",
-    plumbingToiletLoose: document.getElementById("plumbingToiletLoose")?.value || "",
-    plumbingToiletFloorIssue: document.getElementById("plumbingToiletFloorIssue")?.value || "",
-    plumbingToiletHasFixture: document.getElementById("plumbingToiletHasFixture")?.value || "",
-    plumbingToiletRepairScope: document.getElementById("plumbingToiletRepairScope")?.value || "",
-    plumbingToiletAccessDifficulty: document.getElementById("plumbingToiletAccessDifficulty")?.value || "",
-    notesPlumbingToilet: document.getElementById("notesPlumbingToilet")?.value.trim() || "",
-
-    plumbingVanityReason: document.getElementById("plumbingVanityReason")?.value || "",
-    plumbingVanityLocation: document.getElementById("plumbingVanityLocation")?.value || "",
-    plumbingVanitySeverity: document.getElementById("plumbingVanitySeverity")?.value || "",
-    plumbingVanityIncluded: document.getElementById("plumbingVanityIncluded")?.value || "",
-    plumbingVanitySameSize: document.getElementById("plumbingVanitySameSize")?.value || "",
-    plumbingVanityHasFixture: document.getElementById("plumbingVanityHasFixture")?.value || "",
-    plumbingVanityFinishTouchup: document.getElementById("plumbingVanityFinishTouchup")?.value || "",
-    plumbingVanityLeakDamage: document.getElementById("plumbingVanityLeakDamage")?.value || "",
-    plumbingVanityScope: document.getElementById("plumbingVanityScope")?.value || "",
-    notesPlumbingVanity: document.getElementById("notesPlumbingVanity")?.value.trim() || "",
-
-    plumbingDisposalReason: document.getElementById("plumbingDisposalReason")?.value || "",
-    plumbingDisposalLocation: document.getElementById("plumbingDisposalLocation")?.value || "",
-    plumbingDisposalSeverity: document.getElementById("plumbingDisposalSeverity")?.value || "",
-    plumbingDisposalHasFixture: document.getElementById("plumbingDisposalHasFixture")?.value || "",
-    plumbingDisposalAreaDamage: document.getElementById("plumbingDisposalAreaDamage")?.value || "",
-    plumbingDisposalPowerReady: document.getElementById("plumbingDisposalPowerReady")?.value || "",
-    plumbingDisposalScope: document.getElementById("plumbingDisposalScope")?.value || "",
-    plumbingDisposalAccessDifficulty: document.getElementById("plumbingDisposalAccessDifficulty")?.value || "",
-    notesPlumbingDisposal: document.getElementById("notesPlumbingDisposal")?.value.trim() || "",
-
-    plumbingShutoffReason: document.getElementById("plumbingShutoffReason")?.value || "",
-    plumbingShutoffLocation: document.getElementById("plumbingShutoffLocation")?.value || "",
-    plumbingShutoffSeverity: document.getElementById("plumbingShutoffSeverity")?.value || "",
-    plumbingValveCount: document.getElementById("plumbingValveCount")?.value || "",
-    plumbingValveAccess: document.getElementById("plumbingValveAccess")?.value || "",
-    plumbingValveCondition: document.getElementById("plumbingValveCondition")?.value || "",
-    plumbingValvePartOfOtherProject: document.getElementById("plumbingValvePartOfOtherProject")?.value || "",
-    plumbingValveScope: document.getElementById("plumbingValveScope")?.value || "",
-    notesPlumbingShutoff: document.getElementById("notesPlumbingShutoff")?.value.trim() || "",
-
-    plumbingLeakType: document.getElementById("plumbingLeakType")?.value || "",
-    plumbingLeakLocation: document.getElementById("plumbingLeakLocation")?.value || "",
-    plumbingLeakCondition: document.getElementById("plumbingLeakCondition")?.value || "",
-    plumbingLeakDuration: document.getElementById("plumbingLeakDuration")?.value || "",
-    plumbingLeakAffectedSurfaces: document.getElementById("plumbingLeakAffectedSurfaces")?.value || "",
-    plumbingLeakDamageSigns: document.getElementById("plumbingLeakDamageSigns")?.value || "",
-    plumbingLeakOpenAccessWork: document.getElementById("plumbingLeakOpenAccessWork")?.value || "",
-    plumbingLeakRepairAfterStop: document.getElementById("plumbingLeakRepairAfterStop")?.value || "",
-    plumbingLeakAccessDifficulty: document.getElementById("plumbingLeakAccessDifficulty")?.value || "",
-    notesPlumbingLeak: document.getElementById("notesPlumbingLeak")?.value.trim() || "",
-
-    plumbingNewInstallGoal: document.getElementById("plumbingNewInstallGoal")?.value || "",
-    plumbingNewInstallLocation: document.getElementById("plumbingNewInstallLocation")?.value || "",
-    plumbingNewInstallCondition: document.getElementById("plumbingNewInstallCondition")?.value || "",
-    plumbingNewInstallFixtureType: document.getElementById("plumbingNewInstallFixtureType")?.value || "",
-    plumbingNewInstallSupplyAvailable: document.getElementById("plumbingNewInstallSupplyAvailable")?.value || "",
-    plumbingNewInstallDrainAvailable: document.getElementById("plumbingNewInstallDrainAvailable")?.value || "",
-    plumbingNewInstallOpeningNeeded: document.getElementById("plumbingNewInstallOpeningNeeded")?.value || "",
-    plumbingNewInstallHasFixture: document.getElementById("plumbingNewInstallHasFixture")?.value || "",
-    plumbingNewInstallAccessDifficulty: document.getElementById("plumbingNewInstallAccessDifficulty")?.value || "",
-    plumbingNewInstallRepairScope: document.getElementById("plumbingNewInstallRepairScope")?.value || "",
-    notesPlumbingNewInstall: document.getElementById("notesPlumbingNewInstall")?.value.trim() || ""
+    ...plumbingBasics,
+    ...plumbingDetails
   };
 }
 
@@ -2394,79 +2190,40 @@ async function submitLead(leadType, estimateData) {
     payload.append("year_built", formData.paintYearBuilt);
     payload.append("lead_prep_mode", formData.paintLeadPrepMode);
     payload.append("notes", formData.paintNotes);
-  } else if (formData.projectType === "plumbing_replace_faucet") {
-    payload.append("reason", formData.plumbingFaucetReason);
-    payload.append("location", formData.plumbingFaucetLocation);
-    payload.append("severity", formData.plumbingFaucetSeverity);
-    payload.append("has_fixture", formData.plumbingFaucetHasFixture);
-    payload.append("shutoff_condition", formData.plumbingFaucetShutoffCondition);
-    payload.append("access_difficulty", formData.plumbingFaucetAccessDifficulty);
-    payload.append("visible_damage", formData.plumbingFaucetVisibleDamage);
-    payload.append("notes", formData.notesPlumbingFaucet);
-  } else if (formData.projectType === "plumbing_replace_toilet") {
-    payload.append("reason", formData.plumbingToiletReason);
-    payload.append("location", formData.plumbingToiletLocation);
-    payload.append("severity", formData.plumbingToiletSeverity);
-    payload.append("loose", formData.plumbingToiletLoose);
-    payload.append("floor_issue", formData.plumbingToiletFloorIssue);
-    payload.append("has_fixture", formData.plumbingToiletHasFixture);
-    payload.append("repair_scope", formData.plumbingToiletRepairScope);
-    payload.append("access_difficulty", formData.plumbingToiletAccessDifficulty);
-    payload.append("notes", formData.notesPlumbingToilet);
-  } else if (formData.projectType === "plumbing_replace_vanity") {
-    payload.append("reason", formData.plumbingVanityReason);
-    payload.append("location", formData.plumbingVanityLocation);
-    payload.append("severity", formData.plumbingVanitySeverity);
-    payload.append("included", formData.plumbingVanityIncluded);
-    payload.append("same_size", formData.plumbingVanitySameSize);
-    payload.append("has_fixture", formData.plumbingVanityHasFixture);
-    payload.append("finish_touchup", formData.plumbingVanityFinishTouchup);
-    payload.append("leak_damage", formData.plumbingVanityLeakDamage);
-    payload.append("scope", formData.plumbingVanityScope);
-    payload.append("notes", formData.notesPlumbingVanity);
-  } else if (formData.projectType === "plumbing_replace_garbage_disposal") {
-    payload.append("reason", formData.plumbingDisposalReason);
-    payload.append("location", formData.plumbingDisposalLocation);
-    payload.append("severity", formData.plumbingDisposalSeverity);
-    payload.append("has_fixture", formData.plumbingDisposalHasFixture);
-    payload.append("area_damage", formData.plumbingDisposalAreaDamage);
-    payload.append("power_ready", formData.plumbingDisposalPowerReady);
-    payload.append("scope", formData.plumbingDisposalScope);
-    payload.append("access_difficulty", formData.plumbingDisposalAccessDifficulty);
-    payload.append("notes", formData.notesPlumbingDisposal);
-  } else if (formData.projectType === "plumbing_replace_shutoff_valves") {
-    payload.append("reason", formData.plumbingShutoffReason);
-    payload.append("location", formData.plumbingShutoffLocation);
-    payload.append("severity", formData.plumbingShutoffSeverity);
-    payload.append("valve_count", formData.plumbingValveCount);
-    payload.append("valve_access", formData.plumbingValveAccess);
-    payload.append("valve_condition", formData.plumbingValveCondition);
-    payload.append("part_of_other_project", formData.plumbingValvePartOfOtherProject);
-    payload.append("scope", formData.plumbingValveScope);
-    payload.append("notes", formData.notesPlumbingShutoff);
-  } else if (formData.projectType === "plumbing_fix_active_leak") {
-    payload.append("leak_type", formData.plumbingLeakType);
-    payload.append("leak_location", formData.plumbingLeakLocation);
-    payload.append("leak_condition", formData.plumbingLeakCondition);
-    payload.append("duration", formData.plumbingLeakDuration);
-    payload.append("affected_surfaces", formData.plumbingLeakAffectedSurfaces);
-    payload.append("damage_signs", formData.plumbingLeakDamageSigns);
-    payload.append("open_access_work", formData.plumbingLeakOpenAccessWork);
-    payload.append("repair_after_stop", formData.plumbingLeakRepairAfterStop);
-    payload.append("access_difficulty", formData.plumbingLeakAccessDifficulty);
-    payload.append("notes", formData.notesPlumbingLeak);
-  } else if (formData.projectType === "plumbing_install_new_fixture") {
-    payload.append("goal", formData.plumbingNewInstallGoal);
-    payload.append("location", formData.plumbingNewInstallLocation);
-    payload.append("condition", formData.plumbingNewInstallCondition);
-    payload.append("fixture_type", formData.plumbingNewInstallFixtureType);
-    payload.append("supply_available", formData.plumbingNewInstallSupplyAvailable);
-    payload.append("drain_available", formData.plumbingNewInstallDrainAvailable);
-    payload.append("opening_needed", formData.plumbingNewInstallOpeningNeeded);
-    payload.append("has_fixture", formData.plumbingNewInstallHasFixture);
-    payload.append("access_difficulty", formData.plumbingNewInstallAccessDifficulty);
-    payload.append("repair_scope", formData.plumbingNewInstallRepairScope);
-    payload.append("notes", formData.notesPlumbingNewInstall);
+  } else if (isPlumbingProject(formData.projectType)) {
+    payload.append("plumbing_reason", formData.plumbingReason);
+    payload.append("plumbing_location", formData.plumbingLocation);
+    payload.append("plumbing_severity", formData.plumbingSeverity);
+    payload.append("plumbing_has_fixture", formData.plumbingHasFixture);
+    payload.append("plumbing_shutoff_condition", formData.plumbingShutoffCondition);
+    payload.append("plumbing_access_difficulty", formData.plumbingAccessDifficulty);
+    payload.append("plumbing_visible_damage", formData.plumbingVisibleDamage);
+
+    payload.append("plumbing_loose", formData.plumbingLoose);
+    payload.append("plumbing_floor_issue", formData.plumbingFloorIssue);
+    payload.append("plumbing_repair_scope", formData.plumbingRepairScope);
+    payload.append("plumbing_included", formData.plumbingIncluded);
+    payload.append("plumbing_same_size", formData.plumbingSameSize);
+    payload.append("plumbing_finish_touchup", formData.plumbingFinishTouchup);
+    payload.append("plumbing_leak_damage", formData.plumbingLeakDamage);
+    payload.append("plumbing_scope", formData.plumbingScope);
+    payload.append("plumbing_area_damage", formData.plumbingAreaDamage);
+    payload.append("plumbing_power_ready", formData.plumbingPowerReady);
+    payload.append("plumbing_valve_count", formData.plumbingValveCount);
+    payload.append("plumbing_valve_access", formData.plumbingValveAccess);
+    payload.append("plumbing_valve_condition", formData.plumbingValveCondition);
+    payload.append("plumbing_valve_part_of_other_project", formData.plumbingValvePartOfOtherProject);
+    payload.append("plumbing_leak_duration", formData.plumbingLeakDuration);
+    payload.append("plumbing_affected_surfaces", formData.plumbingAffectedSurfaces);
+    payload.append("plumbing_damage_signs", formData.plumbingDamageSigns);
+    payload.append("plumbing_open_access_work", formData.plumbingOpenAccessWork);
+    payload.append("plumbing_repair_after_stop", formData.plumbingRepairAfterStop);
+    payload.append("plumbing_fixture_type", formData.plumbingFixtureType);
+    payload.append("plumbing_supply_available", formData.plumbingSupplyAvailable);
+    payload.append("plumbing_drain_available", formData.plumbingDrainAvailable);
+    payload.append("plumbing_opening_needed", formData.plumbingOpeningNeeded);
+
+    payload.append("notes", formData.plumbingNotes);
   } else {
     payload.append("damage_location", formData.damageLocation);
     payload.append("damage_size", formData.damageSize);
@@ -2505,6 +2262,195 @@ async function submitLead(leadType, estimateData) {
   if (!response.ok) throw new Error("Submission failed.");
   return response;
 }
+
+function validateStep(step) {
+  if (step === 1) {
+    clearValidation(validationStep1);
+    if (!projectType.value) {
+      showValidation(validationStep1, "Please select a project type before continuing.");
+      return false;
+    }
+  }
+
+  if (step === 2) {
+    clearValidation(validationStep2);
+
+    const fullName = document.getElementById("fullName").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const zipcode = document.getElementById("zipcode").value.trim();
+
+    if (!fullName || !phone || !email || !zipcode) {
+      showValidation(validationStep2, "Please complete name, phone, email, and ZIP code before continuing.");
+      return false;
+    }
+  }
+
+  if (step === 3) {
+    clearValidation(validationStep3);
+
+    if (projectType.value === "paint_one_room" && getSelectedPaintScopes().length === 0) {
+      showValidation(validationStep3, "Please select at least one area to paint before continuing.");
+      return false;
+    }
+  }
+
+  if (step === 4) {
+    clearValidation(validationStep4);
+  }
+
+  return true;
+}
+
+function renderEstimate(estimateData, formData) {
+  materialsOutput.textContent = `Estimated Materials: ${currency(estimateData.minMaterials)} - ${currency(estimateData.maxMaterials)}`;
+  laborOutput.textContent = `Estimated Labor: ${currency(estimateData.laborMin)} - ${currency(estimateData.laborMax)}`;
+  totalOutput.textContent = `Estimated Total Range: ${currency(estimateData.totalMin)} - ${currency(estimateData.totalMax)}`;
+  resultsProjectName.textContent = `Project Type: ${formData.projectDisplayName}`;
+
+  breakdownList.innerHTML = "";
+
+  const summaryItems = [
+    `Estimated crew time: ${estimateData.hours} hours`,
+    `Materials considered: ${estimateData.materialsList.join(", ")}`
+  ];
+
+  [...summaryItems, ...estimateData.adjustments].forEach((item) => {
+    if (!item) return;
+    const li = document.createElement("li");
+    li.textContent = item;
+    breakdownList.appendChild(li);
+  });
+}
+
+function resetExperience() {
+  form.reset();
+
+  clearValidation(validationStep1);
+  clearValidation(validationStep2);
+  clearValidation(validationStep3);
+  clearValidation(validationStep4);
+
+  latestEstimate = null;
+  coldLeadSubmitted = false;
+  hotLeadSubmitted = false;
+
+  if (hotLeadBtn) {
+    hotLeadBtn.disabled = false;
+    hotLeadBtn.textContent = "Get My Exact Quote";
+  }
+
+  if (doneBtn) {
+    doneBtn.disabled = false;
+  }
+
+  breakdownList.innerHTML = "";
+
+  setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
+  updateDrywallContextUI();
+  togglePaintBlendField();
+  updateLightingConditionalFields();
+  updatePaintConditionalFields();
+  updatePlumbingConditionalUI();
+  updatePropertyTypeMessage();
+  hideAllEndStates();
+  stepper.classList.remove("hidden");
+  showStep(1);
+}
+
+projectSelectorTrigger.addEventListener("click", (e) => {
+  e.stopPropagation();
+  toggleProjectSelector();
+});
+
+document.addEventListener("click", (e) => {
+  if (!projectSelectorShell.contains(e.target)) {
+    projectSelectorShell.classList.remove("open");
+    projectSelectorTrigger.setAttribute("aria-expanded", "false");
+  }
+});
+
+drywallProjectOption.addEventListener("click", () => {
+  setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
+});
+
+lightingProjectOption.addEventListener("click", () => {
+  setSelectedProject("lighting_add_replace", "Add or Replace a Light Fixture");
+});
+
+paintProjectOption.addEventListener("click", () => {
+  setSelectedProject("paint_one_room", "Paint One Room");
+});
+
+plumbingFaucetProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_replace_faucet", "Replace Faucet");
+});
+
+plumbingToiletProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_replace_toilet", "Replace Toilet");
+});
+
+plumbingVanityProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_replace_vanity", "Replace Vanity");
+});
+
+plumbingDisposalProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_replace_garbage_disposal", "Replace Garbage Disposal");
+});
+
+plumbingShutoffProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_replace_shutoff_valves", "Replace Shutoff Valves");
+});
+
+plumbingLeakProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_fix_active_leak", "Fix Active Leak");
+});
+
+plumbingNewFixtureProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_install_new_fixture", "Install New Plumbing Fixture");
+});
+
+propertyTypeGlobal.addEventListener("change", updatePropertyTypeMessage);
+
+damageLocation.addEventListener("change", updateDrywallContextUI);
+paintRequired.addEventListener("change", togglePaintBlendField);
+
+lightingType.addEventListener("change", updateLightingConditionalFields);
+lightingLocation.addEventListener("change", updateLightingConditionalFields);
+accessDifficulty.addEventListener("change", updateLightingConditionalFields);
+wireRun.addEventListener("change", updateLightingConditionalFields);
+atticAccess.addEventListener("change", updateLightingConditionalFields);
+repairIncluded.addEventListener("change", updateLightingConditionalFields);
+paintAfterRepair.addEventListener("change", updateLightingConditionalFields);
+
+paintScopeCheckboxes.forEach((cb) => cb.addEventListener("change", updatePaintConditionalFields));
+paintYearBuilt.addEventListener("change", updatePaintConditionalFields);
+
+setupAccordions();
+
+nextToStep2.addEventListener("click", () => {
+  if (validateStep(1)) showStep(2);
+});
+
+backToStep1.addEventListener("click", () => {
+  showStep(1);
+});
+
+nextToStep3.addEventListener("click", () => {
+  if (validateStep(2)) showStep(3);
+});
+
+backToStep2.addEventListener("click", () => {
+  showStep(2);
+});
+
+nextToStep4.addEventListener("click", () => {
+  if (validateStep(3)) showStep(4);
+});
+
+backToStep3.addEventListener("click", () => {
+  showStep(3);
+});
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -2566,3 +2512,13 @@ doneBtn.addEventListener("click", () => {
 
 startNewFromHot.addEventListener("click", resetExperience);
 startNewFromDone.addEventListener("click", resetExperience);
+
+updateDrywallContextUI();
+togglePaintBlendField();
+updateLightingConditionalFields();
+updatePaintConditionalFields();
+updatePlumbingConditionalUI();
+updatePropertyTypeMessage();
+setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
+hideAllEndStates();
+showStep(1);
