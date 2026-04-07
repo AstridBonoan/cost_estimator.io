@@ -348,370 +348,710 @@ const lightingPaintScopeConfig = {
 
 const PLUMBING_TEMPLATE_CONFIG = {
   plumbing_replace_faucet: {
-    reason: {
-      label: "What best describes the reason for this project?",
-      options: [
-        { value: "leak", label: "It is leaking" },
-        { value: "notWorking", label: "Not working properly" },
-        { value: "replace", label: "Replace / upgrade" },
-        { value: "loose", label: "Loose, unstable, or worn" }
-      ]
-    },
-    location: {
-      label: "Where is this faucet located?",
-      options: [
-        { value: "kitchen", label: "Kitchen" },
-        { value: "bathroom", label: "Bathroom" },
-        { value: "laundry", label: "Laundry" },
-        { value: "utility", label: "Utility / Mechanical" },
-        { value: "exterior", label: "Exterior" }
-      ]
-    },
-    severity: {
-      label: "How would you describe the project right now?",
-      options: [
-        { value: "simple", label: "Simple replacement only" },
-        { value: "damage", label: "There may be surrounding damage" },
-        { value: "active", label: "Active issue that may affect other areas" }
-      ]
-    },
-    details: {
-      hasFixture: {
-        show: true,
-        label: "Do you already have the new faucet?",
-        options: [
-          { value: "yes", label: "Yes" },
-          { value: "no", label: "No" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      },
-      shutoff: {
-        show: true,
-        label: "Are the shutoff valves working properly?",
-        options: [
-          { value: "yes", label: "Yes" },
-          { value: "no", label: "No" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      },
-      visibleDamage: {
-        show: true,
-        label: "Any visible water damage below or around the fixture?",
-        options: [
-          { value: "no", label: "No" },
-          { value: "minor", label: "Minor" },
-          { value: "major", label: "Major" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      },
-      access: {
-        show: true,
-        label: "How easy is access to the work area?",
-        options: [
-          { value: "easy", label: "Easy" },
-          { value: "moderate", label: "Moderate" },
-          { value: "difficult", label: "Difficult" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      }
-    }
+    basicsId: "plumbingBasicsFaucet",
+    detailsId: "plumbingDetailsFaucet",
+    display: "Replace Faucet"
   },
-
   plumbing_replace_toilet: {
-    reason: {
-      label: "What best describes the reason for this project?",
-      options: [
-        { value: "leak", label: "It is leaking" },
-        { value: "notWorking", label: "Not working properly" },
-        { value: "replace", label: "Replace / upgrade" },
-        { value: "loose", label: "Loose, rocking, or unstable" }
-      ]
-    },
-    location: {
-      label: "Where is this toilet located?",
-      options: [
-        { value: "bathroom_main", label: "Bathroom / Main floor" },
-        { value: "bathroom_upper", label: "Bathroom / Upper floor" },
-        { value: "basement_bath", label: "Basement bathroom" },
-        { value: "otherInterior", label: "Other interior location" }
-      ]
-    },
-    severity: {
-      label: "How would you describe the project right now?",
-      options: [
-        { value: "simple", label: "Simple replacement only" },
-        { value: "damage", label: "There may be surrounding damage" },
-        { value: "active", label: "Active issue that may affect other areas" }
-      ]
-    },
-    details: {
-      hasFixture: {
-        show: true,
-        label: "Do you already have the new toilet?",
-        options: [
-          { value: "yes", label: "Yes" },
-          { value: "no", label: "No" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      },
-      shutoff: {
-        show: true,
-        label: "Is the toilet shutoff valve working properly?",
-        options: [
-          { value: "yes", label: "Yes" },
-          { value: "no", label: "No" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      },
-      visibleDamage: {
-        show: true,
-        label: "Any signs of damage around the toilet base or surrounding floor?",
-        options: [
-          { value: "no", label: "No" },
-          { value: "minor", label: "Minor" },
-          { value: "major", label: "Major" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      },
-      access: {
-        show: true,
-        label: "How easy is access to the toilet area?",
-        options: [
-          { value: "easy", label: "Easy" },
-          { value: "moderate", label: "Moderate" },
-          { value: "difficult", label: "Difficult" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      }
-    }
+    basicsId: "plumbingBasicsToilet",
+    detailsId: "plumbingDetailsToilet",
+    display: "Replace Toilet"
   },
-
   plumbing_replace_vanity: {
-    reason: {
-      label: "What best describes the reason for this project?",
-      options: [
-        { value: "notWorking", label: "Not working properly" },
-        { value: "replace", label: "Replace / upgrade" },
-        { value: "loose", label: "Loose, damaged, or worn" },
-        { value: "damageAround", label: "There may already be damage around it" }
-      ]
-    },
-    location: {
-      label: "Where is this vanity located?",
-      options: [
-        { value: "bathroom", label: "Bathroom" },
-        { value: "laundry", label: "Laundry" },
-        { value: "kitchen", label: "Kitchen" }
-      ]
-    },
-    severity: {
-      label: "How would you describe the project right now?",
-      options: [
-        { value: "simple", label: "Simple replacement only" },
-        { value: "damage", label: "There may be surrounding damage" },
-        { value: "active", label: "Related plumbing issue may be affecting other areas" }
-      ]
-    },
-    details: {
-      hasFixture: {
-        show: true,
-        label: "Do you already have the new vanity and faucet?",
-        options: [
-          { value: "yes", label: "Yes" },
-          { value: "no", label: "No" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      },
-      shutoff: {
-        show: true,
-        label: "Are the shutoff valves working properly?",
-        options: [
-          { value: "yes", label: "Yes" },
-          { value: "no", label: "No" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      },
-      visibleDamage: {
-        show: true,
-        label: "Any signs of plumbing leaks or water damage inside or behind the vanity?",
-        options: [
-          { value: "no", label: "No" },
-          { value: "minor", label: "Minor" },
-          { value: "major", label: "Major" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      },
-      access: {
-        show: true,
-        label: "How easy is access to the work area?",
-        options: [
-          { value: "easy", label: "Easy" },
-          { value: "moderate", label: "Moderate" },
-          { value: "difficult", label: "Difficult" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      }
-    }
+    basicsId: "plumbingBasicsVanity",
+    detailsId: "plumbingDetailsVanity",
+    display: "Replace Vanity"
   },
-
   plumbing_replace_garbage_disposal: {
-    reason: {
-      label: "What best describes the reason for this project?",
-      options: [
-        { value: "leak", label: "It is leaking" },
-        { value: "notWorking", label: "Not working properly" },
-        { value: "replace", label: "Replace / upgrade" }
-      ]
-    },
-    location: {
-      label: "Where is this garbage disposal located?",
-      options: [
-        { value: "kitchen", label: "Kitchen" }
-      ]
-    },
-    severity: {
-      label: "How would you describe the project right now?",
-      options: [
-        { value: "simple", label: "Simple replacement only" },
-        { value: "damage", label: "There may be surrounding damage" },
-        { value: "active", label: "Active issue that may affect other areas" }
-      ]
-    },
-    details: {
-      hasFixture: {
-        show: true,
-        label: "Do you already have the new garbage disposal?",
-        options: [
-          { value: "yes", label: "Yes" },
-          { value: "no", label: "No" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      },
-      shutoff: {
-        show: true,
-        label: "Is power already available and usable at the sink area?",
-        options: [
-          { value: "yes", label: "Yes" },
-          { value: "no", label: "No" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      },
-      visibleDamage: {
-        show: true,
-        label: "Any cabinet damage, moisture, or sink-area damage?",
-        options: [
-          { value: "no", label: "No" },
-          { value: "minor", label: "Minor" },
-          { value: "major", label: "Major" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      },
-      access: {
-        show: true,
-        label: "How easy is access under the sink?",
-        options: [
-          { value: "easy", label: "Easy" },
-          { value: "moderate", label: "Moderate" },
-          { value: "difficult", label: "Difficult" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      }
-    }
+    basicsId: "plumbingBasicsDisposal",
+    detailsId: "plumbingDetailsDisposal",
+    display: "Replace Garbage Disposal"
   },
-
   plumbing_replace_shutoff_valves: {
-    reason: {
-      label: "What best describes the reason for this project?",
-      options: [
-        { value: "leak", label: "They are leaking" },
-        { value: "notWorking", label: "They are not working properly" },
-        { value: "replace", label: "Replace / upgrade" },
-        { value: "loose", label: "Corroded, worn, or stuck" }
-      ]
-    },
-    location: {
-      label: "Where are these shutoff valves located?",
-      options: [
-        { value: "kitchen", label: "Kitchen" },
-        { value: "bathroom", label: "Bathroom" },
-        { value: "laundry", label: "Laundry" },
-        { value: "utility", label: "Utility / Mechanical" },
-        { value: "basement", label: "Basement" },
-        { value: "exterior", label: "Exterior" }
-      ]
-    },
-    severity: {
-      label: "How would you describe the project right now?",
-      options: [
-        { value: "simple", label: "Simple replacement only" },
-        { value: "damage", label: "There may be surrounding damage" },
-        { value: "active", label: "Active issue that may affect other areas" }
-      ]
-    },
-    details: {
-      hasFixture: {
-        show: true,
-        label: "How many shutoff valves are involved?",
-        options: [
-          { value: "one", label: "One valve" },
-          { value: "two", label: "Two valves" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      },
-      shutoff: {
-        show: false,
-        label: "",
-        options: []
-      },
-      visibleDamage: {
-        show: true,
-        label: "Do the valves appear corroded, stuck, or leaking?",
-        options: [
-          { value: "no", label: "No" },
-          { value: "minor", label: "Some wear / corrosion" },
-          { value: "major", label: "Heavy corrosion / active leaking" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      },
-      access: {
-        show: true,
-        label: "Are the valves easy to access?",
-        options: [
-          { value: "easy", label: "Easy" },
-          { value: "moderate", label: "Moderate" },
-          { value: "difficult", label: "Difficult" },
-          { value: "notSure", label: "Not sure" }
-        ]
-      }
-    }
+    basicsId: "plumbingBasicsShutoff",
+    detailsId: "plumbingDetailsShutoff",
+    display: "Replace Shutoff Valves"
   },
-
   plumbing_fix_active_leak: {
-    reason: {
-      label: "What best describes this plumbing issue?",
-      options: [
-        { value: "activeNow", label: "The leak is active right now" },
-        { value: "intermittent", label: "The leak comes and goes" },
-        { value: "damageAround", label: "There are signs of water damage" },
-        { value: "notSure", label: "Not sure" }
-      ]
-    },
-    location: {
-      label: "Where is this plumbing issue located?",
-      options: [
-        { value: "bathroom", label: "Bathroom" },
-        { value: "kitchen", label: "Kitchen" },
-        { value: "laundry", label: "Laundry" },
-        { value: "utility", label: "Utility / Mechanical" },
-        { value: "basement", label: "Basement" },
-        { value: "exterior", label: "Exterior" }
-      ]
-    },
-    severity: {
-      label: "How would you describe the issue right now?",
-      options: [
-        { value: "active", label: "Leak is active right now" },
-        { value: "contained", label: "Not actively leaking now, but needs repair" },
-        { value: "damage", label: "There may already be damage around it" }
-      ]
-    },
+    basicsId: "plumbingBasicsLeak",
+    detailsId: "plumbingDetailsLeak",
+    display: "Fix Active Leak"
+  },
+  plumbing_install_new_fixture: {
+    basicsId: "plumbingBasicsNewInstall",
+    detailsId: "plumbingDetailsNewInstall",
+    display: "Install New Plumbing Fixture"
+  }
+};
+
+let currentStep = 1;
+let latestEstimate = null;
+let coldLeadSubmitted = false;
+let hotLeadSubmitted = false;
+
+const form = document.getElementById("estimatorForm");
+const results = document.getElementById("results");
+const stepper = document.getElementById("stepper");
+const stepPanels = document.querySelectorAll(".step-panel");
+const stepPills = document.querySelectorAll("[data-step-pill]");
+
+const materialsOutput = document.getElementById("materials");
+const laborOutput = document.getElementById("labor");
+const totalOutput = document.getElementById("total");
+const breakdownList = document.getElementById("breakdownList");
+const resultsProjectName = document.getElementById("resultsProjectName");
+
+const hotLeadBtn = document.getElementById("hotLeadBtn");
+const doneBtn = document.getElementById("doneBtn");
+const hotCompletionScreen = document.getElementById("hotCompletionScreen");
+const doneCompletionScreen = document.getElementById("doneCompletionScreen");
+const startNewFromHot = document.getElementById("startNewFromHot");
+const startNewFromDone = document.getElementById("startNewFromDone");
+
+const projectType = document.getElementById("projectType");
+const projectDisplayName = document.getElementById("projectDisplayName");
+const selectedProjectLabel = document.getElementById("selectedProjectLabel");
+const selectedProjectSubLabel = document.getElementById("selectedProjectSubLabel");
+const selectedProjectMessageText = document.getElementById("selectedProjectMessageText");
+const projectSelectorShell = document.getElementById("projectSelectorShell");
+const projectSelectorTrigger = document.getElementById("projectSelectorTrigger");
+
+const drywallProjectOption = document.getElementById("drywallProjectOption");
+const lightingProjectOption = document.getElementById("lightingProjectOption");
+const paintProjectOption = document.getElementById("paintProjectOption");
+
+const plumbingFaucetProjectOption = document.getElementById("plumbingFaucetProjectOption");
+const plumbingToiletProjectOption = document.getElementById("plumbingToiletProjectOption");
+const plumbingVanityProjectOption = document.getElementById("plumbingVanityProjectOption");
+const plumbingDisposalProjectOption = document.getElementById("plumbingDisposalProjectOption");
+const plumbingShutoffProjectOption = document.getElementById("plumbingShutoffProjectOption");
+const plumbingLeakProjectOption = document.getElementById("plumbingLeakProjectOption");
+const plumbingNewFixtureProjectOption = document.getElementById("plumbingNewFixtureProjectOption");
+
+const validationStep1 = document.getElementById("validationStep1");
+const validationStep2 = document.getElementById("validationStep2");
+const validationStep3 = document.getElementById("validationStep3");
+const validationStep4 = document.getElementById("validationStep4");
+
+const basicsSubtitle = document.getElementById("basicsSubtitle");
+const detailsSubtitle = document.getElementById("detailsSubtitle");
+
+const propertyTypeGlobal = document.getElementById("propertyType");
+const propertyTypeMessage = document.getElementById("propertyTypeMessage");
+
+const drywallBasicsSection = document.getElementById("drywallBasicsSection");
+const lightingBasicsSection = document.getElementById("lightingBasicsSection");
+const paintBasicsSection = document.getElementById("paintBasicsSection");
+const plumbingBasicsSection = document.getElementById("plumbingBasicsSection");
+
+const drywallDetailsSection = document.getElementById("drywallDetailsSection");
+const lightingDetailsSection = document.getElementById("lightingDetailsSection");
+const paintDetailsSection = document.getElementById("paintDetailsSection");
+const plumbingDetailsSection = document.getElementById("plumbingDetailsSection");
+
+const damageLocation = document.getElementById("damageLocation");
+const damageSize = document.getElementById("damageSize");
+const scopeContext = document.getElementById("scopeContext");
+const texture = document.getElementById("texture");
+const paintRequired = document.getElementById("paintRequired");
+const paintBlend = document.getElementById("paintBlend");
+const paintAvailable = document.getElementById("paintAvailable");
+const insulation = document.getElementById("insulation");
+const ceilingHeight = document.getElementById("ceilingHeight");
+const obstacles = document.getElementById("obstacles");
+const notes = document.getElementById("notes");
+const projectFiles = document.getElementById("projectFiles");
+
+const scopeContextLabel = document.getElementById("scopeContextLabel");
+const paintBlendLabel = document.getElementById("paintBlendLabel");
+const workHeightLabel = document.getElementById("workHeightLabel");
+const paintBlendField = document.getElementById("paintBlendField");
+
+const lightingType = document.getElementById("lightingType");
+const lightingLocation = document.getElementById("lightingLocation");
+const fixtureCount = document.getElementById("fixtureCount");
+const fixtureType = document.getElementById("fixtureType");
+const accessDifficulty = document.getElementById("accessDifficulty");
+const wireRun = document.getElementById("wireRun");
+const atticAccess = document.getElementById("atticAccess");
+const fixtureSupplied = document.getElementById("fixtureSupplied");
+const newSwitch = document.getElementById("newSwitch");
+const repairIncluded = document.getElementById("repairIncluded");
+const paintAfterRepair = document.getElementById("paintAfterRepair");
+const paintLightingScope = document.getElementById("paintLightingScope");
+const paintLightingScopeLabel = document.getElementById("paintLightingScopeLabel");
+const atticAccessLabel = document.getElementById("atticAccessLabel");
+const lightingHeight = document.getElementById("lightingHeight");
+const lightingObstacles = document.getElementById("lightingObstacles");
+const notesLighting = document.getElementById("notesLighting");
+const projectFilesLighting = document.getElementById("projectFilesLighting");
+
+const lightingWireRunField = document.getElementById("lightingWireRunField");
+const lightingAtticAccessField = document.getElementById("lightingAtticAccessField");
+const lightingSwitchField = document.getElementById("lightingSwitchField");
+const lightingRepairField = document.getElementById("lightingRepairField");
+const lightingPaintYesNoField = document.getElementById("lightingPaintYesNoField");
+const lightingPaintScopeField = document.getElementById("lightingPaintScopeField");
+
+const paintScopeCheckboxes = document.querySelectorAll('input[name="paintScope"]');
+const paintRoomSize = document.getElementById("paintRoomSize");
+const paintRoomCount = document.getElementById("paintRoomCount");
+const paintColorChange = document.getElementById("paintColorChange");
+const paintCeilingHeight = document.getElementById("paintCeilingHeight");
+const paintCeilingHeightField = document.getElementById("paintCeilingHeightField");
+const paintSurfaceCondition = document.getElementById("paintSurfaceCondition");
+const paintSurfaceConditionField = document.getElementById("paintSurfaceConditionField");
+const paintFinishLevel = document.getElementById("paintFinishLevel");
+const paintPropertyType = document.getElementById("paintPropertyType");
+const paintAccessDifficulty = document.getElementById("paintAccessDifficulty");
+const paintHandling = document.getElementById("paintHandling");
+const paintObstacles = document.getElementById("paintObstacles");
+const paintYearBuilt = document.getElementById("paintYearBuilt");
+const paintLeadPrepMode = document.getElementById("paintLeadPrepMode");
+const paintLeadPrepField = document.getElementById("paintLeadPrepField");
+const paintNotes = document.getElementById("paintNotes");
+const projectFilesPaint = document.getElementById("projectFilesPaint");
+
+const plumbingBasicsFaucet = document.getElementById("plumbingBasicsFaucet");
+const plumbingBasicsToilet = document.getElementById("plumbingBasicsToilet");
+const plumbingBasicsVanity = document.getElementById("plumbingBasicsVanity");
+const plumbingBasicsDisposal = document.getElementById("plumbingBasicsDisposal");
+const plumbingBasicsShutoff = document.getElementById("plumbingBasicsShutoff");
+const plumbingBasicsLeak = document.getElementById("plumbingBasicsLeak");
+const plumbingBasicsNewInstall = document.getElementById("plumbingBasicsNewInstall");
+
+const plumbingDetailsFaucet = document.getElementById("plumbingDetailsFaucet");
+const plumbingDetailsToilet = document.getElementById("plumbingDetailsToilet");
+const plumbingDetailsVanity = document.getElementById("plumbingDetailsVanity");
+const plumbingDetailsDisposal = document.getElementById("plumbingDetailsDisposal");
+const plumbingDetailsShutoff = document.getElementById("plumbingDetailsShutoff");
+const plumbingDetailsLeak = document.getElementById("plumbingDetailsLeak");
+const plumbingDetailsNewInstall = document.getElementById("plumbingDetailsNewInstall");
+
+const nextToStep2 = document.getElementById("nextToStep2");
+const backToStep1 = document.getElementById("backToStep1");
+const nextToStep3 = document.getElementById("nextToStep3");
+const backToStep2 = document.getElementById("backToStep2");
+const nextToStep4 = document.getElementById("nextToStep4");
+const backToStep3 = document.getElementById("backToStep3");
+
+function currency(value) {
+  return "$" + Math.round(value).toLocaleString("en-US");
+}
+
+function setOptions(selectEl, options, preferredValue = null) {
+  const safeValue = options.some((o) => o.value === preferredValue) ? preferredValue : options[0].value;
+  selectEl.innerHTML = options.map((o) => `<option value="${o.value}">${o.label}</option>`).join("");
+  selectEl.value = safeValue;
+}
+
+function clearValidation(box) {
+  if (!box) return;
+  box.textContent = "";
+  box.classList.remove("active");
+}
+
+function showValidation(box, message) {
+  if (!box) return;
+  box.textContent = message;
+  box.classList.add("active");
+}
+
+function hideAllEndStates() {
+  if (results) {
+    results.classList.add("hidden");
+    results.classList.remove("active");
+  }
+  if (hotCompletionScreen) hotCompletionScreen.classList.remove("active");
+  if (doneCompletionScreen) doneCompletionScreen.classList.remove("active");
+}
+
+function updateStepper(step) {
+  stepPills.forEach((pill, index) => {
+    const pillStep = index + 1;
+    pill.classList.remove("active", "done");
+    if (pillStep < step) pill.classList.add("done");
+    else if (pillStep === step) pill.classList.add("active");
+  });
+}
+
+function showStep(step) {
+  currentStep = step;
+
+  stepPanels.forEach((panel) => {
+    panel.classList.remove("active");
+    if (Number(panel.dataset.step) === step) panel.classList.add("active");
+  });
+
+  if (step === 5) {
+    form.classList.add("hidden");
+    hideAllEndStates();
+    results.classList.remove("hidden");
+    results.classList.add("active");
+  } else {
+    form.classList.remove("hidden");
+    hideAllEndStates();
+  }
+
+  stepper.classList.remove("hidden");
+  updateStepper(step);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function showHotCompletion() {
+  form.classList.add("hidden");
+  results.classList.add("hidden");
+  hotCompletionScreen.classList.add("active");
+  doneCompletionScreen.classList.remove("active");
+  stepper.classList.add("hidden");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function showDoneCompletion() {
+  form.classList.add("hidden");
+  results.classList.add("hidden");
+  hotCompletionScreen.classList.remove("active");
+  doneCompletionScreen.classList.add("active");
+  stepper.classList.add("hidden");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function toggleProjectSelector() {
+  const isOpen = projectSelectorShell.classList.toggle("open");
+  projectSelectorTrigger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+}
+
+function setupAccordions() {
+  const groups = document.querySelectorAll(".accordion-group");
+  groups.forEach((group) => {
+    const button = group.querySelector(".accordion-button");
+    if (!button) return;
+
+    button.addEventListener("click", () => {
+      const isOpen = group.classList.contains("open");
+      groups.forEach((g) => g.classList.remove("open"));
+      if (!isOpen) group.classList.add("open");
+    });
+  });
+}
+
+function updatePropertyTypeMessage() {
+  const config = PROPERTY_TYPE_CONFIG[propertyTypeGlobal.value] || PROPERTY_TYPE_CONFIG.house;
+  if (!config.message) {
+    propertyTypeMessage.textContent = "";
+    propertyTypeMessage.classList.add("hidden");
+    return;
+  }
+  propertyTypeMessage.textContent = config.message;
+  propertyTypeMessage.classList.remove("hidden");
+}
+
+function isPlumbingProject(type) {
+  return typeof type === "string" && type.startsWith("plumbing_");
+}
+
+function getDrywallContext() {
+  return damageLocation.value === "ceiling" ? drywallContextConfig.ceiling : drywallContextConfig.wall;
+}
+
+function updateDrywallContextUI() {
+  const ctx = getDrywallContext();
+  const previousScope = scopeContext.value;
+  const previousPaint = paintBlend.value;
+
+  scopeContextLabel.textContent = ctx.scopeLabel;
+  paintBlendLabel.textContent = ctx.paintLabel;
+  workHeightLabel.textContent = ctx.heightLabel;
+
+  setOptions(scopeContext, ctx.scopeOptions, previousScope);
+  setOptions(paintBlend, ctx.paintOptions, previousPaint);
+}
+
+function togglePaintBlendField() {
+  paintBlendField.classList.toggle("hidden", paintRequired.value !== "yes");
+}
+
+function updateLightingPaintScopeOptions() {
+  const config = lightingPaintScopeConfig[lightingLocation.value] || lightingPaintScopeConfig.ceiling;
+  const previousValue = paintLightingScope.value;
+  paintLightingScopeLabel.textContent = config.label;
+  setOptions(paintLightingScope, config.options, previousValue);
+}
+
+function updateLightingConditionalFields() {
+  const isReplace = lightingType.value === "replace";
+  const isAdd = lightingType.value === "add";
+  const access = accessDifficulty.value;
+  const wire = wireRun.value;
+  const route = atticAccess.value;
+  const repair = repairIncluded.value;
+  const wantsPaint = paintAfterRepair.value === "yes";
+
+  lightingSwitchField.classList.toggle("hidden", isReplace);
+  lightingWireRunField.classList.toggle("hidden", isReplace);
+  lightingAtticAccessField.classList.toggle("hidden", isReplace);
+
+  if (isAdd) {
+    atticAccessLabel.textContent = "Is access available from above or below (attic, basement, or crawlspace)?";
+  }
+
+  const showReplaceRepair = isReplace && access !== "veryEasy";
+  const showAddRepair =
+    isAdd &&
+    (["medium", "long", "notSure"].includes(wire) ||
+      ["no", "notSure"].includes(route) ||
+      ["moderate", "difficult", "notSure"].includes(access));
+
+  const showRepair = showReplaceRepair || showAddRepair;
+  lightingRepairField.classList.toggle("hidden", !showRepair);
+
+  const showPaintYesNo = showRepair && ["yes", "notSure"].includes(repair);
+  lightingPaintYesNoField.classList.toggle("hidden", !showPaintYesNo);
+
+  const showPaintScope = showPaintYesNo && wantsPaint;
+  lightingPaintScopeField.classList.toggle("hidden", !showPaintScope);
+
+  updateLightingPaintScopeOptions();
+}
+
+function getSelectedPaintScopes() {
+  return Array.from(paintScopeCheckboxes)
+    .filter((cb) => cb.checked)
+    .map((cb) => cb.value);
+}
+
+function updatePaintConditionalFields() {
+  const scopes = getSelectedPaintScopes();
+  const includesWalls = scopes.includes("walls");
+  const includesCeiling = scopes.includes("ceiling");
+
+  paintSurfaceConditionField.classList.toggle("hidden", !includesWalls);
+  paintCeilingHeightField.classList.toggle("hidden", !includesCeiling);
+
+  if (!includesWalls) paintSurfaceCondition.value = "minimal";
+  if (!includesCeiling) paintCeilingHeight.value = "under8";
+
+  const showLead = ["before1980", "before1960", "notSure"].includes(paintYearBuilt.value);
+  paintLeadPrepField.classList.toggle("hidden", !showLead);
+  if (!showLead) paintLeadPrepMode.value = "standard";
+}
+
+function hideAllPlumbingBasicsTemplates() {
+  [
+    plumbingBasicsFaucet,
+    plumbingBasicsToilet,
+    plumbingBasicsVanity,
+    plumbingBasicsDisposal,
+    plumbingBasicsShutoff,
+    plumbingBasicsLeak,
+    plumbingBasicsNewInstall
+  ].forEach((el) => {
+    if (el) el.classList.add("hidden");
+  });
+}
+
+function hideAllPlumbingDetailsTemplates() {
+  [
+    plumbingDetailsFaucet,
+    plumbingDetailsToilet,
+    plumbingDetailsVanity,
+    plumbingDetailsDisposal,
+    plumbingDetailsShutoff,
+    plumbingDetailsLeak,
+    plumbingDetailsNewInstall
+  ].forEach((el) => {
+    if (el) el.classList.add("hidden");
+  });
+}
+
+function updatePlumbingTemplateVisibility() {
+  hideAllPlumbingBasicsTemplates();
+  hideAllPlumbingDetailsTemplates();
+
+  const config = PLUMBING_TEMPLATE_CONFIG[projectType.value];
+  if (!config) return;
+
+  const basicsEl = document.getElementById(config.basicsId);
+  const detailsEl = document.getElementById(config.detailsId);
+
+  if (basicsEl) basicsEl.classList.remove("hidden");
+  if (detailsEl) detailsEl.classList.remove("hidden");
+}
+
+function allProjectOptions() {
+  return [
+    drywallProjectOption,
+    lightingProjectOption,
+    paintProjectOption,
+    plumbingFaucetProjectOption,
+    plumbingToiletProjectOption,
+    plumbingVanityProjectOption,
+    plumbingDisposalProjectOption,
+    plumbingShutoffProjectOption,
+    plumbingLeakProjectOption,
+    plumbingNewFixtureProjectOption
+  ].filter(Boolean);
+}
+
+function setSelectedProject(projectKey, displayName) {
+  projectType.value = projectKey;
+  projectDisplayName.value = displayName;
+  selectedProjectLabel.textContent = displayName;
+  selectedProjectSubLabel.textContent = "Project selected. Continue when ready.";
+  selectedProjectMessageText.textContent = displayName;
+
+  allProjectOptions().forEach((option) => {
+    option.classList.toggle("active", option.dataset.value === projectKey);
+  });
+
+  projectSelectorShell.classList.remove("open");
+  projectSelectorTrigger.setAttribute("aria-expanded", "false");
+  clearValidation(validationStep1);
+  updateProjectSpecificUI();
+}
+
+function updateProjectSpecificUI() {
+  const type = projectType.value;
+
+  drywallBasicsSection.classList.add("hidden");
+  lightingBasicsSection.classList.add("hidden");
+  paintBasicsSection.classList.add("hidden");
+  plumbingBasicsSection.classList.add("hidden");
+
+  drywallDetailsSection.classList.add("hidden");
+  lightingDetailsSection.classList.add("hidden");
+  paintDetailsSection.classList.add("hidden");
+  plumbingDetailsSection.classList.add("hidden");
+
+  hideAllPlumbingBasicsTemplates();
+  hideAllPlumbingDetailsTemplates();
+
+  if (type === "lighting_add_replace") {
+    basicsSubtitle.textContent = "Tell us about the lighting project so we can build a more accurate estimate.";
+    detailsSubtitle.textContent = "A few final details help us refine the lighting estimate more accurately.";
+    lightingBasicsSection.classList.remove("hidden");
+    lightingDetailsSection.classList.remove("hidden");
+    updateLightingConditionalFields();
+    return;
+  }
+
+  if (type === "paint_one_room") {
+    basicsSubtitle.textContent = "Tell us about the room painting project so we can build a more accurate estimate.";
+    detailsSubtitle.textContent = "A few final details help us refine the painting estimate more accurately.";
+    paintBasicsSection.classList.remove("hidden");
+    paintDetailsSection.classList.remove("hidden");
+    updatePaintConditionalFields();
+    return;
+  }
+
+  if (isPlumbingProject(type)) {
+    basicsSubtitle.textContent = "Tell us about the plumbing project so we can build a more accurate estimate.";
+    detailsSubtitle.textContent = "A few final details help us refine the plumbing estimate more accurately.";
+    plumbingBasicsSection.classList.remove("hidden");
+    plumbingDetailsSection.classList.remove("hidden");
+    updatePlumbingTemplateVisibility();
+    return;
+  }
+
+  basicsSubtitle.textContent = "Tell us about the damaged area so we can build a more accurate estimate.";
+  detailsSubtitle.textContent = "A few final details help us refine the estimate more accurately.";
+  drywallBasicsSection.classList.remove("hidden");
+  drywallDetailsSection.classList.remove("hidden");
+  updateDrywallContextUI();
+  togglePaintBlendField();
+}
+
+function validateStep(step) {
+  if (step === 1) {
+    clearValidation(validationStep1);
+    if (!projectType.value) {
+      showValidation(validationStep1, "Please select a project type before continuing.");
+      return false;
+    }
+  }
+
+  if (step === 2) {
+    clearValidation(validationStep2);
+    const fullName = document.getElementById("fullName").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const zipcode = document.getElementById("zipcode").value.trim();
+
+    if (!fullName || !phone || !email || !zipcode) {
+      showValidation(validationStep2, "Please complete name, phone, email, and ZIP code before continuing.");
+      return false;
+    }
+  }
+
+  if (step === 3) {
+    clearValidation(validationStep3);
+
+    if (projectType.value === "paint_one_room" && getSelectedPaintScopes().length === 0) {
+      showValidation(validationStep3, "Please select at least one area to paint before continuing.");
+      return false;
+    }
+  }
+
+  if (step === 4) {
+    clearValidation(validationStep4);
+  }
+
+  return true;
+}
+
+function renderEstimate(estimateData, formData) {
+  materialsOutput.textContent = `Estimated Materials: ${currency(estimateData.minMaterials)} - ${currency(estimateData.maxMaterials)}`;
+  laborOutput.textContent = `Estimated Labor: ${currency(estimateData.laborMin)} - ${currency(estimateData.laborMax)}`;
+  totalOutput.textContent = `Estimated Total Range: ${currency(estimateData.totalMin)} - ${currency(estimateData.totalMax)}`;
+  resultsProjectName.textContent = `Project Type: ${formData.projectDisplayName}`;
+
+  breakdownList.innerHTML = "";
+  const summaryItems = [
+    `Estimated crew time: ${estimateData.hours} hours`,
+    `Materials considered: ${estimateData.materialsList.join(", ")}`
+  ];
+
+  [...summaryItems, ...estimateData.adjustments].forEach((item) => {
+    if (!item) return;
+    const li = document.createElement("li");
+    li.textContent = item;
+    breakdownList.appendChild(li);
+  });
+}
+
+function resetExperience() {
+  form.reset();
+
+  clearValidation(validationStep1);
+  clearValidation(validationStep2);
+  clearValidation(validationStep3);
+  clearValidation(validationStep4);
+
+  latestEstimate = null;
+  coldLeadSubmitted = false;
+  hotLeadSubmitted = false;
+
+  if (hotLeadBtn) {
+    hotLeadBtn.disabled = false;
+    hotLeadBtn.textContent = "Get My Exact Quote";
+  }
+
+  if (doneBtn) {
+    doneBtn.disabled = false;
+  }
+
+  breakdownList.innerHTML = "";
+
+  setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
+  updateDrywallContextUI();
+  togglePaintBlendField();
+  updateLightingConditionalFields();
+  updatePaintConditionalFields();
+  updatePropertyTypeMessage();
+  hideAllEndStates();
+  stepper.classList.remove("hidden");
+  showStep(1);
+}
+
+projectSelectorTrigger.addEventListener("click", (e) => {
+  e.stopPropagation();
+  toggleProjectSelector();
+});
+
+document.addEventListener("click", (e) => {
+  if (!projectSelectorShell.contains(e.target)) {
+    projectSelectorShell.classList.remove("open");
+    projectSelectorTrigger.setAttribute("aria-expanded", "false");
+  }
+});
+
+drywallProjectOption.addEventListener("click", () => {
+  setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
+});
+
+lightingProjectOption.addEventListener("click", () => {
+  setSelectedProject("lighting_add_replace", "Add or Replace a Light Fixture");
+});
+
+paintProjectOption.addEventListener("click", () => {
+  setSelectedProject("paint_one_room", "Paint One Room");
+});
+
+plumbingFaucetProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_replace_faucet", "Replace Faucet");
+});
+
+plumbingToiletProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_replace_toilet", "Replace Toilet");
+});
+
+plumbingVanityProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_replace_vanity", "Replace Vanity");
+});
+
+plumbingDisposalProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_replace_garbage_disposal", "Replace Garbage Disposal");
+});
+
+plumbingShutoffProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_replace_shutoff_valves", "Replace Shutoff Valves");
+});
+
+plumbingLeakProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_fix_active_leak", "Fix Active Leak");
+});
+
+plumbingNewFixtureProjectOption.addEventListener("click", () => {
+  setSelectedProject("plumbing_install_new_fixture", "Install New Plumbing Fixture");
+});
+
+propertyTypeGlobal.addEventListener("change", updatePropertyTypeMessage);
+
+damageLocation.addEventListener("change", updateDrywallContextUI);
+paintRequired.addEventListener("change", togglePaintBlendField);
+
+lightingType.addEventListener("change", updateLightingConditionalFields);
+lightingLocation.addEventListener("change", updateLightingConditionalFields);
+accessDifficulty.addEventListener("change", updateLightingConditionalFields);
+wireRun.addEventListener("change", updateLightingConditionalFields);
+atticAccess.addEventListener("change", updateLightingConditionalFields);
+repairIncluded.addEventListener("change", updateLightingConditionalFields);
+paintAfterRepair.addEventListener("change", updateLightingConditionalFields);
+
+paintScopeCheckboxes.forEach((cb) => cb.addEventListener("change", updatePaintConditionalFields));
+paintYearBuilt.addEventListener("change", updatePaintConditionalFields);
+
+setupAccordions();
+
+nextToStep2.addEventListener("click", () => {
+  if (validateStep(1)) showStep(2);
+});
+
+backToStep1.addEventListener("click", () => {
+  showStep(1);
+});
+
+nextToStep3.addEventListener("click", () => {
+  if (validateStep(2)) showStep(3);
+});
+
+backToStep2.addEventListener("click", () => {
+  showStep(2);
+});
+
+nextToStep4.addEventListener("click", () => {
+  if (validateStep(3)) showStep(4);
+});
+
+backToStep3.addEventListener("click", () => {
+  showStep(3);
+});
+
+updateDrywallContextUI();
+togglePaintBlendField();
+updateLightingConditionalFields();
+updatePaintConditionalFields();
+updatePropertyTypeMessage();
+setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
+hideAllEndStates();
+showStep(1);
