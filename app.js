@@ -632,10 +632,8 @@ const hotLeadBtn = document.getElementById("hotLeadBtn");
 const scheduleJobBtn = document.getElementById("scheduleJobBtn");
 const doneBtn = document.getElementById("doneBtn");
 const hotCompletionScreen = document.getElementById("hotCompletionScreen");
-const scheduleCompletionScreen = document.getElementById("scheduleCompletionScreen");
 const doneCompletionScreen = document.getElementById("doneCompletionScreen");
 const startNewFromHot = document.getElementById("startNewFromHot");
-const startNewFromSchedule = document.getElementById("startNewFromSchedule");
 const startNewFromDone = document.getElementById("startNewFromDone");
 
 const projectType = document.getElementById("projectType");
@@ -895,18 +893,7 @@ function hideAllEndStates() {
     results.classList.remove("active");
   }
   if (hotCompletionScreen) hotCompletionScreen.classList.remove("active");
-  if (scheduleCompletionScreen) scheduleCompletionScreen.classList.remove("active");
   if (doneCompletionScreen) doneCompletionScreen.classList.remove("active");
-}
-
-function showScheduleCompletion() {
-  form.classList.add("hidden");
-  results.classList.add("hidden");
-  hotCompletionScreen.classList.remove("active");
-  scheduleCompletionScreen.classList.add("active");
-  doneCompletionScreen.classList.remove("active");
-  stepper.classList.add("hidden");
-  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function updateStepper(step) {
@@ -3240,25 +3227,8 @@ hotLeadBtn.addEventListener("click", async () => {
   }
 });
 
-scheduleJobBtn.addEventListener("click", async () => {
-  if (!latestEstimate) return;
-
-  scheduleJobBtn.disabled = true;
-  scheduleJobBtn.textContent = "Sending...";
-  hotLeadBtn.disabled = true;
-  doneBtn.disabled = true;
-
-  try {
-    await submitLead("SCHEDULE", latestEstimate);
-    showScheduleCompletion();
-  } catch (error) {
-    console.error(error);
-    scheduleJobBtn.disabled = false;
-    scheduleJobBtn.textContent = "Schedule My Job";
-    hotLeadBtn.disabled = false;
-    doneBtn.disabled = false;
-    alert("We could not submit your schedule request right now. Please try again.");
-  }
+scheduleJobBtn.addEventListener("click", () => {
+  window.location.href = "https://tamayenterprises.com/online-appointments/ola/services/pro-furniture-assembly-installation";
 });
 
 doneBtn.addEventListener("click", () => {
@@ -3749,7 +3719,6 @@ function calculatePlumbingEstimate(formData) {
   );
 }
 startNewFromHot.addEventListener("click", resetExperience);
-startNewFromSchedule.addEventListener("click", resetExperience);
 startNewFromDone.addEventListener("click", resetExperience);
 
 updateDrywallContextUI();
