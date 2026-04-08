@@ -448,23 +448,23 @@ const PROPERTY_TYPE_CONFIG = {
   house: { multiplier: 1.0, message: "" },
   multifamily: {
     multiplier: 1.05,
-    message: "Multi-unit properties may involve coordination between units, tighter access, and additional protection requirements."
+    message: "Multi-unit properties may involve coordination between units, tighter access, and additional protection requirements. Understanding where your project is located helps us account for access, requirements, and overall project conditions."
   },
   condo: {
     multiplier: 1.08,
-    message: "Condo and co-op projects may require building coordination, insurance documentation, elevator access planning, and restricted work rules."
+    message: "Condo and co-op projects may require building coordination, insurance documentation, elevator access planning, and restricted work rules. Understanding where your project is located helps us account for access, requirements, and overall project conditions."
   },
   hoa: {
     multiplier: 1.12,
-    message: "HOA or managed buildings often require approvals, scheduling coordination, certificates of insurance, and restricted work hours."
+    message: "HOA or managed buildings often require approvals, scheduling coordination, certificates of insurance, and restricted work hours. Understanding where your project is located helps us account for access, requirements, and overall project conditions."
   },
   commercial: {
     multiplier: 1.15,
-    message: "Commercial projects may require additional compliance, coordination, safety procedures, and licensed trade documentation."
+    message: "Commercial projects may require additional compliance, coordination, safety procedures, and licensed trade documentation. Understanding where your project is located helps us account for access, requirements, and overall project conditions."
   },
   notSure: {
     multiplier: 1.08,
-    message: "Property-specific requirements will be confirmed during project review."
+    message: "Property-specific requirements will be confirmed during project review. Understanding where your project is located helps us account for access, requirements, and overall project conditions."
   }
 };
 
@@ -484,7 +484,6 @@ const drywallContextConfig = {
       { value: "connected-surfaces", label: "Connected walls" },
       { value: "not-sure", label: "Not sure" }
     ],
-    heightLabel: "Height of the work area",
     summaryMap: {
       standardSurface: "Adjustment for standard wall",
       largeSurface: "Adjustment for large wall",
@@ -508,7 +507,6 @@ const drywallContextConfig = {
       { value: "connected-surfaces", label: "Connected ceiling areas" },
       { value: "not-sure", label: "Not sure" }
     ],
-    heightLabel: "Height of the ceiling work area",
     summaryMap: {
       standardSurface: "Adjustment for standard ceiling section",
       largeSurface: "Adjustment for large ceiling area",
@@ -575,6 +573,7 @@ const projectDisplayName = document.getElementById("projectDisplayName");
 const selectedProjectLabel = document.getElementById("selectedProjectLabel");
 const selectedProjectSubLabel = document.getElementById("selectedProjectSubLabel");
 const selectedProjectMessageText = document.getElementById("selectedProjectMessageText");
+const selectedProjectMessage = document.getElementById("selectedProjectMessage");
 const projectSelectorShell = document.getElementById("projectSelectorShell");
 const projectSelectorTrigger = document.getElementById("projectSelectorTrigger");
 
@@ -615,20 +614,14 @@ const damageSize = document.getElementById("damageSize");
 const scopeContext = document.getElementById("scopeContext");
 const texture = document.getElementById("texture");
 const paintRequired = document.getElementById("paintRequired");
-const paintBlend = document.getElementById("paintBlend");
 const paintAvailable = document.getElementById("paintAvailable");
 const insulation = document.getElementById("insulation");
-const ceilingHeight = document.getElementById("ceilingHeight");
+const ceilingHeight = { value: "standard" };
 const obstacles = document.getElementById("obstacles");
 const notes = document.getElementById("notes");
 const projectFiles = document.getElementById("projectFiles");
 
 const scopeContextLabel = document.getElementById("scopeContextLabel");
-const paintBlendLabel = document.getElementById("paintBlendLabel");
-const workHeightLabel = document.getElementById("workHeightLabel");
-const paintBlendField = document.getElementById("paintBlendField");
-
-const lightingType = document.getElementById("lightingType");
 const lightingLocation = document.getElementById("lightingLocation");
 const fixtureCount = document.getElementById("fixtureCount");
 const fixtureType = document.getElementById("fixtureType");
@@ -977,6 +970,12 @@ function setSelectedProject(projectKey, displayName) {
   projectSelectorShell.classList.remove("open");
   projectSelectorTrigger.setAttribute("aria-expanded", "false");
   clearValidation(validationStep1);
+
+  if (selectedProjectMessage) {
+    selectedProjectMessage.classList.remove("hidden");
+    selectedProjectMessage.classList.add("show");
+  }
+
   updateProjectSpecificUI();
 }
 
@@ -987,17 +986,10 @@ function getDrywallContext() {
 function updateDrywallContextUI() {
   const ctx = getDrywallContext();
   const previousScope = scopeContext.value;
-  const previousPaint = paintBlend.value;
   scopeContextLabel.textContent = ctx.scopeLabel;
-  paintBlendLabel.textContent = ctx.paintLabel;
-  workHeightLabel.textContent = ctx.heightLabel;
   setOptions(scopeContext, ctx.scopeOptions, previousScope);
-  setOptions(paintBlend, ctx.paintOptions, previousPaint);
 }
 
-function togglePaintBlendField() {
-  paintBlendField.classList.toggle("hidden", paintRequired.value !== "yes");
-}
 
 function updateLightingPaintScopeOptions() {
   const config = lightingPaintScopeConfig[lightingLocation.value] || lightingPaintScopeConfig.ceiling;
@@ -1076,6 +1068,12 @@ function updateProjectSpecificUI() {
   plumbingDetailsSection.classList.add("hidden");
 
   hideAllPlumbingSubsections();
+
+  if (!type) {
+    basicsSubtitle.textContent = "Tell us about your project so we can build a more accurate estimate.";
+    detailsSubtitle.textContent = "Select a project type above to reveal relevant estimate fields.";
+    return;
+  }
 
   if (type === "lighting_add_replace") {
     basicsSubtitle.textContent = "Tell us about the lighting project so we can build a more accurate estimate.";
@@ -2091,7 +2089,7 @@ function getFormData() {
     scopeContext: scopeContext.value,
     texture: texture.value,
     paintRequired: paintRequired.value,
-    paintBlend: paintBlend.value,
+    paintBlend: "not-sure",
     paintAvailable: paintAvailable.value,
     insulation: insulation.value,
     ceilingHeight: ceilingHeight.value,
@@ -2348,7 +2346,6 @@ function resetExperience() {
 
   setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
   updateDrywallContextUI();
-  togglePaintBlendField();
   updateLightingConditionalFields();
   updatePaintConditionalFields();
   updatePlumbingConditionalUI();
@@ -2413,7 +2410,6 @@ plumbingNewFixtureProjectOption.addEventListener("click", () => {
 propertyTypeGlobal.addEventListener("change", updatePropertyTypeMessage);
 
 damageLocation.addEventListener("change", updateDrywallContextUI);
-paintRequired.addEventListener("change", togglePaintBlendField);
 
 lightingType.addEventListener("change", updateLightingConditionalFields);
 lightingLocation.addEventListener("change", updateLightingConditionalFields);
@@ -3480,11 +3476,9 @@ startNewFromHot.addEventListener("click", resetExperience);
 startNewFromDone.addEventListener("click", resetExperience);
 
 updateDrywallContextUI();
-togglePaintBlendField();
 updateLightingConditionalFields();
 updatePaintConditionalFields();
 updatePlumbingConditionalUI();
 updatePropertyTypeMessage();
-setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
 hideAllEndStates();
 showStep(1);

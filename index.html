@@ -13,12 +13,11 @@
       <div class="card">
 
         <div class="hero">
-          <h1>Project Cost Estimator — Built from Real Experience</h1>
+          <h1>Would You Like To Know How Much A Project Would Cost?</h1>
           <p>
             Real contractor pricing that guides you through what your project truly involves — materials, labor, and real conditions.
           </p>
-          <div class="hero-micro">Designed to help you make smarter project decisions.</div>
-          <div class="hero-powered">Powered by Tamay Enterprises Inc.</div>
+          <div class="hero-powered">Powered by Tamay Enterprises Inc. <img src="logo.PNG" alt="Tamay Enterprises logo" class="hero-logo" /></div>
         </div>
 
         <div class="content">
@@ -40,8 +39,8 @@
               <div class="selector-shell" id="projectSelectorShell">
                 <button type="button" class="selector-trigger" id="projectSelectorTrigger" aria-expanded="false">
                   <div>
-                    <strong id="selectedProjectLabel">Drywall Patch / Wall Repair</strong>
-                    <span id="selectedProjectSubLabel">Open to browse available estimator categories</span>
+                    <strong id="selectedProjectLabel">Choose Project</strong>
+                    <span id="selectedProjectSubLabel">Select a project type to get started</span>
                   </div>
                   <div class="selector-chevron">&#9662;</div>
                 </button>
@@ -51,12 +50,12 @@
                     <button type="button" class="accordion-button">
                       <div>
                         <div>Drywall &amp; Wall Repair</div>
-                        <div class="meta">Available now</div>
+                        <div class="badge live">Available</div>
                       </div>
                       <div class="acc-icon">&#9662;</div>
                     </button>
                     <div class="accordion-content">
-                      <div class="project-option selectable active" id="drywallProjectOption" data-value="drywall_patch_wall_repair" data-display="Drywall Patch / Wall Repair">
+                      <div class="project-option selectable" id="drywallProjectOption" data-value="drywall_patch_wall_repair" data-display="Drywall Patch / Wall Repair">
                         <h4>Drywall Patch / Wall Repair</h4>
                         <p>Repair holes, damaged drywall sections, wall patches, and ceiling repair areas that may also require texture or paint.</p>
                         <div class="badge live">Available</div>
@@ -68,7 +67,7 @@
                     <button type="button" class="accordion-button">
                       <div>
                         <div>Electrical &amp; Lighting</div>
-                        <div class="meta">Available now</div>
+                        <div class="badge live">Available</div>
                       </div>
                       <div class="acc-icon">&#9662;</div>
                     </button>
@@ -85,7 +84,7 @@
                     <button type="button" class="accordion-button">
                       <div>
                         <div>Painting</div>
-                        <div class="meta">Available now</div>
+                        <div class="badge live">Available</div>
                       </div>
                       <div class="acc-icon">&#9662;</div>
                     </button>
@@ -102,7 +101,7 @@
                     <button type="button" class="accordion-button">
                       <div>
                         <div>Plumbing</div>
-                        <div class="meta">Available now</div>
+                        <div class="badge live">Available</div>
                       </div>
                       <div class="acc-icon">&#9662;</div>
                     </button>
@@ -153,16 +152,13 @@
                 </div>
               </div>
 
-              <div class="selected-project show" id="selectedProjectMessage">
-                Selected project: <strong id="selectedProjectMessageText">Drywall Patch / Wall Repair</strong>
+              <div class="selected-project hidden" id="selectedProjectMessage">
+                Selected project: <strong id="selectedProjectMessageText">Choose Project</strong>
               </div>
 
               <!-- GLOBAL PROJECT LOCATION & REQUIREMENTS -->
               <div class="global-section">
                 <h3 class="section-title">Project Location &amp; Requirements</h3>
-                <p class="section-subtitle">
-                  Understanding where your project is located helps us account for access, requirements, and overall project conditions.
-                </p>
 
                 <label for="propertyType">Where is this project located?</label>
                 <select id="propertyType">
@@ -177,8 +173,8 @@
                 <div class="micro-educational hidden" id="propertyTypeMessage"></div>
               </div>
 
-              <input type="hidden" id="projectType" value="drywall_patch_wall_repair" />
-              <input type="hidden" id="projectDisplayName" value="Drywall Patch / Wall Repair" />
+              <input type="hidden" id="projectType" value="" />
+              <input type="hidden" id="projectDisplayName" value="" />
 
               <div class="validation" id="validationStep1"></div>
 
@@ -246,13 +242,18 @@
                 <label for="damageSize">Approximate size of the damage</label>
                 <select id="damageSize">
                   <option value="small">Small (less than 6")</option>
-                  <option value="medium">Medium (6" to 24")</option>
+                  <option value="medium">Medium (6" to 23")</option>
                   <option value="large">Large (24" to 48")</option>
                   <option value="xlarge">Very large (more than 48")</option>
                 </select>
 
                 <label for="scopeContext" id="scopeContextLabel">Size of the affected wall or area</label>
-                <select id="scopeContext"></select>
+                <select id="scopeContext">
+                  <option value="small-area">Small wall area (less than 4 ft)</option>
+                  <option value="standard-surface">Standard wall (up to 8 ft)</option>
+                  <option value="large-surface">Large wall (more than 8 ft)</option>
+                  <option value="connected-surfaces">Multiple connected walls</option>
+                </select>
 
                 <label for="texture">Surface / texture type</label>
                 <select id="texture">
@@ -570,11 +571,6 @@
                   <option value="yes">Yes</option>
                 </select>
 
-                <div id="paintBlendField">
-                  <label for="paintBlend" id="paintBlendLabel">What area should be painted?</label>
-                  <select id="paintBlend"></select>
-                </div>
-
                 <label for="paintAvailable">Do you have the existing paint?</label>
                 <select id="paintAvailable">
                   <option value="unknown">Not sure</option>
@@ -587,13 +583,6 @@
                   <option value="unknown">Not sure</option>
                   <option value="yes">Yes</option>
                   <option value="no">No</option>
-                </select>
-
-                <label for="ceilingHeight" id="workHeightLabel">Height of the work area</label>
-                <select id="ceilingHeight">
-                  <option value="standard">Less than 8 ft</option>
-                  <option value="medium">8 to 10 ft</option>
-                  <option value="high">More than 10 ft</option>
                 </select>
 
                 <label for="obstacles">Any furniture or obstacles to move?</label>
@@ -626,7 +615,7 @@
                   <select id="wireRun">
                     <option value="none">No new wiring needed</option>
                     <option value="short">Short run (up to 10 ft)</option>
-                    <option value="medium">Medium run (10 to 25 ft)</option>
+                    <option value="medium">Medium run (11 to 25 ft)</option>
                     <option value="long">Long run (more than 25 ft)</option>
                     <option value="notSure">Not sure</option>
                   </select>
