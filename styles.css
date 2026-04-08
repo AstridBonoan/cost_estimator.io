@@ -301,12 +301,13 @@ textarea:focus {
 /* STEPPER */
 .stepper {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: 8px;
   margin-bottom: 18px;
 }
 
 .step-pill {
+  min-width: 0;
   border-radius: 999px;
   padding: 12px 14px;
   text-align: center;
@@ -315,6 +316,9 @@ textarea:focus {
   background: #EAF3FB;
   color: var(--navy);
   border: 1px solid rgba(11, 60, 93, 0.12);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .step-pill.active {
@@ -327,6 +331,17 @@ textarea:focus {
   background: var(--accent);
   color: #0F172A;
   border-color: rgba(242, 201, 76, 0.6);
+}
+
+@media (max-width: 640px) {
+  .stepper {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+
+  .step-pill {
+    font-size: 0.72rem;
+    padding: 10px 12px;
+  }
 }
 
 /* PROJECT SELECTOR */
