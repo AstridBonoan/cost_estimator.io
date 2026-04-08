@@ -80,6 +80,23 @@
                     </div>
                   </div>
 
+                  <div class="accordion-group open" data-accordion="installations">
+                    <button type="button" class="accordion-button">
+                      <div>
+                        <div>Installations</div>
+                        <div class="badge live">Available</div>
+                      </div>
+                      <div class="acc-icon">&#9662;</div>
+                    </button>
+                    <div class="accordion-content">
+                      <div class="project-option selectable" id="tvMountProjectOption" data-value="tv_mount_install" data-display="TV Mount Installation">
+                        <h4>TV Mount Installation</h4>
+                        <p>Estimate TV mounting and install services, including wall supports, wiring, outlet placement, and accessory setup.</p>
+                        <div class="badge live">Available</div>
+                      </div>
+                    </div>
+                  </div>
+
                   <div class="accordion-group open" data-accordion="painting">
                     <button type="button" class="accordion-button">
                       <div>
@@ -294,6 +311,50 @@
                   <option value="vanity">Vanity / wall light</option>
                   <option value="pendant">Pendant / chandelier</option>
                   <option value="exterior">Exterior light</option>
+                  <option value="notSure">Not sure</option>
+                </select>
+              </div>
+
+              <!-- TV MOUNT BASICS -->
+              <div id="tvMountBasicsSection" class="hidden">
+                <label for="mountType">What type of TV mount installation do you need?</label>
+                <select id="mountType">
+                  <option value="standard">Standard wall mount</option>
+                  <option value="fireplace">Over fireplace</option>
+                  <option value="corner">Corner mount</option>
+                  <option value="notSure">Not sure</option>
+                </select>
+
+                <label for="wallType">What type of surface or wall is this?</label>
+                <select id="wallType">
+                  <option value="drywall">Drywall</option>
+                  <option value="plaster">Plaster</option>
+                  <option value="brick">Brick</option>
+                  <option value="tile">Tile</option>
+                  <option value="stone">Stone</option>
+                  <option value="notSure">Not sure</option>
+                </select>
+
+                <label for="tvSize">What size TV is being installed?</label>
+                <select id="tvSize">
+                  <option value="small">Up to 43&quot;</option>
+                  <option value="medium">44&quot; to 64&quot;</option>
+                  <option value="large">65&quot; to 84&quot;</option>
+                  <option value="xlarge">85&quot;+</option>
+                </select>
+
+                <label for="mountProvided">Do you already have the TV mount bracket?</label>
+                <select id="mountProvided">
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                  <option value="notSure">Not sure</option>
+                </select>
+
+                <label for="existingOutlet">Is there already an outlet behind or near the TV area?</label>
+                <select id="existingOutlet">
+                  <option value="yes">Yes</option>
+                  <option value="nearby">Nearby, but not behind TV</option>
+                  <option value="no">No</option>
                   <option value="notSure">Not sure</option>
                 </select>
               </div>
@@ -687,6 +748,61 @@
 
                 <label for="notesLighting">Additional Notes</label>
                 <textarea id="notesLighting" placeholder="Describe any details we should know about the lighting project."></textarea>
+              </div>
+
+              <!-- TV MOUNT DETAILS -->
+              <div id="tvMountDetailsSection" class="hidden">
+                <label for="wireConceal">Would you like the wires hidden or managed?</label>
+                <select id="wireConceal">
+                  <option value="none">No, simple visible cable setup</option>
+                  <option value="cover">Yes, with external cable cover</option>
+                  <option value="inWall">Yes, hidden through wall</option>
+                  <option value="notSure">Not sure</option>
+                </select>
+
+                <div id="powerWorkWrap" class="hidden">
+                  <label for="powerWork">Would you like us to add or relocate an outlet behind the TV?</label>
+                  <select id="powerWork">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+                </div>
+
+                <div id="lowVoltageWrap" class="hidden">
+                  <label for="lowVoltage">Would you also like to move low-voltage lines (internet / cable / HDMI pass-through)?</label>
+                  <select id="lowVoltage">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                    <option value="notSure">Not sure</option>
+                  </select>
+                </div>
+
+                <label for="soundbarInstall">Are we also installing a soundbar or accessory shelf?</label>
+                <select id="soundbarInstall">
+                  <option value="no">No</option>
+                  <option value="soundbar">Soundbar only</option>
+                  <option value="shelf">Shelf only</option>
+                  <option value="both">Both</option>
+                </select>
+
+                <label for="wallPatchPaint">If openings are needed, should we also account for patching and paint touch-up?</label>
+                <select id="wallPatchPaint">
+                  <option value="no">No</option>
+                  <option value="patchOnly">Patch only</option>
+                  <option value="patchPaint">Patch + paint touch-up</option>
+                  <option value="notSure">Not sure</option>
+                </select>
+
+                <label for="mountHeight">How high or difficult is the work area?</label>
+                <select id="mountHeight">
+                  <option value="standard">Standard height</option>
+                  <option value="high">Higher than normal / ladder work</option>
+                  <option value="veryHigh">Very high / difficult access</option>
+                </select>
+
+                <label for="notesTvMount">Additional Notes</label>
+                <textarea id="notesTvMount" placeholder="Anything else we should know about the installation?"></textarea>
               </div>
 
               <!-- PAINT DETAILS -->
@@ -1163,8 +1279,11 @@
             <p id="total">Estimated Total Range: $0</p>
 
             <div class="cta-panel">
-              <h3>Ready for a more accurate quote?</h3>
-              <p>A Tamay team member will review your project, confirm details, and provide a final accurate quote.</p>
+              <h3>Ready to move forward?</h3>
+              <p>A Tamay team member can review your project and schedule the job, or you can get a final exact quote first.</p>
+              <div class="actions actions-stack">
+                <button type="button" id="scheduleJobBtn" class="btn btn-gold">Schedule My Job</button>
+              </div>
               <div class="actions actions-split">
                 <button type="button" id="hotLeadBtn" class="btn btn-gold">Get My Exact Quote</button>
                 <button type="button" id="doneBtn" class="btn btn-muted">Done</button>
@@ -1188,6 +1307,15 @@
             <p>A Tamay team member will contact you shortly to review your project and provide a final accurate quote.</p>
             <div class="completion-actions">
               <button type="button" id="startNewFromHot" class="btn btn-primary">Start New Estimate</button>
+            </div>
+          </div>
+
+          <div class="completion-screen" id="scheduleCompletionScreen">
+            <div class="completion-icon hot">&#10003;</div>
+            <h2>Request received.</h2>
+            <p>Your scheduling request is on its way. A team member will contact you soon to book the job.</p>
+            <div class="completion-actions">
+              <button type="button" id="startNewFromSchedule" class="btn btn-primary">Start New Estimate</button>
             </div>
           </div>
 

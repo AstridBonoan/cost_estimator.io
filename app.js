@@ -229,6 +229,73 @@ const PRICING = {
     materials: ["Paint", "Primer", "Caulk", "Masking tape", "Plastic / protection materials", "Patch / prep consumables"]
   },
 
+  tvMount: {
+    base: {
+      standard: { laborMin: 95, laborMax: 120, matMin: 8, matMax: 20, label: "Standard wall mount" },
+      fireplace: { laborMin: 130, laborMax: 180, matMin: 10, matMax: 30, label: "Over fireplace installation" },
+      corner: { laborMin: 125, laborMax: 165, matMin: 10, matMax: 25, label: "Corner mount" },
+      notSure: { laborMin: 115, laborMax: 155, matMin: 10, matMax: 25, label: "Mounting type to be confirmed" }
+    },
+    tvSize: {
+      small: { laborMin: 0, laborMax: 0, matMin: 0, matMax: 0, label: 'TV size up to 43"' },
+      medium: { laborMin: 15, laborMax: 25, matMin: 0, matMax: 0, label: 'TV size 44" to 64"' },
+      large: { laborMin: 35, laborMax: 60, matMin: 0, matMax: 0, label: 'TV size 65" to 84"' },
+      xlarge: { laborMin: 60, laborMax: 100, matMin: 0, matMax: 0, label: 'TV size 85"+' }
+    },
+    wallType: {
+      drywall: { laborMin: 0, laborMax: 0, matMin: 0, matMax: 0, label: 'Drywall surface' },
+      plaster: { laborMin: 20, laborMax: 40, matMin: 5, matMax: 15, label: 'Plaster wall adjustment' },
+      brick: { laborMin: 45, laborMax: 80, matMin: 10, matMax: 25, label: 'Brick surface adjustment' },
+      tile: { laborMin: 55, laborMax: 90, matMin: 10, matMax: 25, label: 'Tile surface adjustment' },
+      stone: { laborMin: 65, laborMax: 110, matMin: 15, matMax: 35, label: 'Stone surface adjustment' },
+      notSure: { laborMin: 25, laborMax: 45, matMin: 5, matMax: 15, label: 'Surface to be confirmed' }
+    },
+    mountProvided: {
+      yes: { laborMin: 0, laborMax: 0, matMin: 0, matMax: 0, label: 'Mount bracket provided by customer' },
+      no: { laborMin: 0, laborMax: 0, matMin: 35, matMax: 120, label: 'Mount bracket allowance included' },
+      notSure: { laborMin: 0, laborMax: 0, matMin: 25, matMax: 80, label: 'Mount bracket allowance to be confirmed' }
+    },
+    existingOutlet: {
+      yes: { laborMin: 0, laborMax: 0, matMin: 0, matMax: 0, label: 'Outlet already available' },
+      nearby: { laborMin: 10, laborMax: 20, matMin: 0, matMax: 0, label: 'Outlet nearby but not centered' },
+      no: { laborMin: 20, laborMax: 35, matMin: 0, matMax: 0, label: 'No nearby outlet confirmed' },
+      notSure: { laborMin: 10, laborMax: 20, matMin: 0, matMax: 0, label: 'Outlet condition to be confirmed' }
+    },
+    wireConceal: {
+      none: { laborMin: 0, laborMax: 0, matMin: 0, matMax: 0, label: 'Simple visible cable setup' },
+      cover: { laborMin: 20, laborMax: 40, matMin: 15, matMax: 40, label: 'External cable concealment' },
+      inWall: { laborMin: 80, laborMax: 150, matMin: 25, matMax: 70, label: 'In-wall wire concealment' },
+      notSure: { laborMin: 35, laborMax: 65, matMin: 10, matMax: 30, label: 'Wire concealment to be confirmed' }
+    },
+    powerWork: {
+      no: { laborMin: 0, laborMax: 0, matMin: 0, matMax: 0, label: '' },
+      yes: { laborMin: 120, laborMax: 220, matMin: 35, matMax: 95, label: 'Outlet relocation / addition behind TV' },
+      notSure: { laborMin: 70, laborMax: 130, matMin: 20, matMax: 60, label: 'Power work to be confirmed' }
+    },
+    lowVoltage: {
+      no: { laborMin: 0, laborMax: 0, matMin: 0, matMax: 0, label: '' },
+      yes: { laborMin: 45, laborMax: 90, matMin: 10, matMax: 30, label: 'Low-voltage line relocation' },
+      notSure: { laborMin: 25, laborMax: 50, matMin: 5, matMax: 15, label: 'Low-voltage work to be confirmed' }
+    },
+    soundbarInstall: {
+      no: { laborMin: 0, laborMax: 0, matMin: 0, matMax: 0, label: '' },
+      soundbar: { laborMin: 35, laborMax: 60, matMin: 5, matMax: 20, label: 'Soundbar installation' },
+      shelf: { laborMin: 30, laborMax: 55, matMin: 5, matMax: 20, label: 'Accessory shelf installation' },
+      both: { laborMin: 60, laborMax: 105, matMin: 10, matMax: 35, label: 'Soundbar + shelf installation' }
+    },
+    wallPatchPaint: {
+      no: { laborMin: 0, laborMax: 0, matMin: 0, matMax: 0, label: '' },
+      patchOnly: { laborMin: 45, laborMax: 90, matMin: 10, matMax: 30, label: 'Wall patching included' },
+      patchPaint: { laborMin: 80, laborMax: 150, matMin: 20, matMax: 55, label: 'Wall patching + paint touch-up included' },
+      notSure: { laborMin: 45, laborMax: 85, matMin: 10, matMax: 30, label: 'Wall repair scope to be confirmed' }
+    },
+    mountHeight: {
+      standard: { laborMin: 0, laborMax: 0, matMin: 0, matMax: 0, label: 'Standard work height' },
+      high: { laborMin: 20, laborMax: 40, matMin: 0, matMax: 0, label: 'High work area adjustment' },
+      veryHigh: { laborMin: 45, laborMax: 85, matMin: 0, matMax: 0, label: 'Very high / difficult access adjustment' }
+    }
+  },
+
   plumbing: {
     faucet: {
       baseLaborMin: 250,
@@ -562,10 +629,13 @@ const breakdownList = document.getElementById("breakdownList");
 const resultsProjectName = document.getElementById("resultsProjectName");
 
 const hotLeadBtn = document.getElementById("hotLeadBtn");
+const scheduleJobBtn = document.getElementById("scheduleJobBtn");
 const doneBtn = document.getElementById("doneBtn");
 const hotCompletionScreen = document.getElementById("hotCompletionScreen");
+const scheduleCompletionScreen = document.getElementById("scheduleCompletionScreen");
 const doneCompletionScreen = document.getElementById("doneCompletionScreen");
 const startNewFromHot = document.getElementById("startNewFromHot");
+const startNewFromSchedule = document.getElementById("startNewFromSchedule");
 const startNewFromDone = document.getElementById("startNewFromDone");
 
 const projectType = document.getElementById("projectType");
@@ -580,6 +650,7 @@ const projectSelectorTrigger = document.getElementById("projectSelectorTrigger")
 const drywallProjectOption = document.getElementById("drywallProjectOption");
 const lightingProjectOption = document.getElementById("lightingProjectOption");
 const paintProjectOption = document.getElementById("paintProjectOption");
+const tvMountProjectOption = document.getElementById("tvMountProjectOption");
 const plumbingFaucetProjectOption = document.getElementById("plumbingFaucetProjectOption");
 const plumbingToiletProjectOption = document.getElementById("plumbingToiletProjectOption");
 const plumbingVanityProjectOption = document.getElementById("plumbingVanityProjectOption");
@@ -601,11 +672,13 @@ const propertyTypeMessage = document.getElementById("propertyTypeMessage");
 
 const drywallBasicsSection = document.getElementById("drywallBasicsSection");
 const lightingBasicsSection = document.getElementById("lightingBasicsSection");
+const tvMountBasicsSection = document.getElementById("tvMountBasicsSection");
 const paintBasicsSection = document.getElementById("paintBasicsSection");
 const plumbingBasicsSection = document.getElementById("plumbingBasicsSection");
 
 const drywallDetailsSection = document.getElementById("drywallDetailsSection");
 const lightingDetailsSection = document.getElementById("lightingDetailsSection");
+const tvMountDetailsSection = document.getElementById("tvMountDetailsSection");
 const paintDetailsSection = document.getElementById("paintDetailsSection");
 const plumbingDetailsSection = document.getElementById("plumbingDetailsSection");
 
@@ -646,6 +719,22 @@ const lightingSwitchField = document.getElementById("lightingSwitchField");
 const lightingRepairField = document.getElementById("lightingRepairField");
 const lightingPaintYesNoField = document.getElementById("lightingPaintYesNoField");
 const lightingPaintScopeField = document.getElementById("lightingPaintScopeField");
+
+const mountType = document.getElementById("mountType");
+const wallType = document.getElementById("wallType");
+const tvSize = document.getElementById("tvSize");
+const mountProvided = document.getElementById("mountProvided");
+const existingOutlet = document.getElementById("existingOutlet");
+const wireConceal = document.getElementById("wireConceal");
+const powerWork = document.getElementById("powerWork");
+const lowVoltage = document.getElementById("lowVoltage");
+const soundbarInstall = document.getElementById("soundbarInstall");
+const wallPatchPaint = document.getElementById("wallPatchPaint");
+const mountHeight = document.getElementById("mountHeight");
+const notesTvMount = document.getElementById("notesTvMount");
+
+const powerWorkWrap = document.getElementById("powerWorkWrap");
+const lowVoltageWrap = document.getElementById("lowVoltageWrap");
 
 const paintScopeCheckboxes = document.querySelectorAll('input[name="paintScope"]');
 const paintRoomSize = document.getElementById("paintRoomSize");
@@ -806,7 +895,18 @@ function hideAllEndStates() {
     results.classList.remove("active");
   }
   if (hotCompletionScreen) hotCompletionScreen.classList.remove("active");
+  if (scheduleCompletionScreen) scheduleCompletionScreen.classList.remove("active");
   if (doneCompletionScreen) doneCompletionScreen.classList.remove("active");
+}
+
+function showScheduleCompletion() {
+  form.classList.add("hidden");
+  results.classList.add("hidden");
+  hotCompletionScreen.classList.remove("active");
+  scheduleCompletionScreen.classList.add("active");
+  doneCompletionScreen.classList.remove("active");
+  stepper.classList.add("hidden");
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function updateStepper(step) {
@@ -894,6 +994,7 @@ function allProjectOptions() {
     drywallProjectOption,
     lightingProjectOption,
     paintProjectOption,
+    tvMountProjectOption,
     plumbingFaucetProjectOption,
     plumbingToiletProjectOption,
     plumbingVanityProjectOption,
@@ -1034,6 +1135,25 @@ function updateLightingConditionalFields() {
   updateLightingPaintScopeOptions();
 }
 
+function updateTvMountConditionalFields() {
+  const wantsPowerWork = wireConceal.value === "inWall" || wireConceal.value === "notSure";
+  powerWorkWrap.classList.toggle("hidden", !wantsPowerWork);
+
+  const needsLowVoltage =
+    !lowVoltageWrap ||
+    (!powerWorkWrap.classList.contains("hidden") && (powerWork.value === "yes" || powerWork.value === "notSure")) ||
+    wireConceal.value === "notSure";
+
+  lowVoltageWrap.classList.toggle("hidden", !needsLowVoltage);
+
+  if (powerWorkWrap.classList.contains("hidden")) {
+    powerWork.value = "no";
+  }
+  if (lowVoltageWrap.classList.contains("hidden")) {
+    lowVoltage.value = "no";
+  }
+}
+
 function getSelectedPaintScopes() {
   return Array.from(paintScopeCheckboxes).filter((cb) => cb.checked).map((cb) => cb.value);
 }
@@ -1059,11 +1179,13 @@ function updateProjectSpecificUI() {
 
   drywallBasicsSection.classList.add("hidden");
   lightingBasicsSection.classList.add("hidden");
+  tvMountBasicsSection.classList.add("hidden");
   paintBasicsSection.classList.add("hidden");
   plumbingBasicsSection.classList.add("hidden");
 
   drywallDetailsSection.classList.add("hidden");
   lightingDetailsSection.classList.add("hidden");
+  tvMountDetailsSection.classList.add("hidden");
   paintDetailsSection.classList.add("hidden");
   plumbingDetailsSection.classList.add("hidden");
 
@@ -1081,6 +1203,15 @@ function updateProjectSpecificUI() {
     lightingBasicsSection.classList.remove("hidden");
     lightingDetailsSection.classList.remove("hidden");
     updateLightingConditionalFields();
+    return;
+  }
+
+  if (type === "tv_mount_install") {
+    basicsSubtitle.textContent = "Tell us about the TV mount project so we can build a more accurate estimate.";
+    detailsSubtitle.textContent = "A few final details help us refine the TV mount estimate more accurately.";
+    tvMountBasicsSection.classList.remove("hidden");
+    tvMountDetailsSection.classList.remove("hidden");
+    updateTvMountConditionalFields();
     return;
   }
 
@@ -1195,6 +1326,12 @@ function classifyJobSize(formData) {
     ) {
       return "medium";
     }
+    return "small";
+  }
+
+  if (formData.projectType === "tv_mount_install") {
+    if (formData.tvSize === "xlarge") return "large";
+    if (formData.tvSize === "large") return "medium";
     return "small";
   }
 
@@ -1567,6 +1704,80 @@ function calculateLightingEstimate(formData) {
       materialsList: preset.materials,
       adjustments,
       internalAdjustments,
+      leadMeta
+    },
+    formData,
+    leadMeta
+  );
+}
+
+function calculateTvMountEstimate(formData) {
+  const leadMeta = classifyLead(formData);
+  const estimate = {
+    laborMin: 0,
+    laborMax: 0,
+    matMin: 0,
+    matMax: 0,
+    breakdown: []
+  };
+
+  function addLine(item, label) {
+    if (!item) return;
+    estimate.laborMin += item.laborMin || 0;
+    estimate.laborMax += item.laborMax || 0;
+    estimate.matMin += item.matMin || 0;
+    estimate.matMax += item.matMax || 0;
+    if (label) estimate.breakdown.push(label);
+  }
+
+  addLine(PRICING.tvMount.base[formData.mountType], `Base installation selected: ${PRICING.tvMount.base[formData.mountType]?.label || "Standard wall mount"}`);
+  addLine(PRICING.tvMount.wallType[formData.wallType], PRICING.tvMount.wallType[formData.wallType]?.label);
+  addLine(PRICING.tvMount.tvSize[formData.tvSize], PRICING.tvMount.tvSize[formData.tvSize]?.label);
+  addLine(PRICING.tvMount.mountProvided[formData.mountProvided], PRICING.tvMount.mountProvided[formData.mountProvided]?.label);
+  addLine(PRICING.tvMount.existingOutlet[formData.existingOutlet], PRICING.tvMount.existingOutlet[formData.existingOutlet]?.label);
+  addLine(PRICING.tvMount.wireConceal[formData.wireConceal], PRICING.tvMount.wireConceal[formData.wireConceal]?.label);
+  addLine(PRICING.tvMount.powerWork[formData.powerWork], PRICING.tvMount.powerWork[formData.powerWork]?.label);
+  addLine(PRICING.tvMount.lowVoltage[formData.lowVoltage], PRICING.tvMount.lowVoltage[formData.lowVoltage]?.label);
+  addLine(PRICING.tvMount.soundbarInstall[formData.soundbarInstall], PRICING.tvMount.soundbarInstall[formData.soundbarInstall]?.label);
+  addLine(PRICING.tvMount.wallPatchPaint[formData.wallPatchPaint], PRICING.tvMount.wallPatchPaint[formData.wallPatchPaint]?.label);
+  addLine(PRICING.tvMount.mountHeight[formData.mountHeight], PRICING.tvMount.mountHeight[formData.mountHeight]?.label);
+
+  let hours = 2;
+  if (formData.mountType === "fireplace") hours = 3;
+  if (formData.mountType === "corner") hours = 2.5;
+  if (formData.mountType === "notSure") hours = 2.5;
+  if (formData.tvSize === "large") hours += 0.5;
+  if (formData.tvSize === "xlarge") hours += 1;
+  if (formData.wireConceal === "cover") hours += 0.5;
+  if (formData.wireConceal === "inWall") hours += 1.5;
+  if (formData.powerWork === "yes") hours += 1.5;
+  if (formData.lowVoltage === "yes") hours += 0.75;
+  if (formData.wallPatchPaint === "patchOnly") hours += 0.75;
+  if (formData.wallPatchPaint === "patchPaint") hours += 1.5;
+  if (formData.wallPatchPaint === "notSure") hours += 1;
+  hours = Math.round(hours * 10) / 10;
+
+  const laborMin = estimate.laborMin;
+  const laborMax = estimate.laborMax;
+  const totalMin = estimate.matMin + laborMin;
+  const totalMax = estimate.matMax + laborMax;
+
+  return applyMarketAndPropertyAdjustments(
+    {
+      hours,
+      minMaterials: estimate.matMin,
+      maxMaterials: estimate.matMax,
+      laborMin,
+      laborMax,
+      totalMin,
+      totalMax,
+      materialsList: ["Mount bracket", "Fasteners", "Cable management", "Outlet and low-voltage materials"],
+      adjustments: estimate.breakdown,
+      internalAdjustments: [
+        `Service zone: ${leadMeta.serviceZone}`,
+        `Distance band: ${leadMeta.distanceBand}`,
+        `Lead priority: ${leadMeta.leadPriority}`
+      ],
       leadMeta
     },
     formData,
@@ -2127,6 +2338,19 @@ function getFormData() {
     paintLeadPrepMode: paintLeadPrepMode.value,
     paintNotes: paintNotes.value.trim(),
 
+    mountType: mountType.value,
+    wallType: wallType.value,
+    tvSize: tvSize.value,
+    mountProvided: mountProvided.value,
+    existingOutlet: existingOutlet.value,
+    wireConceal: wireConceal.value,
+    powerWork: powerWork.value,
+    lowVoltage: lowVoltage.value,
+    soundbarInstall: soundbarInstall.value,
+    wallPatchPaint: wallPatchPaint.value,
+    mountHeight: mountHeight.value,
+    notesTvMount: notesTvMount.value.trim(),
+
     ...plumbingBasics,
     ...plumbingDetails
   };
@@ -2188,6 +2412,19 @@ async function submitLead(leadType, estimateData) {
     payload.append("year_built", formData.paintYearBuilt);
     payload.append("lead_prep_mode", formData.paintLeadPrepMode);
     payload.append("notes", formData.paintNotes);
+  } else if (formData.projectType === "tv_mount_install") {
+    payload.append("mount_type", formData.mountType);
+    payload.append("wall_type", formData.wallType);
+    payload.append("tv_size", formData.tvSize);
+    payload.append("mount_provided", formData.mountProvided);
+    payload.append("existing_outlet", formData.existingOutlet);
+    payload.append("wire_conceal", formData.wireConceal);
+    payload.append("power_work", formData.powerWork);
+    payload.append("low_voltage", formData.lowVoltage);
+    payload.append("soundbar_install", formData.soundbarInstall);
+    payload.append("wall_patch_paint", formData.wallPatchPaint);
+    payload.append("mount_height", formData.mountHeight);
+    payload.append("notes", formData.notesTvMount);
   } else if (isPlumbingProject(formData.projectType)) {
     payload.append("plumbing_reason", formData.plumbingReason);
     payload.append("plumbing_location", formData.plumbingLocation);
@@ -2291,6 +2528,13 @@ function validateStep(step) {
       showValidation(validationStep3, "Please select at least one area to paint before continuing.");
       return false;
     }
+
+    if (projectType.value === "tv_mount_install") {
+      if (!mountType.value || !wallType.value || !tvSize.value || !mountProvided.value || !existingOutlet.value) {
+        showValidation(validationStep3, "Please complete the basic TV mount questions before continuing.");
+        return false;
+      }
+    }
   }
 
   if (step === 4) {
@@ -2347,6 +2591,7 @@ function resetExperience() {
   setSelectedProject("drywall_patch_wall_repair", "Drywall Patch / Wall Repair");
   updateDrywallContextUI();
   updateLightingConditionalFields();
+  updateTvMountConditionalFields();
   updatePaintConditionalFields();
   updatePlumbingConditionalUI();
   updatePropertyTypeMessage();
@@ -2395,6 +2640,10 @@ plumbingDisposalProjectOption.addEventListener("click", () => {
   setSelectedProject("plumbing_replace_garbage_disposal", "Replace Garbage Disposal");
 });
 
+tvMountProjectOption.addEventListener("click", () => {
+  setSelectedProject("tv_mount_install", "TV Mount Installation");
+});
+
 plumbingShutoffProjectOption.addEventListener("click", () => {
   setSelectedProject("plumbing_replace_shutoff_valves", "Replace Shutoff Valves");
 });
@@ -2421,6 +2670,8 @@ paintAfterRepair.addEventListener("change", updateLightingConditionalFields);
 
 paintScopeCheckboxes.forEach((cb) => cb.addEventListener("change", updatePaintConditionalFields));
 paintYearBuilt.addEventListener("change", updatePaintConditionalFields);
+wireConceal.addEventListener("change", updateTvMountConditionalFields);
+powerWork.addEventListener("change", updateTvMountConditionalFields);
 
 setupAccordions();
 
@@ -2458,6 +2709,8 @@ form.addEventListener("submit", async (e) => {
     latestEstimate = calculateLightingEstimate(formData);
   } else if (formData.projectType === "paint_one_room") {
     latestEstimate = calculatePaintEstimate(formData);
+  } else if (formData.projectType === "tv_mount_install") {
+    latestEstimate = calculateTvMountEstimate(formData);
   } else if (isPlumbingProject(formData.projectType)) {
     latestEstimate = calculatePlumbingEstimate(formData);
   } else {
@@ -2970,6 +3223,7 @@ hotLeadBtn.addEventListener("click", async () => {
 
   hotLeadBtn.disabled = true;
   hotLeadBtn.textContent = "Sending...";
+  scheduleJobBtn.disabled = true;
   doneBtn.disabled = true;
 
   try {
@@ -2979,9 +3233,31 @@ hotLeadBtn.addEventListener("click", async () => {
   } catch (error) {
     console.error(error);
     hotLeadBtn.disabled = false;
+    scheduleJobBtn.disabled = false;
     hotLeadBtn.textContent = "Get My Exact Quote";
     doneBtn.disabled = false;
     alert("We could not submit your request right now. Please try again.");
+  }
+});
+
+scheduleJobBtn.addEventListener("click", async () => {
+  if (!latestEstimate) return;
+
+  scheduleJobBtn.disabled = true;
+  scheduleJobBtn.textContent = "Sending...";
+  hotLeadBtn.disabled = true;
+  doneBtn.disabled = true;
+
+  try {
+    await submitLead("SCHEDULE", latestEstimate);
+    showScheduleCompletion();
+  } catch (error) {
+    console.error(error);
+    scheduleJobBtn.disabled = false;
+    scheduleJobBtn.textContent = "Schedule My Job";
+    hotLeadBtn.disabled = false;
+    doneBtn.disabled = false;
+    alert("We could not submit your schedule request right now. Please try again.");
   }
 });
 
@@ -3473,6 +3749,7 @@ function calculatePlumbingEstimate(formData) {
   );
 }
 startNewFromHot.addEventListener("click", resetExperience);
+startNewFromSchedule.addEventListener("click", resetExperience);
 startNewFromDone.addEventListener("click", resetExperience);
 
 updateDrywallContextUI();
