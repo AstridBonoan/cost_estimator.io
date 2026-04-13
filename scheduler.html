@@ -133,6 +133,8 @@
       flex-direction:column;
       justify-content:center;
       gap:8px;
+      background: linear-gradient(135deg, #f8fbff 0%, #f0f7ff 100%);
+      border: 1px solid #d8e4f2;
     }
 
     .summary-row{
@@ -142,10 +144,16 @@
       font-size:14px;
     }
 
-    .summary-row strong{font-size:15px}
+    .summary-row strong{
+      font-size:14px;
+      color: #0f172a;
+      font-weight: 700;
+    }
+    
     .summary-row span:last-child{
       text-align:right;
       font-weight:700;
+      color: #0f172a;
     }
 
     .section-title{
@@ -161,6 +169,7 @@
       font-size:14px;
       font-weight:700;
       margin:0 0 8px;
+      color: #0f172a;
     }
 
     .row-2{
@@ -188,6 +197,20 @@
     textarea{
       min-height:110px;
       resize:vertical;
+    }
+
+    .payment-section-title {
+      margin: 0 0 4px;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+
+    .payment-section-subtitle {
+      color: var(--muted);
+      margin: 0 0 16px;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
     .calendar-head{
@@ -512,27 +535,35 @@
 
     .working-price-box {
       background: linear-gradient(135deg, #fff9ec 0%, #fff3d7 100%);
-      border: 1px solid #e8c87f;
-      border-radius: 16px;
-      padding: 16px;
-      margin: 16px 0;
+      border: 2px solid #e8c87f;
+      border-radius: 18px;
+      padding: 18px 16px;
+      margin: 14px 0 20px;
       text-align: center;
+      box-shadow: 0 4px 12px rgba(232, 200, 127, .12);
     }
 
     .working-price-label {
-      font-size: 12px;
-      color: #6b4d12;
-      margin-bottom: 6px;
-      font-weight: 700;
-      letter-spacing: .04em;
+      font-size: 11px;
+      color: #8b6914;
+      margin-bottom: 8px;
+      font-weight: 800;
+      letter-spacing: .05em;
       text-transform: uppercase;
     }
 
     .working-price-amount {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 900;
       color: #0f172a;
-      line-height: 1;
+      line-height: 1.1;
+    }
+
+    .estimated-cost-note {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 8px;
+      font-weight: 600;
     }
 
     @media (max-width: 980px){
@@ -627,12 +658,13 @@
 
               <div class="section-divider"></div>
 
-              <h3 style="margin:0 0 8px; letter-spacing:-.02em;">Payment Information</h3>
-              <p class="sub" style="margin:0 0 14px;">Enter your card details to secure the booking.</p>
+              <h3 class="payment-section-title">Payment Information</h3>
+              <p class="payment-section-subtitle">Enter your card details to secure the booking.</p>
 
               <div class="working-price-box" id="workingPriceBox">
-                <div class="working-price-label">Booking Price</div>
+                <div class="working-price-label">Your Booking Price</div>
                 <div class="working-price-amount" id="workingPriceAmount">$0</div>
+                <div class="estimated-cost-note">Based on your estimate: <span id="estimatedCostNote">To be determined</span></div>
               </div>
 
               <div class="field">
@@ -867,8 +899,12 @@
       // Display working price in payment section
       const workingPrice = state.estimoData.workingPrice || "To be determined";
       const workingPriceAmount = $("workingPriceAmount");
+      const estimatedCostNote = $("estimatedCostNote");
       if (workingPriceAmount) {
         workingPriceAmount.textContent = workingPrice;
+      }
+      if (estimatedCostNote) {
+        estimatedCostNote.textContent = estimatedCost;
       }
     }
 

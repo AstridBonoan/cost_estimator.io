@@ -3240,9 +3240,11 @@ if (scheduleJobBtn) {
     
     // Calculate working price from latest estimate
     let workingPrice = "To be determined";
+    let estimatedCostText = "To be determined";
     if (latestEstimate) {
       const workingPriceValue = Math.round((latestEstimate.totalMin + latestEstimate.totalMax) / 2);
       workingPrice = `$${workingPriceValue}`;
+      estimatedCostText = `$${Math.round(latestEstimate.totalMin)} - $${Math.round(latestEstimate.totalMax)}`;
     }
     
     const estimateData = {
@@ -3254,7 +3256,7 @@ if (scheduleJobBtn) {
       projectType: projectType.value,
       projectValue: projectType.value,
       projectDisplayName: projectDisplayName.value || "Service Project",
-      estimatedCost: latestEstimate ? `$${latestEstimate.estimatedMin} - $${latestEstimate.estimatedMax}` : "To be determined",
+      estimatedCost: estimatedCostText,
       workingPrice: workingPrice
     };
     sessionStorage.setItem("estimateData", JSON.stringify(estimateData));
