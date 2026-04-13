@@ -887,7 +887,7 @@
 
     function renderServiceSummary() {
       const projectName = state.estimoData.projectDisplayName || "Service Project";
-      const workingPrice = state.estimoData.workingPrice || "Price to be confirmed";
+      const workingPrice = state.estimoData.workingPrice || "$0";
       
       serviceSummaryCard.innerHTML = `
         <div class="summary-row"><strong>Service</strong><span>${projectName}</span></div>
@@ -897,12 +897,8 @@
 
       // Display working price in payment section
       const workingPriceAmount = $("workingPriceAmount");
-      const estimatedCostNote = $("estimatedCostNote");
       if (workingPriceAmount) {
         workingPriceAmount.textContent = workingPrice;
-      }
-      if (estimatedCostNote) {
-        estimatedCostNote.textContent = workingPrice;
       }
     }
 
@@ -1123,7 +1119,7 @@
     function goToReview() {
       try {
         const projectName = state.estimoData.projectDisplayName || appointmentType.options[appointmentType.selectedIndex].text;
-        const workingPrice = state.estimoData.workingPrice || "Price to be confirmed";
+        const workingPrice = state.estimoData.workingPrice || "$0";
         
         $("reviewService").innerHTML = `
           ${info("Service", projectName)}
@@ -1212,7 +1208,7 @@
         $("bookingIdText").textContent = "Booking ID: " + state.bookingId;
         $("confirmedDetails").innerHTML = `
           ${info("Service", state.estimoData.projectDisplayName || appointmentType.options[appointmentType.selectedIndex].text)}
-          ${info("Booking Price", state.estimoData.workingPrice || "Price to be confirmed")}
+          ${info("Booking Price", state.estimoData.workingPrice || "$0")}
           ${info("Date", formatLongDate(state.selectedDate))}
           ${info("Time", state.selectedTime)}
           ${info("Name", fullName.value.trim())}

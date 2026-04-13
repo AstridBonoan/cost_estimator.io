@@ -3238,13 +3238,11 @@ if (scheduleJobBtn) {
     e.preventDefault();
     e.stopPropagation();
     
-    // Calculate working price from latest estimate
+    // Get the working price directly from the displayed value
     let workingPrice = "To be determined";
-    let estimatedCostText = "To be determined";
-    if (latestEstimate) {
-      const workingPriceValue = Math.round((latestEstimate.totalMin + latestEstimate.totalMax) / 2);
-      workingPrice = `$${workingPriceValue}`;
-      estimatedCostText = `$${Math.round(latestEstimate.totalMin)} - $${Math.round(latestEstimate.totalMax)}`;
+    const workingPriceEl = document.getElementById("workingPriceOutput");
+    if (workingPriceEl) {
+      workingPrice = workingPriceEl.textContent;
     }
     
     const estimateData = {
@@ -3256,7 +3254,6 @@ if (scheduleJobBtn) {
       projectType: projectType.value,
       projectValue: projectType.value,
       projectDisplayName: projectDisplayName.value || "Service Project",
-      estimatedCost: estimatedCostText,
       workingPrice: workingPrice
     };
     sessionStorage.setItem("estimateData", JSON.stringify(estimateData));
