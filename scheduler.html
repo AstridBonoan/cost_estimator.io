@@ -664,7 +664,6 @@
               <div class="working-price-box" id="workingPriceBox">
                 <div class="working-price-label">Your Booking Price</div>
                 <div class="working-price-amount" id="workingPriceAmount">$0</div>
-                <div class="estimated-cost-note">Based on your estimate: <span id="estimatedCostNote">To be determined</span></div>
               </div>
 
               <div class="field">
@@ -888,23 +887,22 @@
 
     function renderServiceSummary() {
       const projectName = state.estimoData.projectDisplayName || "Service Project";
-      const estimatedCost = state.estimoData.estimatedCost || "To be determined";
+      const workingPrice = state.estimoData.workingPrice || "Price to be confirmed";
       
       serviceSummaryCard.innerHTML = `
         <div class="summary-row"><strong>Service</strong><span>${projectName}</span></div>
-        <div class="summary-row"><strong>Estimated Cost</strong><span>${estimatedCost}</span></div>
+        <div class="summary-row"><strong>Booking Price</strong><span>${workingPrice}</span></div>
         <div class="summary-row"><strong>Duration</strong><span>To be confirmed</span></div>
       `;
 
       // Display working price in payment section
-      const workingPrice = state.estimoData.workingPrice || "To be determined";
       const workingPriceAmount = $("workingPriceAmount");
       const estimatedCostNote = $("estimatedCostNote");
       if (workingPriceAmount) {
         workingPriceAmount.textContent = workingPrice;
       }
       if (estimatedCostNote) {
-        estimatedCostNote.textContent = estimatedCost;
+        estimatedCostNote.textContent = workingPrice;
       }
     }
 
@@ -1125,12 +1123,10 @@
     function goToReview() {
       try {
         const projectName = state.estimoData.projectDisplayName || appointmentType.options[appointmentType.selectedIndex].text;
-        const costText = state.estimoData.estimatedCost || "To be confirmed";
-        const workingPrice = state.estimoData.workingPrice || "To be confirmed";
+        const workingPrice = state.estimoData.workingPrice || "Price to be confirmed";
         
         $("reviewService").innerHTML = `
           ${info("Service", projectName)}
-          ${info("Estimated Cost", costText)}
           ${info("Booking Price", workingPrice)}
         `;
 
@@ -1216,7 +1212,7 @@
         $("bookingIdText").textContent = "Booking ID: " + state.bookingId;
         $("confirmedDetails").innerHTML = `
           ${info("Service", state.estimoData.projectDisplayName || appointmentType.options[appointmentType.selectedIndex].text)}
-          ${info("Booking Price", state.estimoData.workingPrice || "To be determined")}
+          ${info("Booking Price", state.estimoData.workingPrice || "Price to be confirmed")}
           ${info("Date", formatLongDate(state.selectedDate))}
           ${info("Time", state.selectedTime)}
           ${info("Name", fullName.value.trim())}
