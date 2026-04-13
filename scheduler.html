@@ -1029,6 +1029,7 @@
     }
 
     function validateScheduleStep() {
+      const cardNum = cardNumber.value.replace(/\s/g, "");
       const valid =
         fullName.value.trim() &&
         email.value.trim() &&
@@ -1039,47 +1040,53 @@
         state.selectedDate &&
         state.selectedTime &&
         cardholderName.value.trim() &&
-        cardNumber.value.replace(/\s/g, "").length >= 13 &&
+        cardNum.length >= 13 &&
+        cardNum.length <= 19 &&
         cardExpiry.value.match(/^(0[1-9]|1[0-2])\/\d{2}$/) &&
         cardCvv.value.match(/^\d{3,4}$/);
 
       continueBtn.disabled = !valid;
-      if (!valid) continueBtn.style.cursor = "not-allowed";
+      continueBtn.style.cursor = valid ? "pointer" : "not-allowed";
     }
 
     function goToReview() {
-      const projectName = state.estimoData.projectDisplayName || appointmentType.options[appointmentType.selectedIndex].text;
-      const costText = state.estimoData.estimatedCost || "To be confirmed";
-      
-      $("reviewService").innerHTML = `
-        ${info("Service", projectName)}
-        ${info("Estimated Cost", costText)}
-      `;
+      try {
+        const projectName = state.estimoData.projectDisplayName || appointmentType.options[appointmentType.selectedIndex].text;
+        const costText = state.estimoData.estimatedCost || "To be confirmed";
+        
+        $("reviewService").innerHTML = `
+          ${info("Service", projectName)}
+          ${info("Estimated Cost", costText)}
+        `;
 
-      $("reviewAppointment").innerHTML = `
-        ${info("Date", formatLongDate(state.selectedDate))}
-        ${info("Time", state.selectedTime)}
-      `;
+        $("reviewAppointment").innerHTML = `
+          ${info("Date", formatLongDate(state.selectedDate))}
+          ${info("Time", state.selectedTime)}
+        `;
 
-      $("reviewCustomer").innerHTML = `
-        ${info("Name", fullName.value.trim())}
-        ${info("Email", email.value.trim())}
-        ${info("Phone", phone.value.trim())}
-        ${info("Address", address.value.trim())}
-        ${info("ZIP", zip.value.trim())}
-      `;
+        $("reviewCustomer").innerHTML = `
+          ${info("Name", fullName.value.trim())}
+          ${info("Email", email.value.trim())}
+          ${info("Phone", phone.value.trim())}
+          ${info("Address", address.value.trim())}
+          ${info("ZIP", zip.value.trim())}
+        `;
 
-      const cardNum = cardNumber.value.replace(/\s/g, "");
-      const maskedCard = "•••• •••• •••• " + cardNum.slice(-4);
-      
-      $("reviewPayment").innerHTML = `
-        ${info("Cardholder", cardholderName.value.trim())}
-        ${info("Card", maskedCard)}
-        ${info("Expiry", cardExpiry.value)}
-      `;
+        const cardNum = cardNumber.value.replace(/\s/g, "");
+        const maskedCard = "•••• •••• •••• " + cardNum.slice(-4);
+        
+        $("reviewPayment").innerHTML = `
+          ${info("Cardholder", cardholderName.value.trim())}
+          ${info("Card", maskedCard)}
+          ${info("Expiry", cardExpiry.value)}
+        `;
 
-      clearError("reviewError");
-      showScreen("review");
+        clearError("reviewError");
+        showScreen("review");
+      } catch (error) {
+        console.error("Error navigating to review:", error);
+        alert("Error loading review. Please refresh and try again.");
+      }
     }
 
     async function handleConfirm() {
