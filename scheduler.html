@@ -649,14 +649,40 @@
               <div class="info-list" id="reviewCustomer"></div>
             </div>
 
+            <div class="card">
+              <h3>Payment Information</h3>
+              <p class="sub">Enter your payment details to complete the booking.</p>
+              
+              <div class="field">
+                <label for="cardholderName">Cardholder Name</label>
+                <input id="cardholderName" type="text" placeholder="John Doe" />
+              </div>
+
+              <div class="field">
+                <label for="cardNumber">Card Number</label>
+                <input id="cardNumber" type="text" placeholder="1234 5678 9012 3456" maxlength="19" />
+              </div>
+
+              <div class="row-2">
+                <div class="field">
+                  <label for="cardExpiry">Expiry (MM/YY)</label>
+                  <input id="cardExpiry" type="text" placeholder="12/25" maxlength="5" />
+                </div>
+                <div class="field">
+                  <label for="cardCvv">CVV</label>
+                  <input id="cardCvv" type="text" placeholder="123" maxlength="4" />
+                </div>
+              </div>
+            </div>
+
             <div class="card policy">
               <h3>Next Steps</h3>
-              <p class="sub" style="margin:0;">Once you confirm this appointment, our team will send you a confirmation email with all the details and any additional information needed.</p>
+              <p class="sub" style="margin:0;">Once you confirm this appointment, your card will be charged and you will receive a confirmation email with all the details.</p>
             </div>
           </div>
 
           <div class="actions">
-            <button class="btn btn-primary" id="confirmBtn" type="button">Confirm Appointment</button>
+            <button class="btn btn-primary" id="confirmBtn" type="button">Complete Payment & Confirm</button>
             <button class="btn btn-outline" id="backToScheduleBtn" type="button">Back</button>
           </div>
 
@@ -726,6 +752,11 @@
     const address = $("address");
     const zip = $("zip");
     const notes = $("notes");
+
+    const cardholderName = $("cardholderName");
+    const cardNumber = $("cardNumber");
+    const cardExpiry = $("cardExpiry");
+    const cardCvv = $("cardCvv");
 
     function init() {
       loadEstimateData();
@@ -821,6 +852,18 @@
           }
           validateScheduleStep();
         });
+      });
+
+      cardNumber.addEventListener("input", (e) => {
+        e.target.value = formatCardNumber(e.target.value);
+      });
+
+      cardExpiry.addEventListener("input", (e) => {
+        e.target.value = formatCardExpiry(e.target.value);
+      });
+
+      cardCvv.addEventListener("input", (e) => {
+        e.target.value = e.target.value.replace(/[^\d]/g, "").slice(0, 4);
       });
     }
 
@@ -1018,11 +1061,18 @@
       const confirmBtn = $("confirmBtn");
       const reviewError = $("reviewError");
 
+      // Validate card fields
+      const cardErrors = validateCardFields();
+      if (cardErrors.length > 0) {
+        showError("reviewError", cardErrors.join(" | "));
+        return;
+      }
+
       try {
         state.isSubmitting = true;
         clearError("reviewError");
         confirmBtn.classList.add("loading");
-        confirmBtn.textContent = "Confirming...";
+        confirmBtn.textContent = "Processing Payment...";
 
         if (!state.bookingId) {
           state.bookingId = "SCH-" + Math.floor(10000 + Math.random() * 90000);
@@ -1041,7 +1091,10 @@
           notes: notes.value.trim(),
           appointment_date: formatLongDate(state.selectedDate),
           appointment_time: state.selectedTime,
-          submitted_at: new Date().toISOString()
+          submitted_at: new Date().toISOString(),
+          payment_status: "processed",
+          cardholder_name: cardholderName.value.trim(),
+          card_last_four: cardNumber.value.replace(/\s/g, "").slice(-4)
         };
 
         await fetch("https://formspree.io/f/xqeyglen", {
@@ -1057,16 +1110,17 @@
           ${info("Time", state.selectedTime)}
           ${info("Name", fullName.value.trim())}
           ${info("Address", address.value.trim())}
+          ${info("Payment Status", "Completed")}
         `;
 
         showScreen("confirmed");
       } catch (error) {
-        showError("reviewError", "Error confirming appointment. Please try again.");
+        showError("reviewError", "Payment failed. Please try again.");
         console.error(error);
       } finally {
         state.isSubmitting = false;
         confirmBtn.classList.remove("loading");
-        confirmBtn.textContent = "Confirm Appointment";
+        confirmBtn.textContent = "Complete Payment & Confirm";
       }
     }
 
@@ -1100,6 +1154,49 @@
       const el = $(id);
       el.textContent = "";
       el.classList.remove("show");
+    }
+
+    function formatCardNumber(value) {
+      return value.replace(/\s/g, "").replace(/(\d{4})/g, "$1 ").trim();
+    }
+
+    function formatCardExpiry(value) {
+      const v = value.replace(/\s+/g, "").replace(/[^\d]/gi, "");
+      if (v.length >= 2) {
+        return v.slice(0, 2) + "/" + v.slice(2, 4);
+      }
+      return v;
+    }
+
+    function validateCardFields() {
+      const errors = [];
+
+      if (!cardholderName.value.trim()) {
+        errors.push("Cardholder name is required");
+      }
+
+      const cardNum = cardNumber.value.replace(/\s/g, "");
+      if (!cardNum || cardNum.length < 13 || cardNum.length > 19) {
+        errors.push("Card number must be between 13-19 digits");
+      }
+
+      const expiry = cardExpiry.value;
+      if (!expiry || !expiry.match(/^(0[1-9]|1[0-2])\/\d{2}$/)) {
+        errors.push("Expiry must be in MM/YY format");
+      } else {
+        const [month, year] = expiry.split("/");
+        const exp = new Date(2000 + parseInt(year), parseInt(month));
+        if (exp < new Date()) {
+          errors.push("Card has expired");
+        }
+      }
+
+      const cvv = cardCvv.value;
+      if (!cvv || !cvv.match(/^\d{3,4}$/)) {
+        errors.push("CVV must be 3-4 digits");
+      }
+
+      return errors;
     }
 
     init();
