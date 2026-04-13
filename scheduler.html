@@ -594,6 +594,32 @@
                 <textarea id="notes" placeholder="Anything we should know before the appointment?"></textarea>
               </div>
             </div>
+
+            <div class="card" style="margin-top:18px;">
+              <h2>Payment Information</h2>
+              <p class="sub">Enter your card details to secure the booking.</p>
+              
+              <div class="field">
+                <label for="cardholderName">Cardholder Name</label>
+                <input id="cardholderName" type="text" placeholder="John Doe" />
+              </div>
+
+              <div class="field">
+                <label for="cardNumber">Card Number</label>
+                <input id="cardNumber" type="text" placeholder="1234 5678 9012 3456" maxlength="19" />
+              </div>
+
+              <div class="row-2">
+                <div class="field">
+                  <label for="cardExpiry">Expiry (MM/YY)</label>
+                  <input id="cardExpiry" type="text" placeholder="12/25" maxlength="5" />
+                </div>
+                <div class="field">
+                  <label for="cardCvv">CVV</label>
+                  <input id="cardCvv" type="text" placeholder="123" maxlength="4" />
+                </div>
+              </div>
+            </div>
           </div>
 
           <div>
@@ -631,7 +657,7 @@
       <section class="screen" id="screen-review">
         <div class="card">
           <h2 class="section-title">Review Your Appointment</h2>
-          <p class="sub">Please confirm your details before scheduling.</p>
+          <p class="sub">Please confirm all details are correct before completing payment.</p>
 
           <div class="review-grid">
             <div class="card">
@@ -651,33 +677,7 @@
 
             <div class="card">
               <h3>Payment Information</h3>
-              <p class="sub">Enter your payment details to complete the booking.</p>
-              
-              <div class="field">
-                <label for="cardholderName">Cardholder Name</label>
-                <input id="cardholderName" type="text" placeholder="John Doe" />
-              </div>
-
-              <div class="field">
-                <label for="cardNumber">Card Number</label>
-                <input id="cardNumber" type="text" placeholder="1234 5678 9012 3456" maxlength="19" />
-              </div>
-
-              <div class="row-2">
-                <div class="field">
-                  <label for="cardExpiry">Expiry (MM/YY)</label>
-                  <input id="cardExpiry" type="text" placeholder="12/25" maxlength="5" />
-                </div>
-                <div class="field">
-                  <label for="cardCvv">CVV</label>
-                  <input id="cardCvv" type="text" placeholder="123" maxlength="4" />
-                </div>
-              </div>
-            </div>
-
-            <div class="card policy">
-              <h3>Next Steps</h3>
-              <p class="sub" style="margin:0;">Once you confirm this appointment, your card will be charged and you will receive a confirmation email with all the details.</p>
+              <div class="info-list" id="reviewPayment"></div>
             </div>
           </div>
 
@@ -856,14 +856,21 @@
 
       cardNumber.addEventListener("input", (e) => {
         e.target.value = formatCardNumber(e.target.value);
+        validateScheduleStep();
       });
 
       cardExpiry.addEventListener("input", (e) => {
         e.target.value = formatCardExpiry(e.target.value);
+        validateScheduleStep();
       });
 
       cardCvv.addEventListener("input", (e) => {
         e.target.value = e.target.value.replace(/[^\d]/g, "").slice(0, 4);
+        validateScheduleStep();
+      });
+
+      [cardholderName].forEach(el => {
+        el.addEventListener("input", validateScheduleStep);
       });
     }
 
@@ -1024,7 +1031,11 @@
         zip.value.trim() &&
         appointmentType.value &&
         state.selectedDate &&
-        state.selectedTime;
+        state.selectedTime &&
+        cardholderName.value.trim() &&
+        cardNumber.value.replace(/\s/g, "").length >= 13 &&
+        cardExpiry.value.match(/^(0[1-9]|1[0-2])\/\d{2}$/) &&
+        cardCvv.value.match(/^\d{3,4}$/);
 
       continueBtn.disabled = !valid;
     }
@@ -1049,6 +1060,15 @@
         ${info("Phone", phone.value.trim())}
         ${info("Address", address.value.trim())}
         ${info("ZIP", zip.value.trim())}
+      `;
+
+      const cardNum = cardNumber.value.replace(/\s/g, "");
+      const maskedCard = "•••• •••• •••• " + cardNum.slice(-4);
+      
+      $("reviewPayment").innerHTML = `
+        ${info("Cardholder", cardholderName.value.trim())}
+        ${info("Card", maskedCard)}
+        ${info("Expiry", cardExpiry.value)}
       `;
 
       clearError("reviewError");
