@@ -293,6 +293,37 @@ textarea:focus {
   color: var(--text);
 }
 
+.working-price-card {
+  background: linear-gradient(135deg, #fff9ec 0%, #fff3d7 100%);
+  border: 1px solid #e8c87f;
+  border-radius: 18px;
+  padding: 18px 16px;
+  margin: 14px 0 10px;
+  text-align: center;
+}
+
+.working-price-label {
+  font-size: .95rem;
+  color: #6b4d12;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.working-price-value {
+  font-size: 2rem;
+  line-height: 1.1;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.working-price-note {
+  font-size: .9rem;
+  line-height: 1.5;
+  color: #6b7280;
+  margin-bottom: 14px;
+}
+
 /* HELPERS */
 .hidden {
   display: none !important;

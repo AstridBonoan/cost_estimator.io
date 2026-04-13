@@ -625,6 +625,7 @@ const stepPills = document.querySelectorAll("[data-step-pill]");
 const materialsOutput = document.getElementById("materials");
 const laborOutput = document.getElementById("labor");
 const totalOutput = document.getElementById("total");
+const workingPriceOutput = document.getElementById("workingPriceOutput");
 const breakdownList = document.getElementById("breakdownList");
 const resultsProjectName = document.getElementById("resultsProjectName");
 
@@ -2535,6 +2536,11 @@ function renderEstimate(estimateData, formData) {
   materialsOutput.textContent = `Estimated Materials: ${currency(estimateData.minMaterials)} - ${currency(estimateData.maxMaterials)}`;
   laborOutput.textContent = `Estimated Labor: ${currency(estimateData.laborMin)} - ${currency(estimateData.laborMax)}`;
   totalOutput.textContent = `Estimated Total Range: ${currency(estimateData.totalMin)} - ${currency(estimateData.totalMax)}`;
+  
+  // Calculate working price as the average of min and max totals
+  const workingPrice = Math.round((estimateData.totalMin + estimateData.totalMax) / 2);
+  workingPriceOutput.textContent = currency(workingPrice);
+  
   resultsProjectName.textContent = `Project Type: ${formData.projectDisplayName}`;
 
   breakdownList.innerHTML = "";
