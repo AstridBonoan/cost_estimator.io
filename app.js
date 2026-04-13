@@ -630,6 +630,7 @@ const resultsProjectName = document.getElementById("resultsProjectName");
 
 const hotLeadBtn = document.getElementById("hotLeadBtn");
 const scheduleJobBtn = document.getElementById("scheduleJobBtn");
+console.log("scheduleJobBtn element:", scheduleJobBtn);
 const doneBtn = document.getElementById("doneBtn");
 const hotCompletionScreen = document.getElementById("hotCompletionScreen");
 const doneCompletionScreen = document.getElementById("doneCompletionScreen");
@@ -3227,9 +3228,32 @@ hotLeadBtn.addEventListener("click", async () => {
   }
 });
 
-scheduleJobBtn.addEventListener("click", () => {
-  window.location.href = "https://tamayenterprises.com/online-appointments/ola/services/pro-furniture-assembly-installation";
-});
+if (scheduleJobBtn) {
+  scheduleJobBtn.addEventListener("click", (e) => {
+    alert("Handler fired! Navigating to scheduler...");
+    console.log("Schedule button clicked!");
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const estimateData = {
+      customerName: document.getElementById("fullName")?.value || "",
+      customerEmail: document.getElementById("email")?.value || "",
+      customerPhone: document.getElementById("phone")?.value || "",
+      customerAddress: document.getElementById("city")?.value || "",
+      customerZip: document.getElementById("zipcode")?.value || "",
+      projectType: projectType.value,
+      projectValue: projectType.value,
+      projectDisplayName: projectDisplayName.value || "Service Project",
+      estimatedCost: latestEstimate ? `$${latestEstimate.estimatedMin} - $${latestEstimate.estimatedMax}` : "To be determined"
+    };
+    console.log("Estimate data:", estimateData);
+    sessionStorage.setItem("estimateData", JSON.stringify(estimateData));
+    console.log("Navigating to scheduler.html");
+    window.location.href = "scheduler.html";
+  });
+} else {
+  console.error("scheduleJobBtn not found in DOM!");
+}
 
 doneBtn.addEventListener("click", () => {
   showDoneCompletion();

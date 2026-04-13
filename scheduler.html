@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Schedule Your Appointment</title>
+  <style>
+    :root{
+      --bg:#f6f8fc;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --line:#dbe3ef;
+      --primary:#0f1b46;
+      --primary-2:#1e2d6b;
+      --success-bg:#edfdf5;
+      --success-border:#bbf7d0;
+      --success-text:#166534;
+      --busy-bg:#f8fafc;
+      --busy-border:#cbd5e1;
+      --busy-text:#64748b;
+      --off-bg:#fff7ed;
+      --off-border:#fed7aa;
+      --off-text:#9a3412;
+      --danger-bg:#fef2f2;
+      --danger-border:#fecaca;
+      --danger-text:#991b1b;
+      --shadow:0 14px 34px rgba(15,23,42,.08);
+      --radius:20px;
+      --max:1180px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter, Arial, Helvetica, sans-serif;
+      background:linear-gradient(180deg,#fbfdff 0%,var(--bg) 100%);
+      color:var(--text);
+    }
+
+    .wrap{
+      width:min(calc(100% - 28px), var(--max));
+      margin:0 auto;
+      padding:34px 0 60px;
+    }
+
+    .eyebrow{
+      font-size:12px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      font-weight:800;
+      color:#334155;
+      margin-bottom:12px;
+    }
+
+    h1{
+      font-size:clamp(34px, 5vw, 62px);
+      line-height:1.02;
+      margin:0 0 14px;
+      letter-spacing:-.03em;
+    }
+
+    .lead{
+      font-size:clamp(16px, 2vw, 24px);
+      color:#475569;
+      margin:0 0 28px;
+      max-width:900px;
+    }
+
+    .stepper{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:0 0 22px;
+    }
+
+    .step{
+      padding:10px 14px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      color:#475569;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .step.active{
+      background:var(--primary);
+      color:#fff;
+      border-color:var(--primary);
+    }
+
+    .shell{
+      background:rgba(255,255,255,.76);
+      border:1px solid rgba(219,227,239,.9);
+      box-shadow:var(--shadow);
+      border-radius:28px;
+      padding:18px;
+      backdrop-filter:blur(8px);
+    }
+
+    .screen{display:none}
+    .screen.active{display:block}
+
+    .grid{
+      display:grid;
+      grid-template-columns:380px 1fr;
+      gap:18px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:18px;
+    }
+
+    .card h2, .card h3{
+      margin:0 0 8px;
+      letter-spacing:-.02em;
+    }
+
+    .sub{
+      color:var(--muted);
+      margin:0 0 14px;
+      line-height:1.5;
+    }
+
+    .summary-box{
+      min-height:112px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:8px;
+    }
+
+    .summary-row{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      font-size:14px;
+    }
+
+    .summary-row strong{font-size:15px}
+    .summary-row span:last-child{
+      text-align:right;
+      font-weight:700;
+    }
+
+    .section-title{
+      margin:2px 0 10px;
+      font-size:26px;
+      letter-spacing:-.03em;
+    }
+
+    .field{ margin-bottom:14px; }
+
+    .field label{
+      display:block;
+      font-size:14px;
+      font-weight:700;
+      margin:0 0 8px;
+    }
+
+    .row-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    input, select, textarea{
+      width:100%;
+      border:1px solid #cfd8e3;
+      background:#fff;
+      border-radius:14px;
+      padding:15px 14px;
+      font-size:16px;
+      outline:none;
+      transition:.18s ease;
+    }
+
+    input:focus, select:focus, textarea:focus{
+      border-color:#8aa0ff;
+      box-shadow:0 0 0 4px rgba(99,102,241,.10);
+    }
+
+    textarea{
+      min-height:110px;
+      resize:vertical;
+    }
+
+    .calendar-head{
+      display:grid;
+      grid-template-columns:56px 1fr 56px;
+      align-items:center;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .icon-btn{
+      height:46px;
+      width:46px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-size:24px;
+      cursor:pointer;
+    }
+
+    .month-title{
+      text-align:center;
+      font-size:30px;
+      font-weight:800;
+      letter-spacing:-.03em;
+    }
+
+    .dow{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:8px;
+      margin-bottom:8px;
+    }
+
+    .dow div{
+      text-align:center;
+      font-size:12px;
+      font-weight:800;
+      color:#64748b;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      padding:6px 0;
+    }
+
+    .days{
+      display:grid;
+      grid-template-columns:repeat(7,1fr);
+      gap:8px;
+    }
+
+    .day{
+      aspect-ratio:1/1;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fff;
+      cursor:pointer;
+      font-size:15px;
+      font-weight:700;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:.18s ease;
+    }
+
+    .day:hover:not(.blank):not(.past):not(.closed){
+      border-color:#9db1ff;
+      transform:translateY(-1px);
+    }
+
+    .day.blank{
+      background:transparent;
+      border-color:transparent;
+      cursor:default;
+    }
+
+    .day.past{
+      color:#b6c0cf;
+      background:#f8fafc;
+      cursor:not-allowed;
+    }
+
+    .day.closed{
+      background:#fff7ed;
+      border-color:#fed7aa;
+      color:#9a3412;
+      cursor:not-allowed;
+    }
+
+    .day.selected{
+      background:var(--primary);
+      border-color:var(--primary);
+      color:#fff;
+      box-shadow:0 8px 18px rgba(15,27,70,.18);
+    }
+
+    .times-grid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .time-btn{
+      min-height:60px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:#fff;
+      padding:10px 12px;
+      cursor:pointer;
+      text-align:left;
+      transition:.18s ease;
+    }
+
+    .time-btn .time{
+      display:block;
+      font-weight:800;
+      font-size:15px;
+      margin-bottom:4px;
+    }
+
+    .time-btn .status{
+      display:block;
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.02em;
+    }
+
+    .time-btn.available{
+      background:var(--success-bg);
+      border-color:var(--success-border);
+      color:var(--success-text);
+    }
+
+    .time-btn.available:hover{
+      transform:translateY(-1px);
+      box-shadow:0 10px 18px rgba(22,101,52,.08);
+    }
+
+    .time-btn.busy{
+      background:var(--busy-bg);
+      border-color:var(--busy-border);
+      color:var(--busy-text);
+      cursor:not-allowed;
+    }
+
+    .time-btn.off{
+      background:var(--off-bg);
+      border-color:var(--off-border);
+      color:var(--off-text);
+      cursor:not-allowed;
+    }
+
+    .time-btn.selected{
+      background:var(--primary);
+      border-color:var(--primary);
+      color:#fff;
+      box-shadow:0 10px 18px rgba(15,27,70,.18);
+    }
+
+    .helper{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .btn{
+      border:none;
+      border-radius:16px;
+      padding:16px 22px;
+      font-size:16px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+
+    .btn:hover{transform:translateY(-1px)}
+    .btn-primary{
+      background:var(--primary);
+      color:#fff;
+    }
+
+    .btn-primary:hover{background:var(--primary-2)}
+    .btn-outline{
+      background:#fff;
+      color:var(--text);
+      border:1px solid var(--line);
+    }
+
+    .btn:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+      transform:none;
+    }
+
+    .review-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+
+    .info-list{
+      display:grid;
+      gap:10px;
+    }
+
+    .info-item{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      border-bottom:1px dashed #e5ebf3;
+      padding-bottom:10px;
+      font-size:15px;
+    }
+
+    .info-item:last-child{border-bottom:none;padding-bottom:0}
+
+    .policy{
+      background:#f8fbff;
+      border:1px solid #d8e4ff;
+      color:#334155;
+    }
+
+    .center-screen{
+      min-height:420px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:30px 16px;
+    }
+
+    .center-box{
+      max-width:720px;
+      width:100%;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      padding:28px;
+    }
+
+    .success-badge{
+      width:74px;
+      height:74px;
+      border-radius:999px;
+      margin:0 auto 16px;
+      background:var(--success-bg);
+      border:1px solid var(--success-border);
+      color:var(--success-text);
+      display:grid;
+      place-items:center;
+      font-size:34px;
+      font-weight:900;
+    }
+
+    .booking-id{
+      display:inline-block;
+      margin:8px 0 18px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:#eff6ff;
+      color:#1d4ed8;
+      font-weight:800;
+      font-size:14px;
+      border:1px solid #bfdbfe;
+    }
+
+    .reschedule-layout{
+      display:grid;
+      grid-template-columns:320px 1fr;
+      gap:18px;
+    }
+
+    .footer-note{
+      text-align:center;
+      color:#64748b;
+      font-size:14px;
+      margin-top:16px;
+    }
+
+    .alert{
+      display:none;
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:14px;
+      font-size:14px;
+      font-weight:700;
+      line-height:1.5;
+    }
+
+    .alert.show{ display:block; }
+    .alert.error{
+      background:var(--danger-bg);
+      border:1px solid var(--danger-border);
+      color:var(--danger-text);
+    }
+
+    .btn.loading{
+      opacity:.8;
+      pointer-events:none;
+    }
+
+    .auto-filled-note{
+      font-size: 12px;
+      color: #0f1b46;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    @media (max-width: 980px){
+      .grid, .review-grid, .reschedule-layout{
+        grid-template-columns:1fr;
+      }
+      .times-grid{
+        grid-template-columns:repeat(2, minmax(0,1fr));
+      }
+      .month-title{font-size:24px}
+    }
+
+    @media (max-width: 640px){
+      .shell{padding:12px}
+      .card{padding:16px}
+      .times-grid{
+        grid-template-columns:1fr 1fr;
+      }
+      .row-2{
+        grid-template-columns:1fr;
+      }
+      .actions .btn{
+        width:100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="eyebrow">Tamay Enterprises</div>
+    <h1>Schedule Your Appointment</h1>
+    <p class="lead">Choose a date and time that works best for you, confirm your details, and secure your booking.</p>
+
+    <div class="stepper">
+      <div class="step active" data-step="schedule">Schedule</div>
+      <div class="step" data-step="review">Review</div>
+      <div class="step" data-step="confirmed">Confirmed</div>
+    </div>
+
+    <div class="shell">
+      <section class="screen active" id="screen-schedule">
+        <div class="grid">
+          <div>
+            <div class="card summary-box" id="serviceSummaryCard"></div>
+
+            <div class="card" style="margin-top:18px;">
+              <h2>Your Information</h2>
+              <p class="sub">We will use this to confirm and manage your appointment.</p>
+
+              <div class="field">
+                <label for="fullName">Full Name</label>
+                <input id="fullName" type="text" placeholder="John Smith" />
+                <div class="auto-filled-note" id="fullNameNote" style="display:none;">✓ Auto-filled from estimate</div>
+              </div>
+
+              <div class="row-2">
+                <div class="field">
+                  <label for="email">Email</label>
+                  <input id="email" type="email" placeholder="you@example.com" />
+                  <div class="auto-filled-note" id="emailNote" style="display:none;">✓ Auto-filled from estimate</div>
+                </div>
+                <div class="field">
+                  <label for="phone">Phone</label>
+                  <input id="phone" type="tel" placeholder="(203) 555-1234" />
+                  <div class="auto-filled-note" id="phoneNote" style="display:none;">✓ Auto-filled from estimate</div>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="address">Property Address</label>
+                <input id="address" type="text" placeholder="123 Main St" />
+                <div class="auto-filled-note" id="addressNote" style="display:none;">✓ Auto-filled from estimate</div>
+              </div>
+
+              <div class="row-2">
+                <div class="field">
+                  <label for="zip">ZIP Code</label>
+                  <input id="zip" type="text" placeholder="06516" />
+                  <div class="auto-filled-note" id="zipNote" style="display:none;">✓ Auto-filled from estimate</div>
+                </div>
+                <div class="field">
+                  <label for="appointmentType">Service Type</label>
+                  <select id="appointmentType"></select>
+                  <div class="auto-filled-note" id="appointmentTypeNote" style="display:none;">✓ Auto-filled from estimate</div>
+                </div>
+              </div>
+
+              <div class="field" style="margin-bottom:0;">
+                <label for="notes">Notes for Our Team</label>
+                <textarea id="notes" placeholder="Anything we should know before the appointment?"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <h2 class="section-title">Choose a Date</h2>
+              <p class="sub">Available time slots appear after you select a date. Sundays are closed.</p>
+
+              <div class="calendar-head">
+                <button class="icon-btn" id="prevMonth" type="button">←</button>
+                <div class="month-title" id="monthTitle">Month Year</div>
+                <button class="icon-btn" id="nextMonth" type="button">→</button>
+              </div>
+
+              <div class="dow">
+                <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+              </div>
+              <div class="days" id="daysGrid"></div>
+            </div>
+
+            <div class="card" style="margin-top:18px;">
+              <h3 style="font-size:30px; margin-bottom:6px;">Available Times</h3>
+              <p class="sub" id="timesIntro">Select a date to view available time slots.</p>
+              <div class="times-grid" id="timesGrid"></div>
+              <p class="helper" style="margin:14px 0 0;">Green = Available | Gray = Occupied | Orange = Not Offered</p>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-primary" id="continueBtn" type="button" disabled>Continue to Review</button>
+              <button class="btn btn-outline" id="backBtn" type="button" onclick="window.history.back()">Back to Estimate</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-review">
+        <div class="card">
+          <h2 class="section-title">Review Your Appointment</h2>
+          <p class="sub">Please confirm your details before scheduling.</p>
+
+          <div class="review-grid">
+            <div class="card">
+              <h3>Service</h3>
+              <div class="info-list" id="reviewService"></div>
+            </div>
+
+            <div class="card">
+              <h3>Appointment Details</h3>
+              <div class="info-list" id="reviewAppointment"></div>
+            </div>
+
+            <div class="card">
+              <h3>Your Information</h3>
+              <div class="info-list" id="reviewCustomer"></div>
+            </div>
+
+            <div class="card policy">
+              <h3>Next Steps</h3>
+              <p class="sub" style="margin:0;">Once you confirm this appointment, our team will send you a confirmation email with all the details and any additional information needed.</p>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" id="confirmBtn" type="button">Confirm Appointment</button>
+            <button class="btn btn-outline" id="backToScheduleBtn" type="button">Back</button>
+          </div>
+
+          <div class="alert error" id="reviewError"></div>
+        </div>
+      </section>
+
+      <section class="screen" id="screen-confirmed">
+        <div class="center-screen">
+          <div class="center-box">
+            <div class="success-badge">✓</div>
+            <h2 class="section-title">Appointment Confirmed!</h2>
+            <p class="sub" style="font-size:18px;">Your appointment has been scheduled. Check your email for confirmation details.</p>
+            <div class="booking-id" id="bookingIdText">Booking ID: SCH-00000</div>
+
+            <div class="card" style="text-align:left;">
+              <h3>Appointment Summary</h3>
+              <div class="info-list" id="confirmedDetails"></div>
+            </div>
+
+            <div class="actions" style="justify-content:center;">
+              <button class="btn btn-outline" id="startOverBtn" type="button" onclick="window.location.href='index.html'">Back to Home</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const CONFIG = {
+      businessName: "Tamay Enterprises",
+      appointmentTypes: [
+        { value: "drywall", label: "Drywall & Wall Repair" },
+        { value: "lighting", label: "Electrical & Lighting" },
+        { value: "tv-mount", label: "TV Mount Installation" },
+        { value: "painting", label: "Painting" },
+        { value: "plumbing", label: "Plumbing" },
+        { value: "other", label: "Other Service" }
+      ],
+      baseTimes: ["9:00 AM","10:30 AM","12:00 PM","2:00 PM","4:00 PM","5:30 PM"]
+    };
+
+    const state = {
+      screen: "schedule",
+      currentMonth: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      selectedDate: null,
+      selectedTime: null,
+      bookingId: null,
+      isSubmitting: false,
+      estimoData: {}
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    const serviceSummaryCard = $("serviceSummaryCard");
+    const appointmentType = $("appointmentType");
+    const monthTitle = $("monthTitle");
+    const daysGrid = $("daysGrid");
+    const timesGrid = $("timesGrid");
+    const timesIntro = $("timesIntro");
+    const continueBtn = $("continueBtn");
+
+    const fullName = $("fullName");
+    const email = $("email");
+    const phone = $("phone");
+    const address = $("address");
+    const zip = $("zip");
+    const notes = $("notes");
+
+    function init() {
+      loadEstimateData();
+      renderAppointmentTypes();
+      autoFillCustomerData();
+      renderServiceSummary();
+      renderCalendar();
+      bindEvents();
+    }
+
+    function loadEstimateData() {
+      try {
+        const dataStr = sessionStorage.getItem("estimateData");
+        if (dataStr) {
+          state.estimoData = JSON.parse(dataStr);
+        }
+      } catch (e) {
+        console.log("No estimate data found in session");
+      }
+    }
+
+    function autoFillCustomerData() {
+      if (!state.estimoData) return;
+
+      const autoFillField = (inputEl, noteEl, dataField, checkValue) => {
+        if (state.estimoData[dataField] && state.estimoData[dataField].trim()) {
+          inputEl.value = state.estimoData[dataField];
+          if (noteEl) noteEl.style.display = "block";
+          return true;
+        }
+        return false;
+      };
+
+      autoFillField(fullName, $("fullNameNote"), "customerName");
+      autoFillField(email, $("emailNote"), "customerEmail");
+      autoFillField(phone, $("phoneNote"), "customerPhone");
+      autoFillField(address, $("addressNote"), "customerAddress");
+      autoFillField(zip, $("zipNote"), "customerZip");
+
+      if (state.estimoData.projectValue) {
+        const option = Array.from(appointmentType.options).find(opt => opt.value === state.estimoData.projectValue);
+        if (option) {
+          appointmentType.value = state.estimoData.projectValue;
+          $("appointmentTypeNote").style.display = "block";
+        }
+      }
+
+      validateScheduleStep();
+    }
+
+    function renderAppointmentTypes() {
+      appointmentType.innerHTML = "";
+      CONFIG.appointmentTypes.forEach((item, index) => {
+        const opt = document.createElement("option");
+        opt.value = item.value;
+        opt.textContent = item.label;
+        if (index === 0) opt.selected = true;
+        appointmentType.appendChild(opt);
+      });
+    }
+
+    function renderServiceSummary() {
+      const projectName = state.estimoData.projectDisplayName || "Service Project";
+      const estimatedCost = state.estimoData.estimatedCost || "To be determined";
+      
+      serviceSummaryCard.innerHTML = `
+        <div class="summary-row"><strong>Service</strong><span>${projectName}</span></div>
+        <div class="summary-row"><strong>Estimated Cost</strong><span>${estimatedCost}</span></div>
+        <div class="summary-row"><strong>Duration</strong><span>To be confirmed</span></div>
+      `;
+    }
+
+    function bindEvents() {
+      $("prevMonth").addEventListener("click", () => {
+        state.currentMonth = new Date(state.currentMonth.getFullYear(), state.currentMonth.getMonth() - 1, 1);
+        renderCalendar();
+      });
+
+      $("nextMonth").addEventListener("click", () => {
+        state.currentMonth = new Date(state.currentMonth.getFullYear(), state.currentMonth.getMonth() + 1, 1);
+        renderCalendar();
+      });
+
+      $("continueBtn").addEventListener("click", goToReview);
+      $("backToScheduleBtn").addEventListener("click", () => showScreen("schedule"));
+      $("confirmBtn").addEventListener("click", handleConfirm);
+
+      [fullName, email, phone, address, zip, notes, appointmentType].forEach(el => {
+        el.addEventListener("input", validateScheduleStep);
+        el.addEventListener("change", () => {
+          if (el === appointmentType && state.selectedDate) {
+            renderTimesForDate(state.selectedDate, timesGrid, timesIntro, false);
+          }
+          validateScheduleStep();
+        });
+      });
+    }
+
+    function showScreen(name) {
+      state.screen = name;
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      $("screen-" + name).classList.add("active");
+
+      document.querySelectorAll(".step").forEach(step => step.classList.remove("active"));
+      const activeMap = {
+        schedule: "schedule",
+        review: "review",
+        confirmed: "confirmed"
+      };
+      const target = activeMap[name];
+      if (target) {
+        const activeStep = document.querySelector(`.step[data-step="${target}"]`);
+        if (activeStep) activeStep.classList.add("active");
+      }
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderCalendar() {
+      renderCalendarInto({
+        monthDate: state.currentMonth,
+        titleEl: monthTitle,
+        gridEl: daysGrid,
+        selectedDate: state.selectedDate,
+        onSelect(dateObj) {
+          state.selectedDate = dateObj;
+          state.selectedTime = null;
+          renderCalendar();
+          renderTimesForDate(dateObj, timesGrid, timesIntro, false);
+          validateScheduleStep();
+        }
+      });
+    }
+
+    function renderCalendarInto({ monthDate, titleEl, gridEl, selectedDate, onSelect }) {
+      const year = monthDate.getFullYear();
+      const month = monthDate.getMonth();
+
+      titleEl.textContent = monthDate.toLocaleDateString("en-US", {
+        month: "long",
+        year: "numeric"
+      });
+
+      gridEl.innerHTML = "";
+
+      const firstDay = new Date(year, month, 1);
+      const startWeekday = firstDay.getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      for (let i = 0; i < startWeekday; i++) {
+        const blank = document.createElement("button");
+        blank.type = "button";
+        blank.className = "day blank";
+        blank.disabled = true;
+        gridEl.appendChild(blank);
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateObj = new Date(year, month, day);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "day";
+        btn.textContent = day;
+
+        const today = new Date();
+        const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const dateOnly = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+
+        if (dateOnly < todayOnly) {
+          btn.classList.add("past");
+          btn.disabled = true;
+        } else if (dateObj.getDay() === 0) {
+          btn.classList.add("closed");
+          btn.disabled = true;
+          btn.title = "Closed on Sundays";
+        } else {
+          btn.addEventListener("click", () => onSelect(dateObj));
+        }
+
+        if (selectedDate && sameDate(selectedDate, dateObj)) {
+          btn.classList.add("selected");
+        }
+
+        gridEl.appendChild(btn);
+      }
+    }
+
+    function renderTimesForDate(dateObj, container, introEl, isReschedule) {
+      container.innerHTML = "";
+
+      if (!dateObj) {
+        introEl.textContent = "Select a date to view available time slots.";
+        return;
+      }
+
+      introEl.textContent = `Showing availability for ${formatLongDate(dateObj)}.`;
+
+      const slots = getDemoSlots(dateObj, appointmentType.value);
+
+      slots.forEach(slot => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `time-btn ${slot.status}`;
+        btn.innerHTML = `
+          <span class="time">${slot.time}</span>
+          <span class="status">${slot.label}</span>
+        `;
+
+        if (slot.status === "available") {
+          btn.addEventListener("click", () => {
+            container.querySelectorAll(".time-btn").forEach(b => b.classList.remove("selected"));
+            btn.classList.add("selected");
+            state.selectedTime = slot.time;
+            validateScheduleStep();
+          });
+
+          if (state.selectedTime === slot.time) {
+            btn.classList.add("selected");
+          }
+        } else {
+          btn.disabled = true;
+        }
+
+        container.appendChild(btn);
+      });
+    }
+
+    function getDemoSlots(dateObj, type) {
+      const weekday = dateObj.getDay();
+      const dayNum = dateObj.getDate();
+
+      return CONFIG.baseTimes.map((time, index) => {
+        let status = "available";
+
+        if (weekday === 6 && index >= 4) status = "off";
+        if ((dayNum + index) % 4 === 0) status = "busy";
+        if ((dayNum + weekday + index) % 9 === 0) status = "off";
+
+        return {
+          time,
+          status,
+          label: status === "available" ? "Available" : status === "busy" ? "Occupied" : "Not Offered"
+        };
+      });
+    }
+
+    function validateScheduleStep() {
+      const valid =
+        fullName.value.trim() &&
+        email.value.trim() &&
+        phone.value.trim() &&
+        address.value.trim() &&
+        zip.value.trim() &&
+        appointmentType.value &&
+        state.selectedDate &&
+        state.selectedTime;
+
+      continueBtn.disabled = !valid;
+    }
+
+    function goToReview() {
+      const projectName = state.estimoData.projectDisplayName || appointmentType.options[appointmentType.selectedIndex].text;
+      const costText = state.estimoData.estimatedCost || "To be confirmed";
+      
+      $("reviewService").innerHTML = `
+        ${info("Service", projectName)}
+        ${info("Estimated Cost", costText)}
+      `;
+
+      $("reviewAppointment").innerHTML = `
+        ${info("Date", formatLongDate(state.selectedDate))}
+        ${info("Time", state.selectedTime)}
+      `;
+
+      $("reviewCustomer").innerHTML = `
+        ${info("Name", fullName.value.trim())}
+        ${info("Email", email.value.trim())}
+        ${info("Phone", phone.value.trim())}
+        ${info("Address", address.value.trim())}
+        ${info("ZIP", zip.value.trim())}
+      `;
+
+      clearError("reviewError");
+      showScreen("review");
+    }
+
+    async function handleConfirm() {
+      if (state.isSubmitting) return;
+
+      const confirmBtn = $("confirmBtn");
+      const reviewError = $("reviewError");
+
+      try {
+        state.isSubmitting = true;
+        clearError("reviewError");
+        confirmBtn.classList.add("loading");
+        confirmBtn.textContent = "Confirming...";
+
+        if (!state.bookingId) {
+          state.bookingId = "SCH-" + Math.floor(10000 + Math.random() * 90000);
+        }
+
+        const payload = {
+          form_type: "appointment_scheduled",
+          business_name: CONFIG.businessName,
+          booking_id: state.bookingId,
+          service_type: appointmentType.options[appointmentType.selectedIndex].text,
+          customer_name: fullName.value.trim(),
+          customer_email: email.value.trim(),
+          customer_phone: phone.value.trim(),
+          property_address: address.value.trim(),
+          zip_code: zip.value.trim(),
+          notes: notes.value.trim(),
+          appointment_date: formatLongDate(state.selectedDate),
+          appointment_time: state.selectedTime,
+          submitted_at: new Date().toISOString()
+        };
+
+        await fetch("https://formspree.io/f/xqeyglen", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        $("bookingIdText").textContent = "Booking ID: " + state.bookingId;
+        $("confirmedDetails").innerHTML = `
+          ${info("Service", state.estimoData.projectDisplayName || appointmentType.options[appointmentType.selectedIndex].text)}
+          ${info("Date", formatLongDate(state.selectedDate))}
+          ${info("Time", state.selectedTime)}
+          ${info("Name", fullName.value.trim())}
+          ${info("Address", address.value.trim())}
+        `;
+
+        showScreen("confirmed");
+      } catch (error) {
+        showError("reviewError", "Error confirming appointment. Please try again.");
+        console.error(error);
+      } finally {
+        state.isSubmitting = false;
+        confirmBtn.classList.remove("loading");
+        confirmBtn.textContent = "Confirm Appointment";
+      }
+    }
+
+    function formatLongDate(dateObj) {
+      return dateObj.toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+      });
+    }
+
+    function sameDate(a, b) {
+      return a && b &&
+        a.getFullYear() === b.getFullYear() &&
+        a.getMonth() === b.getMonth() &&
+        a.getDate() === b.getDate();
+    }
+
+    function info(label, value) {
+      return `<div class="info-item"><span>${label}</span><strong>${value}</strong></div>`;
+    }
+
+    function showError(id, message) {
+      const el = $(id);
+      el.textContent = message;
+      el.classList.add("show");
+    }
+
+    function clearError(id) {
+      const el = $(id);
+      el.textContent = "";
+      el.classList.remove("show");
+    }
+
+    init();
+  </script>
+</body>
+</html>
