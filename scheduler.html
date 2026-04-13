@@ -510,6 +510,31 @@
       margin: 16px 0;
     }
 
+    .working-price-box {
+      background: linear-gradient(135deg, #fff9ec 0%, #fff3d7 100%);
+      border: 1px solid #e8c87f;
+      border-radius: 16px;
+      padding: 16px;
+      margin: 16px 0;
+      text-align: center;
+    }
+
+    .working-price-label {
+      font-size: 12px;
+      color: #6b4d12;
+      margin-bottom: 6px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .working-price-amount {
+      font-size: 28px;
+      font-weight: 900;
+      color: #0f172a;
+      line-height: 1;
+    }
+
     @media (max-width: 980px){
       .grid, .review-grid, .reschedule-layout{
         grid-template-columns:1fr;
@@ -604,6 +629,11 @@
 
               <h3 style="margin:0 0 8px; letter-spacing:-.02em;">Payment Information</h3>
               <p class="sub" style="margin:0 0 14px;">Enter your card details to secure the booking.</p>
+
+              <div class="working-price-box" id="workingPriceBox">
+                <div class="working-price-label">Booking Price</div>
+                <div class="working-price-amount" id="workingPriceAmount">$0</div>
+              </div>
 
               <div class="field">
                 <label for="cardholderName">Cardholder Name</label>
@@ -833,6 +863,13 @@
         <div class="summary-row"><strong>Estimated Cost</strong><span>${estimatedCost}</span></div>
         <div class="summary-row"><strong>Duration</strong><span>To be confirmed</span></div>
       `;
+
+      // Display working price in payment section
+      const workingPrice = state.estimoData.workingPrice || "To be determined";
+      const workingPriceAmount = $("workingPriceAmount");
+      if (workingPriceAmount) {
+        workingPriceAmount.textContent = workingPrice;
+      }
     }
 
     function bindEvents() {
@@ -1053,10 +1090,12 @@
       try {
         const projectName = state.estimoData.projectDisplayName || appointmentType.options[appointmentType.selectedIndex].text;
         const costText = state.estimoData.estimatedCost || "To be confirmed";
+        const workingPrice = state.estimoData.workingPrice || "To be confirmed";
         
         $("reviewService").innerHTML = `
           ${info("Service", projectName)}
           ${info("Estimated Cost", costText)}
+          ${info("Booking Price", workingPrice)}
         `;
 
         $("reviewAppointment").innerHTML = `
@@ -1125,6 +1164,7 @@
           notes: notes.value.trim(),
           appointment_date: formatLongDate(state.selectedDate),
           appointment_time: state.selectedTime,
+          booking_price: state.estimoData.workingPrice || "To be determined",
           submitted_at: new Date().toISOString(),
           payment_status: "processed",
           cardholder_name: cardholderName.value.trim(),
@@ -1140,6 +1180,7 @@
         $("bookingIdText").textContent = "Booking ID: " + state.bookingId;
         $("confirmedDetails").innerHTML = `
           ${info("Service", state.estimoData.projectDisplayName || appointmentType.options[appointmentType.selectedIndex].text)}
+          ${info("Booking Price", state.estimoData.workingPrice || "To be determined")}
           ${info("Date", formatLongDate(state.selectedDate))}
           ${info("Time", state.selectedTime)}
           ${info("Name", fullName.value.trim())}

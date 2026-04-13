@@ -3238,6 +3238,13 @@ if (scheduleJobBtn) {
     e.preventDefault();
     e.stopPropagation();
     
+    // Calculate working price from latest estimate
+    let workingPrice = "To be determined";
+    if (latestEstimate) {
+      const workingPriceValue = Math.round((latestEstimate.totalMin + latestEstimate.totalMax) / 2);
+      workingPrice = `$${workingPriceValue}`;
+    }
+    
     const estimateData = {
       customerName: document.getElementById("fullName")?.value || "",
       customerEmail: document.getElementById("email")?.value || "",
@@ -3247,7 +3254,8 @@ if (scheduleJobBtn) {
       projectType: projectType.value,
       projectValue: projectType.value,
       projectDisplayName: projectDisplayName.value || "Service Project",
-      estimatedCost: latestEstimate ? `$${latestEstimate.estimatedMin} - $${latestEstimate.estimatedMax}` : "To be determined"
+      estimatedCost: latestEstimate ? `$${latestEstimate.estimatedMin} - $${latestEstimate.estimatedMax}` : "To be determined",
+      workingPrice: workingPrice
     };
     sessionStorage.setItem("estimateData", JSON.stringify(estimateData));
     window.location.href = "scheduler.html";
