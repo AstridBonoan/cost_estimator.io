@@ -533,38 +533,7 @@
       margin: 16px 0;
     }
 
-    .working-price-box {
-      background: linear-gradient(135deg, #fff9ec 0%, #fff3d7 100%);
-      border: 2px solid #e8c87f;
-      border-radius: 18px;
-      padding: 18px 16px;
-      margin: 14px 0 20px;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(232, 200, 127, .12);
-    }
 
-    .working-price-label {
-      font-size: 11px;
-      color: #8b6914;
-      margin-bottom: 8px;
-      font-weight: 800;
-      letter-spacing: .05em;
-      text-transform: uppercase;
-    }
-
-    .working-price-amount {
-      font-size: 32px;
-      font-weight: 900;
-      color: #0f172a;
-      line-height: 1.1;
-    }
-
-    .estimated-cost-note {
-      font-size: 12px;
-      color: #64748b;
-      margin-top: 8px;
-      font-weight: 600;
-    }
 
     @media (max-width: 980px){
       .grid, .review-grid, .reschedule-layout{
@@ -574,6 +543,22 @@
         grid-template-columns:repeat(2, minmax(0,1fr));
       }
       .month-title{font-size:24px}
+    }
+
+    .payment-fields {
+      display: none;
+    }
+
+    .payment-info-notice {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 14px;
+      padding: 16px;
+      color: #1d4ed8;
+      font-size: 15px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 20px;
     }
 
     @media (max-width: 640px){
@@ -656,34 +641,26 @@
                 <textarea id="notes" placeholder="Anything we should know before the appointment?"></textarea>
               </div>
 
-              <div class="section-divider"></div>
-
-              <h3 class="payment-section-title">Payment Information</h3>
-              <p class="payment-section-subtitle">Enter your card details to secure the booking.</p>
-
-              <div class="working-price-box" id="workingPriceBox">
-                <div class="working-price-label">Your Booking Price</div>
-                <div class="working-price-amount" id="workingPriceAmount">$0</div>
-              </div>
-
-              <div class="field">
-                <label for="cardholderName">Cardholder Name</label>
-                <input id="cardholderName" type="text" placeholder="John Doe" />
-              </div>
-
-              <div class="field">
-                <label for="cardNumber">Card Number</label>
-                <input id="cardNumber" type="text" placeholder="1234 5678 9012 3456" maxlength="19" />
-              </div>
-
-              <div class="row-2">
+              <div class="payment-fields">
                 <div class="field">
-                  <label for="cardExpiry">Expiry (MM/YY)</label>
-                  <input id="cardExpiry" type="text" placeholder="12/25" maxlength="5" />
+                  <label for="cardholderName">Cardholder Name</label>
+                  <input id="cardholderName" type="text" placeholder="John Doe" />
                 </div>
+
                 <div class="field">
-                  <label for="cardCvv">CVV</label>
-                  <input id="cardCvv" type="text" placeholder="123" maxlength="4" />
+                  <label for="cardNumber">Card Number</label>
+                  <input id="cardNumber" type="text" placeholder="1234 5678 9012 3456" maxlength="19" />
+                </div>
+
+                <div class="row-2">
+                  <div class="field">
+                    <label for="cardExpiry">Expiry (MM/YY)</label>
+                    <input id="cardExpiry" type="text" placeholder="12/25" maxlength="5" />
+                  </div>
+                  <div class="field">
+                    <label for="cardCvv">CVV</label>
+                    <input id="cardCvv" type="text" placeholder="123" maxlength="4" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -926,25 +903,6 @@
           validateScheduleStep();
         });
       });
-
-      cardNumber.addEventListener("input", (e) => {
-        e.target.value = formatCardNumber(e.target.value);
-        validateScheduleStep();
-      });
-
-      cardExpiry.addEventListener("input", (e) => {
-        e.target.value = formatCardExpiry(e.target.value);
-        validateScheduleStep();
-      });
-
-      cardCvv.addEventListener("input", (e) => {
-        e.target.value = e.target.value.replace(/[^\d]/g, "").slice(0, 4);
-        validateScheduleStep();
-      });
-
-      [cardholderName].forEach(el => {
-        el.addEventListener("input", validateScheduleStep);
-      });
     }
 
     function showScreen(name) {
@@ -1096,7 +1054,6 @@
     }
 
     function validateScheduleStep() {
-      const cardNum = cardNumber.value.replace(/\s/g, "");
       const valid =
         fullName.value.trim() &&
         email.value.trim() &&
@@ -1105,12 +1062,7 @@
         zip.value.trim() &&
         appointmentType.value &&
         state.selectedDate &&
-        state.selectedTime &&
-        cardholderName.value.trim() &&
-        cardNum.length >= 13 &&
-        cardNum.length <= 19 &&
-        cardExpiry.value.match(/^(0[1-9]|1[0-2])\/\d{2}$/) &&
-        cardCvv.value.match(/^\d{3,4}$/);
+        state.selectedTime;
 
       continueBtn.disabled = !valid;
       continueBtn.style.cursor = valid ? "pointer" : "not-allowed";
@@ -1139,13 +1091,9 @@
           ${info("ZIP", zip.value.trim())}
         `;
 
-        const cardNum = cardNumber.value.replace(/\s/g, "");
-        const maskedCard = "•••• •••• •••• " + cardNum.slice(-4);
-        
         $("reviewPayment").innerHTML = `
-          ${info("Cardholder", cardholderName.value.trim())}
-          ${info("Card", maskedCard)}
-          ${info("Expiry", cardExpiry.value)}
+          ${info("Status", "Ready for Stripe Payment")}
+          ${info("Method", "Secure Credit Card")}
         `;
 
         clearError("reviewError");
@@ -1162,21 +1110,21 @@
       const confirmBtn = $("confirmBtn");
       const reviewError = $("reviewError");
 
-      // Validate card fields
-      const cardErrors = validateCardFields();
-      if (cardErrors.length > 0) {
-        showError("reviewError", cardErrors.join(" | "));
-        return;
-      }
-
       try {
         state.isSubmitting = true;
         clearError("reviewError");
         confirmBtn.classList.add("loading");
-        confirmBtn.textContent = "Processing Payment...";
+        confirmBtn.textContent = "Processing with Stripe...";
 
         if (!state.bookingId) {
           state.bookingId = "SCH-" + Math.floor(10000 + Math.random() * 90000);
+        }
+
+        // Extract price from working price (e.g., "$140" → 14000 cents)
+        let priceInCents = 0;
+        if (state.estimoData && state.estimoData.workingPrice) {
+          const priceStr = state.estimoData.workingPrice.replace(/[^\d]/g, "");
+          priceInCents = parseInt(priceStr) * 100; // Convert to cents for Stripe
         }
 
         const payload = {
@@ -1194,33 +1142,37 @@
           appointment_time: state.selectedTime,
           booking_price: state.estimoData.workingPrice || "To be determined",
           submitted_at: new Date().toISOString(),
-          payment_status: "processed",
-          cardholder_name: cardholderName.value.trim(),
-          card_last_four: cardNumber.value.replace(/\s/g, "").slice(-4)
+          payment_status: "pending",
+          booking_id: state.bookingId
         };
 
+        // Submit booking data to formspree
         await fetch("https://formspree.io/f/xqeyglen", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         });
 
-        $("bookingIdText").textContent = "Booking ID: " + state.bookingId;
-        $("confirmedDetails").innerHTML = `
-          ${info("Service", state.estimoData.projectDisplayName || appointmentType.options[appointmentType.selectedIndex].text)}
-          ${info("Booking Price", state.estimoData.workingPrice || "$0")}
-          ${info("Date", formatLongDate(state.selectedDate))}
-          ${info("Time", state.selectedTime)}
-          ${info("Name", fullName.value.trim())}
-          ${info("Address", address.value.trim())}
-          ${info("Payment Status", "Completed")}
-        `;
+        // Store booking and payment info for Stripe
+        sessionStorage.setItem("bookingId", state.bookingId);
+        sessionStorage.setItem("bookingData", JSON.stringify(payload));
 
-        showScreen("confirmed");
+        // Populate and submit Stripe form
+        const stripeForm = document.getElementById("stripeCheckoutForm");
+        document.getElementById("stripeAmount").value = priceInCents;
+        document.getElementById("stripeDescription").value = `${appointmentType.options[appointmentType.selectedIndex].text} - Booking ID: ${state.bookingId}`;
+        document.getElementById("stripeCustomerEmail").value = email.value.trim();
+        document.getElementById("stripeCustomerName").value = fullName.value.trim();
+
+        // Redirect to Stripe payment link with amount parameter
+        // Note: This will need backend to properly create a Checkout Session
+        // For now, redirect to your Stripe payment link with booking reference
+        const stripePaymentLink = "https://buy.stripe.com/aFa3cw3MHdAPdfI4op0oM02?booking_id=" + encodeURIComponent(state.bookingId) + "&amount=" + priceInCents;
+        window.location.href = stripePaymentLink;
+        
       } catch (error) {
-        showError("reviewError", "Payment failed. Please try again.");
+        showError("reviewError", "Failed to process request. Please try again.");
         console.error(error);
-      } finally {
         state.isSubmitting = false;
         confirmBtn.classList.remove("loading");
         confirmBtn.textContent = "Complete Payment & Confirm";
@@ -1304,5 +1256,14 @@
 
     init();
   </script>
+
+  <!-- Hidden Stripe Checkout Form -->
+  <form id="stripeCheckoutForm" method="POST" style="display:none;">
+    <input type="hidden" id="stripeAmount" name="amount" value="0">
+    <input type="hidden" id="stripeDescription" name="description" value="">
+    <input type="hidden" id="stripeCustomerEmail" name="customer_email" value="">
+    <input type="hidden" id="stripeCustomerName" name="customer_name" value="">
+  </form>
+
 </body>
 </html>
