@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Project Cost Estimator</title>
   <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./stripe-payment.css" />
+  <script src="https://js.stripe.com/v3/"></script>
 </head>
 
 <body>
@@ -1289,12 +1291,31 @@
                 <h3>Ready to move forward?</h3>
                 <p>A Tamay team member can review your project and schedule the job, or you can get a final exact quote first.</p>
                 <div class="actions actions-stack">
-                  <button type="button" id="scheduleJobBtn" class="btn btn-gold">Schedule My Job</button>
+                  <button type="button" id="payNowBtn" class="btn btn-gold">Pay Deposit & Schedule</button>
                 </div>
                 <div class="actions actions-split">
+                  <button type="button" id="scheduleJobBtn" class="btn btn-secondary">Schedule Without Payment</button>
                   <button type="button" id="hotLeadBtn" class="btn btn-gold">Get My Exact Quote</button>
                   <button type="button" id="doneBtn" class="btn btn-muted">Done</button>
                 </div>
+              </div>
+              
+              <!-- STRIPE PAYMENT SECTION -->
+              <div id="paymentSection" class="payment-section hidden">
+                <h3>Secure Payment</h3>
+                <p>Complete your payment securely using Stripe.</p>
+                
+                <div id="payment-element" class="payment-element"></div>
+                <div id="payment-message" class="payment-message hidden"></div>
+                <div id="payment-errors" class="payment-errors hidden"></div>
+                
+                <button id="submitPaymentBtn" class="btn btn-gold" type="button" disabled>
+                  <span id="submitButtonState">Complete Payment</span>
+                </button>
+                
+                <button id="cancelPaymentBtn" class="btn btn-muted" type="button">
+                  Cancel Payment
+                </button>
               </div>
             </div>
 
@@ -1309,6 +1330,16 @@
           </div>
 
           <!-- COMPLETION SCREENS -->
+          <div class="completion-screen" id="paymentCompletionScreen">
+            <div class="completion-icon success">✓</div>
+            <h2>Payment Successful!</h2>
+            <p>Thank you for your payment. A Tamay team member will contact you shortly to schedule your project.</p>
+            <p>Your deposit has been received and your project is in our queue.</p>
+            <div class="completion-actions">
+              <button type="button" id="startNewFromPayment" class="btn btn-primary">Start New Estimate</button>
+            </div>
+          </div>
+
           <div class="completion-screen" id="hotCompletionScreen">
             <div class="completion-icon hot">&#10003;</div>
             <h2>Thank you.</h2>
@@ -1332,6 +1363,7 @@
     </div>
   </div>
 
+  <script defer src="./stripe-payment.js"></script>
   <script defer src="./app.js"></script>
 </body>
 </html>

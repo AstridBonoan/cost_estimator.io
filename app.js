@@ -632,6 +632,10 @@ const resultsProjectName = document.getElementById("resultsProjectName");
 const hotLeadBtn = document.getElementById("hotLeadBtn");
 const scheduleJobBtn = document.getElementById("scheduleJobBtn");
 const doneBtn = document.getElementById("doneBtn");
+const payNowBtn = document.getElementById("payNowBtn");
+const submitPaymentBtn = document.getElementById("submitPaymentBtn");
+const cancelPaymentBtn = document.getElementById("cancelPaymentBtn");
+const paymentSection = document.getElementById("paymentSection");
 const hotCompletionScreen = document.getElementById("hotCompletionScreen");
 const doneCompletionScreen = document.getElementById("doneCompletionScreen");
 const startNewFromHot = document.getElementById("startNewFromHot");
@@ -2344,8 +2348,8 @@ function getFormData() {
   };
 }
 
-async function submitLead(leadType, estimateData) {
-  const formData = getFormData();
+async function submitLead(leadType, estimateData, additionalFormData = null) {
+  const formData = additionalFormData || getFormData();
   const leadMeta = estimateData.leadMeta || classifyLead(formData);
   const payload = new FormData();
 
@@ -2468,6 +2472,13 @@ async function submitLead(leadType, estimateData) {
   payload.append("materials_considered", estimateData.materialsList.join(", "));
   payload.append("calculation_summary", [...estimateData.adjustments, ...estimateData.internalAdjustments].join(" | "));
   payload.append("_subject", `${leadType} LEAD - ${formData.projectDisplayName} - ${leadMeta.serviceZone.toUpperCase()} - ${leadMeta.leadPriority.toUpperCase()}`);
+
+  // Add payment details if this is a paid lead
+  if (leadType === "PAID" && additionalFormData) {
+    payload.append("payment_status", additionalFormData.paymentStatus || "completed");
+    payload.append("payment_method", additionalFormData.paymentMethod || "stripe");
+    payload.append("working_price", `$${additionalFormData.workingPrice}`);
+  }
 
   const files = getUploadedFiles();
   if (files && files.length > 0) {
@@ -3267,6 +3278,116 @@ doneBtn.addEventListener("click", () => {
   showDoneCompletion();
 });
 
+// PAYMENT FLOW HANDLERS
+if (payNowBtn) {
+  payNowBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Verify we have an estimate
+    if (!latestEstimate) {
+      alert("No estimate available");
+      return;
+    }
+
+    // Get form data
+    const formData = {
+      fullName: document.getElementById("fullName")?.value || "",
+      email: document.getElementById("email")?.value || "",
+      phone: document.getElementById("phone")?.value || "",
+      zipcode: document.getElementById("zipcode")?.value || "",
+      city: document.getElementById("city")?.value || "",
+      propertyType: document.getElementById("propertyType")?.value || "",
+      ownerStatus: document.getElementById("ownerStatus")?.value || "",
+      timeline: document.getElementById("timeline")?.value || "",
+      projectType: projectType.value,
+      projectDisplayName: projectDisplayName.value,
+    };
+
+    // Calculate working price
+    const workingPrice = Math.round(
+      (latestEstimate.totalMin + latestEstimate.totalMax) / 2
+    );
+
+    // Initialize Stripe payment
+    if (window.stripePayment && window.stripePayment.initializePayment) {
+      await window.stripePayment.initializePayment(workingPrice, formData);
+
+      // Show payment section
+      if (paymentSection) {
+        paymentSection.classList.remove("hidden");
+      }
+    } else {
+      alert("Payment system not available. Please try again.");
+    }
+  });
+}
+
+// Submit payment button
+if (submitPaymentBtn) {
+  submitPaymentBtn.addEventListener("click", async (e) => {
+    if (window.stripePayment && window.stripePayment.handlePaymentSubmit) {
+      await window.stripePayment.handlePaymentSubmit(e);
+    }
+  });
+}
+
+// Cancel payment button
+if (cancelPaymentBtn) {
+  cancelPaymentBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (window.stripePayment && window.stripePayment.cancelPaymentFlow) {
+      window.stripePayment.cancelPaymentFlow();
+    }
+  });
+}
+
+// Function to submit form with payment info
+async function submitFormWithPayment(paymentMethod) {
+  try {
+    const formData = {
+      fullName: document.getElementById("fullName")?.value,
+      email: document.getElementById("email")?.value,
+      phone: document.getElementById("phone")?.value,
+      zipcode: document.getElementById("zipcode")?.value,
+      city: document.getElementById("city")?.value,
+      propertyType: document.getElementById("propertyType")?.value,
+      ownerStatus: document.getElementById("ownerStatus")?.value,
+      timeline: document.getElementById("timeline")?.value,
+      projectType: projectType.value,
+      projectDisplayName: projectDisplayName.value,
+      paymentMethod: paymentMethod,
+      paymentStatus: "completed",
+      workingPrice: Math.round(
+        (latestEstimate.totalMin + latestEstimate.totalMax) / 2
+      ),
+      estimateDetails: JSON.stringify(latestEstimate),
+    };
+
+    await submitLead("PAID", latestEstimate, formData);
+
+    // Show payment completion screen
+    if (paymentSection) {
+      paymentSection.classList.add("hidden");
+    }
+
+    // Redirect to scheduler or show confirmation
+    stepper.classList.add("hidden");
+    showPaymentCompletion();
+  } catch (error) {
+    console.error("Error submitting form with payment:", error);
+    alert("Failed to complete your request. Please try again.");
+  }
+}
+
+// Show payment completion screen
+function showPaymentCompletion() {
+  const completionScreen = document.getElementById("paymentCompletionScreen");
+  if (completionScreen) {
+    completionScreen.classList.remove("hidden");
+  }
+}
+
 function updatePlumbingConditionalUI() {
   const type = projectType.value;
 
@@ -3752,6 +3873,11 @@ function calculatePlumbingEstimate(formData) {
 }
 startNewFromHot.addEventListener("click", resetExperience);
 startNewFromDone.addEventListener("click", resetExperience);
+
+const startNewFromPayment = document.getElementById("startNewFromPayment");
+if (startNewFromPayment) {
+  startNewFromPayment.addEventListener("click", resetExperience);
+}
 
 updateDrywallContextUI();
 updateLightingConditionalFields();

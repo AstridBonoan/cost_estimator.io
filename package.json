@@ -1,0 +1,31 @@
+{
+  "name": "estimator-payment-backend",
+  "version": "1.0.0",
+  "description": "Stripe payment backend for Cost Estimator - Tamay Enterprises",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "NODE_ENV=development node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "stripe",
+    "payments",
+    "estimator",
+    "tamay"
+  ],
+  "author": "Tamay Enterprises",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "stripe": "^14.0.0",
+    "dotenv": "^16.3.1",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  }
+}

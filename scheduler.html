@@ -1164,11 +1164,9 @@
         document.getElementById("stripeCustomerEmail").value = email.value.trim();
         document.getElementById("stripeCustomerName").value = fullName.value.trim();
 
-        // Redirect to Stripe payment link with amount parameter
-        // Note: This will need backend to properly create a Checkout Session
-        // For now, redirect to your Stripe payment link with booking reference
-        const stripePaymentLink = "https://buy.stripe.com/aFa3cw3MHdAPdfI4op0oM02?booking_id=" + encodeURIComponent(state.bookingId) + "&amount=" + priceInCents;
-        window.location.href = stripePaymentLink;
+        // Booking confirmed - payment is now handled through the estimator form
+        // (Dynamic Stripe Payment Element integration)
+        showSuccess("reviewSuccess", "Appointment confirmed! You will receive a confirmation email shortly.");
         
       } catch (error) {
         showError("reviewError", "Failed to process request. Please try again.");
