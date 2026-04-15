@@ -16,7 +16,7 @@
 // CORS_ORIGIN=https://yourdomainname.com (the estimator domain)
 
 const express = require("express");
-const stripe = require("stripe")("");  // Will use env variable below
+const Stripe = require("stripe");
 const cors = require("cors");
 require("dotenv").config();
 
@@ -29,7 +29,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
   process.exit(1);
 }
 
-const stripeClient = stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Middleware
 app.use(cors({
@@ -64,7 +64,7 @@ app.post("/api/create-payment-intent", async (req, res) => {
     }
 
     // Create payment intent
-    const paymentIntent = await stripeClient.paymentIntents.create({
+    const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount),  // Amount in cents
       currency: currency.toLowerCase(),
       description: description || "Tamay Enterprises - Cost Estimator",
@@ -112,7 +112,7 @@ app.post("/webhook", express.raw({ type: "application/json" }), (req, res) => {
       console.warn("Webhook signature verification skipped - STRIPE_WEBHOOK_SECRET not set");
       event = JSON.parse(req.body);
     } else {
-      event = stripeClient.webhooks.constructEvent(req.body, sig, endpointSecret);
+      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
     }
   } catch (err) {
     console.error("Webhook error:", err.message);
@@ -180,7 +180,7 @@ app.get("/api/recent-payments", (req, res) => {
     return res.status(403).json({ error: "Not available in production" });
   }
 
-  stripeClient.paymentIntents.list({ limit: 10 })
+  stripe.paymentIntents.list({ limit: 10 })
     .then(intents => {
       res.json({
         count: intents.data.length,
