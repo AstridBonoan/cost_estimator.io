@@ -815,7 +815,6 @@
       try {
         // First try URL parameters (from estimator)
         const params = new URLSearchParams(window.location.search);
-        console.log("URL Params:", Object.fromEntries(params));
         if (params.has("name")) {
           state.estimoData = {
             customerName: params.get("name") || "",
@@ -824,11 +823,9 @@
             customerZip: params.get("zip") || "",
             customerAddress: params.get("address") || "",
             projectType: params.get("projectType") || "",
-            projectValue: params.get("projectType") || "",
             projectDisplayName: params.get("projectDisplayName") || "Service Project",
             workingPrice: params.get("workingPrice") || "$0",
           };
-          console.log("Loaded estimate data from URL:", state.estimoData);
           return;
         }
 
@@ -836,7 +833,6 @@
         const dataStr = sessionStorage.getItem("estimateData");
         if (dataStr) {
           state.estimoData = JSON.parse(dataStr);
-          console.log("Loaded estimate data from sessionStorage:", state.estimoData);
         }
       } catch (e) {
         console.log("No estimate data found in session or URL");
@@ -886,7 +882,6 @@
     function renderServiceSummary() {
       const projectName = state.estimoData.projectDisplayName || "Service Project";
       const workingPrice = state.estimoData.workingPrice || "$0";
-      console.log("renderServiceSummary - projectName:", projectName, "workingPrice:", workingPrice);
       
       serviceSummaryCard.innerHTML = `
         <div class="summary-row"><strong>Service</strong><span>${projectName}</span></div>
@@ -898,7 +893,6 @@
       const workingPriceAmount = $("workingPriceAmount");
       if (workingPriceAmount) {
         workingPriceAmount.textContent = workingPrice;
-        console.log("Updated workingPriceAmount to:", workingPrice);
       }
     }
 
@@ -1158,7 +1152,7 @@
           appointment_time: state.selectedTime,
           booking_price: state.estimoData.workingPrice || "To be determined",
           submitted_at: new Date().toISOString(),
-          payment_status: "completed",  // Payment already happened on estimator
+          payment_status: "completed",
           booking_id: state.bookingId
         };
 
@@ -1180,7 +1174,7 @@
         // Show success and transition to confirmation screen
         confirmBtn.classList.remove("loading");
         confirmBtn.textContent = "Complete Payment & Confirm";
-        goToScreen("screen-confirmed");
+        showScreen("confirmed");
         
         // Populate confirmation details
         populateConfirmedDetails();
