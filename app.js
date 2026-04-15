@@ -630,7 +630,6 @@ const breakdownList = document.getElementById("breakdownList");
 const resultsProjectName = document.getElementById("resultsProjectName");
 
 const hotLeadBtn = document.getElementById("hotLeadBtn");
-const scheduleJobBtn = document.getElementById("scheduleJobBtn");
 const doneBtn = document.getElementById("doneBtn");
 const payNowBtn = document.getElementById("payNowBtn");
 const submitPaymentBtn = document.getElementById("submitPaymentBtn");
@@ -3244,36 +3243,6 @@ hotLeadBtn.addEventListener("click", async () => {
   }
 });
 
-if (scheduleJobBtn) {
-  scheduleJobBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    // Get the working price directly from the displayed value
-    let workingPrice = "To be determined";
-    const workingPriceEl = document.getElementById("workingPriceOutput");
-    if (workingPriceEl) {
-      workingPrice = workingPriceEl.textContent;
-    }
-    
-    const estimateData = {
-      customerName: document.getElementById("fullName")?.value || "",
-      customerEmail: document.getElementById("email")?.value || "",
-      customerPhone: document.getElementById("phone")?.value || "",
-      customerAddress: document.getElementById("city")?.value || "",
-      customerZip: document.getElementById("zipcode")?.value || "",
-      projectType: projectType.value,
-      projectValue: projectType.value,
-      projectDisplayName: projectDisplayName.value || "Service Project",
-      workingPrice: workingPrice
-    };
-    sessionStorage.setItem("estimateData", JSON.stringify(estimateData));
-    window.location.href = "scheduler.html";
-  });
-} else {
-  console.warn("scheduleJobBtn not found in DOM");
-}
-
 doneBtn.addEventListener("click", () => {
   showDoneCompletion();
 });
@@ -3309,17 +3278,36 @@ if (payNowBtn) {
       (latestEstimate.totalMin + latestEstimate.totalMax) / 2
     );
 
-    // Initialize Stripe payment
-    if (window.stripePayment && window.stripePayment.initializePayment) {
-      await window.stripePayment.initializePayment(workingPrice, formData);
-
-      // Show payment section
-      if (paymentSection) {
-        paymentSection.classList.remove("hidden");
-      }
-    } else {
-      alert("Payment system not available. Please try again.");
-    }
+    // Store estimate data for the scheduler
+    const estimateData = {
+      customerName: formData.fullName,
+      customerEmail: formData.email,
+      customerPhone: formData.phone,
+      customerAddress: formData.city,
+      customerZip: formData.zipcode,
+      projectType: formData.projectType,
+      projectValue: formData.projectType,
+      projectDisplayName: formData.projectDisplayName,
+      workingPrice: `$${workingPrice}`,
+      estimateDetails: JSON.stringify(latestEstimate),
+    };
+    
+    sessionStorage.setItem("estimateData", JSON.stringify(estimateData));
+    
+    // Build URL with parameters for the scheduler
+    const params = new URLSearchParams({
+      name: formData.fullName || "",
+      email: formData.email || "",
+      phone: formData.phone || "",
+      zip: formData.zipcode || "",
+      address: formData.city || "",
+      projectType: formData.projectType || "",
+      projectDisplayName: formData.projectDisplayName || "Service Project",
+      workingPrice: `$${workingPrice}`,
+    });
+    
+    // Redirect to scheduler for appointment booking and payment
+    window.location.href = `https://astridbonoan.github.io/cost_estimator.io/scheduler.html?${params.toString()}`;
   });
 }
 

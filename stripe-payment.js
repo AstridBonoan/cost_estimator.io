@@ -10,7 +10,7 @@ const STRIPE_PUBLIC_KEY = "pk_live_51TKpQfLoT0JUyRg2FVoyMtuUZaD52l70DnqTTOSMYEnw
 
 // Backend URL for creating Payment Intents
 // Set this to your backend endpoint that creates payment intents
-const PAYMENT_INTENT_ENDPOINT = "/api/create-payment-intent";
+const PAYMENT_INTENT_ENDPOINT = "http://localhost:3001/api/create-payment-intent";
 
 let stripe;
 let elements;

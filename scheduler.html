@@ -813,12 +813,29 @@
 
     function loadEstimateData() {
       try {
+        // First try URL parameters (from estimator)
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("name")) {
+          state.estimoData = {
+            customerName: params.get("name") || "",
+            customerEmail: params.get("email") || "",
+            customerPhone: params.get("phone") || "",
+            customerZip: params.get("zip") || "",
+            customerAddress: params.get("address") || "",
+            projectType: params.get("projectType") || "",
+            projectDisplayName: params.get("projectDisplayName") || "Service Project",
+            workingPrice: params.get("workingPrice") || "$0",
+          };
+          return;
+        }
+
+        // Fallback to sessionStorage
         const dataStr = sessionStorage.getItem("estimateData");
         if (dataStr) {
           state.estimoData = JSON.parse(dataStr);
         }
       } catch (e) {
-        console.log("No estimate data found in session");
+        console.log("No estimate data found in session or URL");
       }
     }
 
