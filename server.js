@@ -75,8 +75,8 @@ app.post("/api/create-payment-intent", async (req, res) => {
         customerName: metadata.customerName,
         timestamp: new Date().toISOString(),
       },
-      // Optional: Add statement descriptor (appears on customer's credit card statement)
-      statement_descriptor: "TAMAY ENTERPRISES",
+      // Optional: Add statement descriptor suffix (appears on customer's credit card statement)
+      statement_descriptor_suffix: "TAMAY ESTIMATES",
       // Optional: Automatic tax calculation if connected
       // automatic_tax: { enabled: true },
     });
