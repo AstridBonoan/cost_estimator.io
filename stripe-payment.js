@@ -12,8 +12,13 @@ const STRIPE_PUBLIC_KEY = "pk_live_51TKpQfLoT0JUyRg2FVoyMtuUZaD52l70DnqTTOSMYEnw
 // Set this to your backend endpoint that creates payment intents
 const PAYMENT_INTENT_ENDPOINT = "http://localhost:3001/api/create-payment-intent";
 
-let stripe;
-let elements;
+// Global references so scheduler.html can access them
+window.stripe = null;
+window.elements = null;
+window.cardNumberElement = null;
+window.cardExpiryElement = null;
+window.cardCvcElement = null;
+
 let cardNumberElement;
 let cardExpiryElement;
 let cardCvcElement;
@@ -26,14 +31,15 @@ function initializeStripe() {
     return;
   }
 
-  stripe = Stripe(STRIPE_PUBLIC_KEY);
+  window.stripe = Stripe(STRIPE_PUBLIC_KEY);
   createElements();
   mountCardElements();
+  console.log("✅ Stripe initialized");
 }
 
 // Create Stripe Elements
 function createElements() {
-  if (!stripe) return;
+  if (!window.stripe) return;
 
   const appearance = {
     theme: 'light',
@@ -48,10 +54,15 @@ function createElements() {
     },
   };
 
-  elements = stripe.elements({ appearance });
-  cardNumberElement = elements.create('cardNumber');
-  cardExpiryElement = elements.create('cardExpiry');
-  cardCvcElement = elements.create('cardCvc');
+  window.elements = window.stripe.elements({ appearance });
+  cardNumberElement = window.elements.create('cardNumber');
+  cardExpiryElement = window.elements.create('cardExpiry');
+  cardCvcElement = window.elements.create('cardCvc');
+
+  // Store in window for global access
+  window.cardNumberElement = cardNumberElement;
+  window.cardExpiryElement = cardExpiryElement;
+  window.cardCvcElement = cardCvcElement;
 
   // Add error listeners
   [cardNumberElement, cardExpiryElement, cardCvcElement].forEach(element => {
@@ -72,12 +83,15 @@ function mountCardElements() {
 
   if (cardNumberContainer && !cardNumberContainer.hasChildNodes()) {
     cardNumberElement.mount("#card-number-element");
+    console.log("✅ Card number element mounted");
   }
   if (cardExpiryContainer && !cardExpiryContainer.hasChildNodes()) {
     cardExpiryElement.mount("#card-expiry-element");
+    console.log("✅ Card expiry element mounted");
   }
   if (cardCvcContainer && !cardCvcContainer.hasChildNodes()) {
     cardCvcElement.mount("#card-cvc-element");
+    console.log("✅ Card CVC element mounted");
   }
 }
 
@@ -279,30 +293,18 @@ function cancelPaymentFlow() {
   clientSecret = null;
 }
 
-// Export functions for use in app.js
+// Export functions for use in other scripts
 window.stripePayment = {
   initialize: initializeStripe,
   initializePayment,
   handlePaymentSubmit,
   cancelPaymentFlow,
-  cardNumberElement,
-  cardExpiryElement,
-  cardCvcElement,
   getCardInfo: () => ({
-    number: cardNumberElement ? "****" : "Not entered",
-    expiry: cardExpiryElement ? "••/••" : "Not entered",
-    cvc: cardCvcElement ? "***" : "Not entered"
+    number: window.cardNumberElement ? "****" : "Not entered",
+    expiry: window.cardExpiryElement ? "••/••" : "Not entered",
+    cvc: window.cardCvcElement ? "***" : "Not entered"
   })
 };
 
-// Also export stripe instance globally
-window.stripe = null;
-
 // Initialize on page load
-document.addEventListener("DOMContentLoaded", () => {
-  initializeStripe();
-  // Make stripe instance accessible after init
-  setTimeout(() => {
-    window.stripe = stripe;
-  }, 100);
-});
+document.addEventListener("DOMContentLoaded", initializeStripe);

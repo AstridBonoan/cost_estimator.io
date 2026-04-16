@@ -1171,6 +1171,15 @@
 
         console.log("Processing payment for $" + paymentAmount);
 
+        // Validate Stripe is initialized
+        if (!window.stripe) {
+          throw new Error("Stripe not initialized - please reload the page");
+        }
+
+        if (!window.cardNumberElement) {
+          throw new Error("Card element not ready - please reload the page");
+        }
+
         // Create payment intent on backend
         const intentResponse = await fetch("http://localhost:3001/api/create-payment-intent", {
           method: "POST",
@@ -1189,20 +1198,19 @@
         });
 
         if (!intentResponse.ok) {
-          throw new Error("Failed to create payment intent");
+          const errorData = await intentResponse.json();
+          throw new Error(errorData.error || "Failed to create payment intent");
         }
 
         const intentData = await intentResponse.json();
         const clientSecret = intentData.clientSecret;
 
-        // Process payment with Stripe
-        if (!window.stripe) {
-          throw new Error("Stripe not initialized");
-        }
+        console.log("Payment Intent created:", intentData.paymentIntentId);
 
+        // Process payment with Stripe using card elements
         const { error, paymentIntent } = await window.stripe.confirmCardPayment(clientSecret, {
           payment_method: {
-            card: window.stripePayment?.cardNumberElement || {},
+            card: window.cardNumberElement,
             billing_details: {
               name: fullName.value.trim(),
               email: email.value.trim(),
@@ -1214,12 +1222,18 @@
           }
         });
 
+        console.log("Payment result:", { error, paymentIntent });
+
         if (error) {
-          throw new Error(error.message);
+          throw new Error(error.message || "Card declined");
+        }
+
+        if (!paymentIntent) {
+          throw new Error("Payment processing failed - no response from Stripe");
         }
 
         if (paymentIntent.status !== 'succeeded') {
-          throw new Error("Payment was not successful");
+          throw new Error(`Payment failed with status: ${paymentIntent.status}`);
         }
 
         // Payment successful - now save booking
