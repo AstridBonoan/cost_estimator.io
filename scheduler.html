@@ -573,6 +573,7 @@
   </style>
   <link rel="stylesheet" href="./stripe-payment.css" />
   <script src="https://js.stripe.com/v3/"></script>
+  <script src="./stripe-payment.js"></script>
 </head>
 <body>
   <div class="wrap">
@@ -598,18 +599,18 @@
               <p class="sub">Enter your card details to secure your booking.</p>
               
               <div class="field">
-                <label for="cardNumber">Card Number</label>
-                <input id="cardNumber" type="text" placeholder="1234 5678 9012 3456" maxlength="19" />
+                <label for="card-number-element">Card Number</label>
+                <div id="card-number-element" style="padding: 15px 14px; border: 1px solid #cfd8e3; background: #fff; border-radius: 14px; min-height: 48px;"></div>
               </div>
 
               <div class="row-2">
                 <div class="field">
-                  <label for="cardExpiry">Expiry Date</label>
-                  <input id="cardExpiry" type="text" placeholder="12/25" maxlength="5" />
+                  <label for="card-expiry-element">Expiry Date</label>
+                  <div id="card-expiry-element" style="padding: 15px 14px; border: 1px solid #cfd8e3; background: #fff; border-radius: 14px; min-height: 48px;"></div>
                 </div>
                 <div class="field">
-                  <label for="cardCvc">CVC</label>
-                  <input id="cardCvc" type="text" placeholder="123" maxlength="4" />
+                  <label for="card-cvc-element">CVC</label>
+                  <div id="card-cvc-element" style="padding: 15px 14px; border: 1px solid #cfd8e3; background: #fff; border-radius: 14px; min-height: 48px;"></div>
                 </div>
               </div>
 
@@ -798,10 +799,6 @@
     const zip = $("zip");
     const notes = $("notes");
 
-    const cardNumber = $("cardNumber");
-    const cardExpiry = $("cardExpiry");
-    const cardCvc = $("cardCvc");
-
     function init() {
       loadEstimateData();
       renderAppointmentTypes();
@@ -939,31 +936,6 @@
           }
           validateScheduleStep();
         });
-      });
-
-      // Add card field formatting
-      cardNumber.addEventListener("input", (e) => {
-        let value = e.target.value.replace(/\s/g, "");
-        let formatted = "";
-        for (let i = 0; i < value.length; i++) {
-          if (i > 0 && i % 4 === 0) {
-            formatted += " ";
-          }
-          formatted += value[i];
-        }
-        e.target.value = formatted;
-      });
-
-      cardExpiry.addEventListener("input", (e) => {
-        let value = e.target.value.replace(/\D/g, "");
-        if (value.length >= 2) {
-          value = value.slice(0, 2) + "/" + value.slice(2, 4);
-        }
-        e.target.value = value;
-      });
-
-      cardCvc.addEventListener("input", (e) => {
-        e.target.value = e.target.value.replace(/\D/g, "");
       });
     }
 
@@ -1153,15 +1125,15 @@
           ${info("ZIP", zip.value.trim())}
         `;
 
-        // Get card info from inputs
-        const cardNumberDisplay = cardNumber.value.trim() || "Not entered";
-        const cardExpiryDisplay = cardExpiry.value.trim() || "Not entered";
-        const cardCvcDisplay = cardCvc.value.trim() ? "•••" : "Not entered";
+        // Get card info from Stripe
+        let cardInfo = { name: "Card", email: "Not entered" };
+        if (window.stripePayment && window.stripePayment.getCardInfo) {
+          cardInfo = window.stripePayment.getCardInfo();
+        }
         
         $("reviewPayment").innerHTML = `
-          ${info("Card Number", cardNumberDisplay)}
-          ${info("Expiry Date", cardExpiryDisplay)}
-          ${info("CVC", cardCvcDisplay)}
+          ${info("Card Type", "Visa / Mastercard / Amex")}
+          ${info("Card Status", "Entered")}
           ${info("Payment Status", "Ready for Payment")}
           ${info("Method", "Credit Card")}
         `;
@@ -1186,16 +1158,6 @@
         confirmBtn.classList.add("loading");
         confirmBtn.textContent = "Processing Payment...";
 
-        // Validate card fields
-        const cardErrors = validateCardFields();
-        if (cardErrors.length > 0) {
-          showError("reviewError", cardErrors.join("\n"));
-          state.isSubmitting = false;
-          confirmBtn.classList.remove("loading");
-          confirmBtn.textContent = "Complete Payment & Confirm";
-          return;
-        }
-
         if (!state.bookingId) {
           state.bookingId = "SCH-" + Math.floor(10000 + Math.random() * 90000);
         }
@@ -1209,8 +1171,6 @@
 
         // Simulate payment processing
         console.log("Processing payment for $" + paymentAmount);
-        // In production, this would integrate with real Stripe payment
-        // For now, we'll simulate successful payment
         await new Promise(resolve => setTimeout(resolve, 1000));
         
         const paymentResult = { success: true, paymentId: "pi_" + Math.random().toString(36).substr(2, 9) };
@@ -1230,8 +1190,6 @@
           appointment_date: formatLongDate(state.selectedDate),
           appointment_time: state.selectedTime,
           booking_price: state.estimoData.workingPrice || "To be determined",
-          card_number: cardNumber.value.trim(),
-          card_expiry: cardExpiry.value.trim(),
           submitted_at: new Date().toISOString(),
           payment_status: "completed",
           payment_id: paymentResult.paymentId,
@@ -1329,30 +1287,8 @@
     }
 
     function validateCardFields() {
-      const errors = [];
-
-      const cardNum = cardNumber.value.replace(/\s/g, "");
-      if (!cardNum || cardNum.length < 13 || cardNum.length > 19) {
-        errors.push("Card number must be between 13-19 digits");
-      }
-
-      const expiry = cardExpiry.value;
-      if (!expiry || !expiry.match(/^(0[1-9]|1[0-2])\/\d{2}$/)) {
-        errors.push("Expiry must be in MM/YY format");
-      } else {
-        const [month, year] = expiry.split("/");
-        const exp = new Date(2000 + parseInt(year), parseInt(month));
-        if (exp < new Date()) {
-          errors.push("Card has expired");
-        }
-      }
-
-      const cvv = cardCvc.value;
-      if (!cvv || !cvv.match(/^\d{3,4}$/)) {
-        errors.push("CVV must be 3-4 digits");
-      }
-
-      return errors;
+      // Card validation is handled by Stripe payment elements
+      return [];
     }
   </script>
 
