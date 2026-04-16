@@ -545,10 +545,6 @@
       .month-title{font-size:24px}
     }
 
-    .payment-fields {
-      display: none;
-    }
-
     .payment-info-notice {
       background: #eff6ff;
       border: 1px solid #bfdbfe;
@@ -610,6 +606,33 @@
               <div id="payment-errors" class="payment-errors hidden" style="margin:12px 0; padding:12px; border-radius:8px; background:#fef2f2; border:1px solid #fecaca; color:#991b1b;"></div>
             </div>
 
+            <!-- CARD DETAILS SECTION -->
+            <div class="card" style="margin-top:18px;">
+              <h2>Card Details</h2>
+              <p class="sub">Secure card information for payment processing.</p>
+
+              <div class="field">
+                <label for="cardholderName">Cardholder Name</label>
+                <input id="cardholderName" type="text" placeholder="John Doe" />
+              </div>
+
+              <div class="field">
+                <label for="cardNumber">Card Number</label>
+                <input id="cardNumber" type="text" placeholder="1234 5678 9012 3456" maxlength="19" />
+              </div>
+
+              <div class="row-2">
+                <div class="field">
+                  <label for="cardExpiry">Expiry (MM/YY)</label>
+                  <input id="cardExpiry" type="text" placeholder="12/25" maxlength="5" />
+                </div>
+                <div class="field">
+                  <label for="cardCvv">CVV</label>
+                  <input id="cardCvv" type="text" placeholder="123" maxlength="4" />
+                </div>
+              </div>
+            </div>
+
             <div class="card" style="margin-top:18px;">
               <h2>Your Information</h2>
               <p class="sub">We will use this to confirm and manage your appointment.</p>
@@ -655,29 +678,6 @@
               <div class="field" style="margin-bottom:0;">
                 <label for="notes">Notes for Our Team</label>
                 <textarea id="notes" placeholder="Anything we should know before the appointment?"></textarea>
-              </div>
-
-              <div class="payment-fields">
-                <div class="field">
-                  <label for="cardholderName">Cardholder Name</label>
-                  <input id="cardholderName" type="text" placeholder="John Doe" />
-                </div>
-
-                <div class="field">
-                  <label for="cardNumber">Card Number</label>
-                  <input id="cardNumber" type="text" placeholder="1234 5678 9012 3456" maxlength="19" />
-                </div>
-
-                <div class="row-2">
-                  <div class="field">
-                    <label for="cardExpiry">Expiry (MM/YY)</label>
-                    <input id="cardExpiry" type="text" placeholder="12/25" maxlength="5" />
-                  </div>
-                  <div class="field">
-                    <label for="cardCvv">CVV</label>
-                    <input id="cardCvv" type="text" placeholder="123" maxlength="4" />
-                  </div>
-                </div>
               </div>
             </div>
           </div>
