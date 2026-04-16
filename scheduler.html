@@ -845,8 +845,8 @@
           const priceStr = state.estimoData.workingPrice.replace(/[^\d]/g, "");
           const amount = parseInt(priceStr) || 0;
           
-          if (window.schedulerStripe && amount > 0) {
-            window.schedulerStripe.initializePayment(amount, customerEmail, customerName);
+          if (window.stripePayment && amount > 0) {
+            window.stripePayment.createIntent(amount, customerEmail, customerName);
           }
           return;
         }
@@ -862,8 +862,8 @@
           const priceStr = state.estimoData.workingPrice.replace(/[^\d]/g, "");
           const amount = parseInt(priceStr) || 0;
           
-          if (window.schedulerStripe && amount > 0) {
-            window.schedulerStripe.initializePayment(amount, customerEmail, customerName);
+          if (window.stripePayment && amount > 0) {
+            window.stripePayment.createIntent(amount, customerEmail, customerName);
           }
         }
       } catch (e) {
@@ -1336,23 +1336,109 @@
   </script>
 
   <!-- Load Stripe payment integration BEFORE init() -->
-  <script src="./stripe-scheduler.js"></script>
 
   <script>
-    // Initialize after Stripe is loaded
+    // Inline Stripe payment integration
+    console.log("📄 Stripe payment script starting...");
+    
+    let stripe = null;
+    let cardElement = null;
+    let clientSecret = null;
+    
+    const STRIPE_PK = "pk_live_51TKpQfLoT0JUyRg2FVoyMtuUZaD52l70DnqTTOSMYEnw7zRBQbpbzU0egRefWpWKFIUkoF35zo4ZAiJrRz8EatXx0018EZd2MS";
+    
+    // Initialize Stripe
+    function initStripePayment() {
+      console.log("🔵 Initializing Stripe...");
+      if (!window.Stripe) {
+        console.warn("⚠️ Stripe not loaded, retrying...");
+        setTimeout(initStripePayment, 500);
+        return;
+      }
+      
+      try {
+        stripe = Stripe(STRIPE_PK);
+        const elements = stripe.elements();
+        cardElement = elements.create('card', {
+          style: {
+            base: {
+              fontSize: '16px',
+              color: '#424770',
+            },
+            invalid: {
+              color: '#9e2146',
+            }
+          }
+        });
+        
+        // Try to mount
+        const container = document.getElementById('payment-element');
+        if (container) {
+          cardElement.mount('#payment-element');
+          console.log("✅ Card element mounted");
+        } else {
+          console.error("❌ Container not found");
+        }
+      } catch (error) {
+        console.error("❌ Stripe error:", error);
+      }
+    }
+    
+    // Create payment intent
+    async function createPaymentIntent(amount, email, name) {
+      try {
+        const response = await fetch('http://localhost:3001/api/create-payment-intent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amount: Math.round(amount * 100),
+            currency: 'usd',
+            metadata: { email, name }
+          })
+        });
+        const data = await response.json();
+        clientSecret = data.clientSecret;
+        console.log("✅ Payment intent created");
+        return data;
+      } catch (error) {
+        console.error("❌ Payment intent error:", error);
+        return null;
+      }
+    }
+    
+    // Export functions
+    window.stripePayment = {
+      initStripe: initStripePayment,
+      createIntent: createPaymentIntent,
+      confirmPayment: async function() {
+        if (!stripe || !cardElement || !clientSecret) return { success: false };
+        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: { card: cardElement, billing_details: { name: "", email: "" } }
+        });
+        return { success: !error && paymentIntent?.status === 'succeeded', error: error?.message, paymentId: paymentIntent?.id };
+      }
+    };
+    
+    // Initialize when Stripe script loads
+    if (document.readyState !== 'loading') {
+      initStripePayment();
+    } else {
+      document.addEventListener('DOMContentLoaded', initStripePayment);
+    }
+  </script>
+
+  <script>
+    // Initialize app and payment
     console.log("📄 About to call init()...");
     init();
     
-    // Test Stripe after a delay
+    // Initialize payment after a delay
     setTimeout(() => {
-      console.log("🔍 Checking Stripe availability...");
-      console.log("window.Stripe:", typeof window.Stripe);
-      if (window.schedulerStripe) {
-        console.log("✅ schedulerStripe object exists");
-      } else {
-        console.error("❌ schedulerStripe object NOT found");
+      console.log("🔍 Initializing payment...");
+      if (window.stripePayment && window.stripePayment.createIntent) {
+        window.stripePayment.createIntent(140, "test@test.com", "Test User");
       }
-    }, 1000);
+    }, 2000);
   </script>
 
   <!-- Hidden Stripe Checkout Form -->
