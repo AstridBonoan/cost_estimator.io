@@ -1135,9 +1135,13 @@
         if (window.stripePayment && window.stripePayment.getCardInfo) {
           cardInfo = window.stripePayment.getCardInfo();
         }
+        
+        const cardholderDisplayName = cardholderName.value.trim() || "Not entered";
+        const cardNumberDisplay = cardholderName.value.trim() ? "Card information entered" : "Card information required";
+        
         $("reviewPayment").innerHTML = `
-          ${info("Cardholder", cardInfo.name || "Not entered")}
-          ${info("Email", cardInfo.email || "Not entered")}
+          ${info("Cardholder", cardholderDisplayName)}
+          ${info("Card Details", cardNumberDisplay)}
           ${info("Status", "Ready for Payment")}
           ${info("Method", "Credit Card")}
         `;
