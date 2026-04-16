@@ -1205,21 +1205,29 @@
         const intentData = await intentResponse.json();
         const clientSecret = intentData.clientSecret;
 
-        console.log("Payment Intent created:", intentData.paymentIntentId);
+        console.log("Payment Intent created:", intentData.paymentIntentId, "Secret:", clientSecret);
 
-        // Process payment with Stripe using card element
-        const { error, paymentIntent } = await window.stripe.confirmCardPayment(clientSecret, {
-          payment_method: {
-            card: window.cardElement,
-            billing_details: {
-              name: fullName.value.trim(),
-              email: email.value.trim(),
-              phone: phone.value.trim(),
-              address: {
-                postal_code: zip.value.trim()
-              }
+        // Create payment method with split card elements
+        const { paymentMethod, error: pmError } = await window.stripe.createPaymentMethod({
+          type: 'card',
+          card: window.cardNumberElement,
+          billing_details: {
+            name: fullName.value.trim(),
+            email: email.value.trim(),
+            phone: phone.value.trim(),
+            address: {
+              postal_code: zip.value.trim()
             }
           }
+        });
+
+        if (pmError) {
+          throw new Error(pmError.message || "Failed to create payment method");
+        }
+
+        // Confirm the payment with the payment method
+        const { error, paymentIntent } = await window.stripe.confirmCardPayment(clientSecret, {
+          payment_method: paymentMethod.id
         });
 
         console.log("Payment result:", { error, paymentIntent });
