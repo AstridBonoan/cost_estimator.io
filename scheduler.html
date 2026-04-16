@@ -1355,16 +1355,11 @@
     let customerEmail = "";
     let customerName = "";
     
-    // Initialize Stripe
-    async function initializeStripePayment(amount, email, name) {
-      console.log("🔵 Initializing payment for $" + amount);
-      
-      customerEmail = email;
-      customerName = name;
-      
-      // Wait for Stripe to load
+    // Wait for Stripe and initialize
+    async function waitForStripeAndInit() {
       let attempts = 0;
-      while (!window.Stripe && attempts < 20) {
+      while (!window.Stripe && attempts < 30) {
+        console.log("⏳ Waiting for Stripe...", attempts);
         await new Promise(r => setTimeout(r, 100));
         attempts++;
       }
@@ -1374,35 +1369,31 @@
         return;
       }
       
+      console.log("✅ Stripe loaded");
       stripe = Stripe(STRIPE_PK);
-      const elements = stripe.elements();
+      console.log("✅ Stripe instance created");
+    }
+    
+    // Initialize Stripe
+    async function initializeStripePayment(amount, email, name) {
+      console.log("🔵 initializeStripePayment called with:", amount, email, name);
       
-      // Create card element
-      cardElement = elements.create('card', {
-        hidePostalCode: false,
-        style: {
-          base: {
-            fontSize: '16px',
-            color: '#424770',
-            fontFamily: 'Segoe UI, Roboto, sans-serif',
-            '::placeholder': { color: '#aab7c4' }
-          },
-          invalid: { color: '#fa755a' }
-        }
-      });
+      // Ensure Stripe is loaded
+      if (!stripe) {
+        await waitForStripeAndInit();
+      }
       
-      // Mount to DOM
-      const container = document.getElementById('payment-element');
-      if (container) {
-        cardElement.mount(container);
-        console.log("✅ Card element mounted");
-      } else {
-        console.error("❌ Container not found");
+      if (!stripe) {
+        console.error("❌ Stripe still not available");
         return;
       }
       
-      // Create payment intent
+      customerEmail = email;
+      customerName = name;
+      
       try {
+        // Create payment intent
+        console.log("📡 Creating payment intent for $" + amount);
         const response = await fetch('http://localhost:3001/api/create-payment-intent', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1419,21 +1410,67 @@
           })
         });
         
-        const data = await response.json();
-        if (data.clientSecret) {
-          clientSecret = data.clientSecret;
-          console.log("✅ Payment ready");
-        } else {
-          console.error("❌ No client secret:", data);
+        if (!response.ok) {
+          const errData = await response.text();
+          throw new Error('Payment intent failed: ' + errData);
         }
+        
+        const data = await response.json();
+        clientSecret = data.clientSecret;
+        console.log("✅ Payment intent created:", clientSecret.substring(0, 20) + "...");
+        
+        // Create card element
+        const elements = stripe.elements();
+        cardElement = elements.create('card', {
+          hidePostalCode: false,
+          style: {
+            base: {
+              fontSize: '16px',
+              color: '#424770',
+              fontFamily: 'Segoe UI, Roboto, sans-serif',
+              '::placeholder': { color: '#aab7c4' }
+            },
+            invalid: { color: '#fa755a' }
+          }
+        });
+        
+        console.log("✅ Card element created");
+        
+        // Mount to DOM
+        const container = document.getElementById('payment-element');
+        if (container) {
+          console.log("📌 Container found, mounting card element");
+          cardElement.mount(container);
+          console.log("✅ Card element mounted!");
+          
+          // Add change listener
+          cardElement.on('change', (event) => {
+            const errorDiv = document.getElementById('payment-errors');
+            if (event.error && errorDiv) {
+              errorDiv.textContent = event.error.message;
+              errorDiv.style.display = 'block';
+            } else if (errorDiv) {
+              errorDiv.style.display = 'none';
+            }
+          });
+        } else {
+          console.error("❌ Container #payment-element not found!");
+        }
+        
       } catch (error) {
         console.error("❌ Error:", error.message);
+        const errorDiv = document.getElementById('payment-errors');
+        if (errorDiv) {
+          errorDiv.textContent = 'Error: ' + error.message;
+          errorDiv.style.display = 'block';
+        }
       }
     }
     
     // Handle payment
     async function handlePaymentSubmit() {
       if (!stripe || !cardElement || !clientSecret) {
+        console.error("❌ Not ready: stripe=" + !!stripe + ", card=" + !!cardElement + ", secret=" + !!clientSecret);
         return { success: false, error: 'Payment not ready' };
       }
       
@@ -1464,11 +1501,17 @@
       }
     }
     
+    // Export to window
     window.stripePayment = {
       initialize: initializeStripePayment,
       handleSubmit: handlePaymentSubmit,
       getCardInfo: () => ({ email: customerEmail, name: customerName })
     };
+    
+    console.log("✅ Stripe payment module loaded");
+    
+    // Pre-initialize Stripe while waiting for DOM
+    waitForStripeAndInit().catch(e => console.error("Failed to init Stripe:", e));
   </script>
 
   <script>
