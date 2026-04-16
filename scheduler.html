@@ -1340,7 +1340,19 @@
 
   <script>
     // Initialize after Stripe is loaded
+    console.log("📄 About to call init()...");
     init();
+    
+    // Test Stripe after a delay
+    setTimeout(() => {
+      console.log("🔍 Checking Stripe availability...");
+      console.log("window.Stripe:", typeof window.Stripe);
+      if (window.schedulerStripe) {
+        console.log("✅ schedulerStripe object exists");
+      } else {
+        console.error("❌ schedulerStripe object NOT found");
+      }
+    }, 1000);
   </script>
 
   <!-- Hidden Stripe Checkout Form -->
