@@ -14,7 +14,9 @@ const PAYMENT_INTENT_ENDPOINT = "http://localhost:3001/api/create-payment-intent
 
 let stripe;
 let elements;
-let paymentElement;
+let cardNumberElement;
+let cardExpiryElement;
+let cardCvcElement;
 let clientSecret = null;
 
 // Initialize Stripe on page load
@@ -26,6 +28,7 @@ function initializeStripe() {
 
   stripe = Stripe(STRIPE_PUBLIC_KEY);
   createElements();
+  mountCardElements();
 }
 
 // Create Stripe Elements
@@ -46,19 +49,47 @@ function createElements() {
   };
 
   elements = stripe.elements({ appearance });
-  paymentElement = elements.create('payment');
+  cardNumberElement = elements.create('cardNumber');
+  cardExpiryElement = elements.create('cardExpiry');
+  cardCvcElement = elements.create('cardCvc');
+
+  // Add error listeners
+  [cardNumberElement, cardExpiryElement, cardCvcElement].forEach(element => {
+    element.addEventListener('change', handleCardElementChange);
+  });
 }
 
-// Mount Payment Element to the DOM
-function mountPaymentElement() {
-  if (!paymentElement) {
-    console.error("Payment element not initialized");
+// Mount individual card elements to the DOM
+function mountCardElements() {
+  if (!cardNumberElement || !cardExpiryElement || !cardCvcElement) {
+    console.error("Card elements not initialized");
     return;
   }
 
-  const paymentElementContainer = document.getElementById("payment-element");
-  if (paymentElementContainer && !paymentElementContainer.hasChildNodes()) {
-    paymentElement.mount("#payment-element");
+  const cardNumberContainer = document.getElementById("card-number-element");
+  const cardExpiryContainer = document.getElementById("card-expiry-element");
+  const cardCvcContainer = document.getElementById("card-cvc-element");
+
+  if (cardNumberContainer && !cardNumberContainer.hasChildNodes()) {
+    cardNumberElement.mount("#card-number-element");
+  }
+  if (cardExpiryContainer && !cardExpiryContainer.hasChildNodes()) {
+    cardExpiryElement.mount("#card-expiry-element");
+  }
+  if (cardCvcContainer && !cardCvcContainer.hasChildNodes()) {
+    cardCvcElement.mount("#card-cvc-element");
+  }
+}
+
+// Handle card element changes (errors, etc.)
+function handleCardElementChange(event) {
+  const cardErrors = document.getElementById("card-errors");
+  if (event.error) {
+    cardErrors.textContent = event.error.message;
+    cardErrors.style.display = 'block';
+  } else {
+    cardErrors.textContent = '';
+    cardErrors.style.display = 'none';
   }
 }
 
@@ -128,7 +159,7 @@ function clearPaymentErrors() {
 async function handlePaymentSubmit(e) {
   e.preventDefault();
 
-  if (!stripe || !elements) {
+  if (!stripe || !cardNumberElement) {
     showPaymentError("Payment system not initialized");
     return;
   }
@@ -142,20 +173,21 @@ async function handlePaymentSubmit(e) {
   showPaymentMessage("Processing your payment...", "processing");
 
   try {
-    // Confirm payment
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-      },
-      redirect: "if_required",
+    // Confirm payment with card element
+    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: cardNumberElement,
+        billing_details: {
+          name: document.getElementById("cardholderName")?.value || "",
+        }
+      }
     });
 
     if (error) {
       showPaymentError(error.message);
       submitPaymentBtn.disabled = false;
       submitButtonState.textContent = "Complete Payment";
-    } else {
+    } else if (paymentIntent.status === 'succeeded') {
       // Payment successful - redirect to scheduler
       showPaymentMessage("Payment successful! Redirecting to schedule your appointment...", "success");
       
@@ -223,8 +255,8 @@ async function initializePayment(amount, formData) {
     return;
   }
 
-  // Mount the payment element
-  mountPaymentElement();
+  // Card elements should already be mounted, but ensure they're ready
+  // mountCardElements() is called during initializeStripe()
 
   // Show payment section
   const paymentSection = document.getElementById("paymentSection");
