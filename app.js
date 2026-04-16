@@ -3259,55 +3259,47 @@ if (payNowBtn) {
       return;
     }
 
-    // Get form data
-    const formData = {
-      fullName: document.getElementById("fullName")?.value || "",
-      email: document.getElementById("email")?.value || "",
-      phone: document.getElementById("phone")?.value || "",
-      zipcode: document.getElementById("zipcode")?.value || "",
-      city: document.getElementById("city")?.value || "",
-      propertyType: document.getElementById("propertyType")?.value || "",
-      ownerStatus: document.getElementById("ownerStatus")?.value || "",
-      timeline: document.getElementById("timeline")?.value || "",
-      projectType: projectType.value,
-      projectDisplayName: projectDisplayName.value,
-    };
+    // Get form data from Step 2
+    const fullName = document.getElementById("fullName")?.value || "";
+    const email = document.getElementById("email")?.value || "";
+    const phone = document.getElementById("phone")?.value || "";
+    const zipcode = document.getElementById("zipcode")?.value || "";
+    const city = document.getElementById("city")?.value || "";
+
+    if (!fullName || !email || !phone) {
+      alert("Please fill in your name, email, and phone number");
+      return;
+    }
 
     // Calculate working price
     const workingPrice = Math.round(
       (latestEstimate.totalMin + latestEstimate.totalMax) / 2
     );
 
-    // Store estimate data for the scheduler
-    const estimateData = {
-      customerName: formData.fullName,
-      customerEmail: formData.email,
-      customerPhone: formData.phone,
-      customerAddress: formData.city,
-      customerZip: formData.zipcode,
-      projectType: formData.projectType,
-      projectValue: formData.projectType,
-      projectDisplayName: formData.projectDisplayName,
+    // Store estimate data for later use
+    window.estimateDataForPayment = {
+      fullName,
+      email,
+      phone,
+      zipcode,
+      city,
+      projectType: projectType.value,
+      projectDisplayName: projectDisplayName.value,
       workingPrice: `$${workingPrice}`,
-      estimateDetails: JSON.stringify(latestEstimate),
     };
+
+    // Show payment section and hide pay button
+    const paymentSection = document.getElementById("paymentSection");
+    const resultsSection = document.querySelector(".results-section");
     
-    sessionStorage.setItem("estimateData", JSON.stringify(estimateData));
-    
-    // Build URL with parameters for the scheduler
-    const params = new URLSearchParams({
-      name: formData.fullName || "",
-      email: formData.email || "",
-      phone: formData.phone || "",
-      zip: formData.zipcode || "",
-      address: formData.city || "",
-      projectType: formData.projectType || "",
-      projectDisplayName: formData.projectDisplayName || "Service Project",
-      workingPrice: `$${workingPrice}`,
-    });
-    
-    // Redirect to scheduler for appointment booking and payment
-    window.location.href = `https://astridbonoan.github.io/cost_estimator.io/scheduler.html?${params.toString()}`;
+    if (paymentSection) {
+      paymentSection.classList.remove("hidden");
+      
+      // Initialize Stripe payment with the amount
+      if (window.stripePayment && window.stripePayment.initializePayment) {
+        await window.stripePayment.initializePayment(workingPrice * 100, window.estimateDataForPayment);
+      }
+    }
   });
 }
 

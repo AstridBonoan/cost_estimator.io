@@ -156,9 +156,29 @@ async function handlePaymentSubmit(e) {
       submitPaymentBtn.disabled = false;
       submitButtonState.textContent = "Complete Payment";
     } else {
-      // Payment successful
-      showPaymentMessage("Payment successful! Processing your request...", "success");
-      await submitFormWithPayment("payment");
+      // Payment successful - redirect to scheduler
+      showPaymentMessage("Payment successful! Redirecting to schedule your appointment...", "success");
+      
+      // Wait a moment for the message to show, then redirect
+      setTimeout(() => {
+        // Get estimate data and build redirect URL for scheduler
+        const estimateData = window.estimateDataForPayment;
+        if (estimateData) {
+          const params = new URLSearchParams({
+            name: estimateData.fullName || "",
+            email: estimateData.email || "",
+            phone: estimateData.phone || "",
+            zip: estimateData.zipcode || "",
+            address: estimateData.city || "",
+            projectType: estimateData.projectType || "",
+            projectDisplayName: estimateData.projectDisplayName || "Service Project",
+            workingPrice: estimateData.workingPrice || "$0",
+          });
+          
+          // Redirect to scheduler
+          window.location.href = `https://astridbonoan.github.io/cost_estimator.io/scheduler.html?${params.toString()}`;
+        }
+      }, 1500);
     }
   } catch (error) {
     console.error("Payment error:", error);
