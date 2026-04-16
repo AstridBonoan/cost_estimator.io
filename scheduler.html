@@ -1358,35 +1358,59 @@
       
       try {
         stripe = Stripe(STRIPE_PK);
+        console.log("✅ Stripe instance created");
+        
         const elements = stripe.elements();
         cardElement = elements.create('card', {
           style: {
             base: {
               fontSize: '16px',
               color: '#424770',
+              fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
+              '::placeholder': {
+                color: '#aab7c4',
+              },
             },
             invalid: {
-              color: '#9e2146',
+              color: '#fa755a',
+              iconColor: '#fa755a',
             }
           }
         });
+        console.log("✅ Card element created");
         
-        // Try to mount
+        // Try to mount immediately
         const container = document.getElementById('payment-element');
         if (container) {
+          console.log("📌 Container found, mounting card element...");
           cardElement.mount('#payment-element');
-          console.log("✅ Card element mounted");
+          console.log("✅ Card element mounted successfully");
+          
+          // Add change listener
+          cardElement.addEventListener('change', ({ error }) => {
+            if (error) {
+              console.error("❌ Card error:", error);
+            }
+          });
         } else {
-          console.error("❌ Container not found");
+          console.error("❌ Container #payment-element not found in DOM");
+          setTimeout(() => {
+            const retry = document.getElementById('payment-element');
+            if (retry) {
+              cardElement.mount('#payment-element');
+              console.log("✅ Card element mounted on retry");
+            }
+          }, 1000);
         }
       } catch (error) {
-        console.error("❌ Stripe error:", error);
+        console.error("❌ Stripe initialization error:", error);
       }
     }
     
     // Create payment intent
     async function createPaymentIntent(amount, email, name) {
       try {
+        console.log("📡 Requesting payment intent for $" + amount);
         const response = await fetch('http://localhost:3001/api/create-payment-intent', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1398,10 +1422,10 @@
         });
         const data = await response.json();
         clientSecret = data.clientSecret;
-        console.log("✅ Payment intent created");
+        console.log("✅ Payment intent created:", clientSecret.substring(0, 20) + "...");
         return data;
       } catch (error) {
-        console.error("❌ Payment intent error:", error);
+        console.error("❌ Payment intent error:", error.message);
         return null;
       }
     }
@@ -1411,7 +1435,10 @@
       initStripe: initStripePayment,
       createIntent: createPaymentIntent,
       confirmPayment: async function() {
-        if (!stripe || !cardElement || !clientSecret) return { success: false };
+        if (!stripe || !cardElement || !clientSecret) {
+          console.error("❌ Payment not ready");
+          return { success: false };
+        }
         const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
           payment_method: { card: cardElement, billing_details: { name: "", email: "" } }
         });
@@ -1420,10 +1447,16 @@
     };
     
     // Initialize when Stripe script loads
+    console.log("📄 Document state:", document.readyState);
     if (document.readyState !== 'loading') {
-      initStripePayment();
+      console.log("📄 Document already ready, initializing Stripe immediately");
+      setTimeout(initStripePayment, 100);
     } else {
-      document.addEventListener('DOMContentLoaded', initStripePayment);
+      console.log("📄 Waiting for DOMContentLoaded");
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log("📄 DOMContentLoaded fired");
+        setTimeout(initStripePayment, 100);
+      });
     }
   </script>
 
@@ -1434,7 +1467,7 @@
     
     // Initialize payment after a delay
     setTimeout(() => {
-      console.log("🔍 Initializing payment...");
+      console.log("🔍 Initializing payment (2s delay)...");
       if (window.stripePayment && window.stripePayment.createIntent) {
         window.stripePayment.createIntent(140, "test@test.com", "Test User");
       }
