@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Project Cost Estimator</title>
   <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="./stripe-payment.css" />
-  <script src="https://js.stripe.com/v3/"></script>
 </head>
 
 <body>
@@ -1298,24 +1296,6 @@
                   <button type="button" id="doneBtn" class="btn btn-muted">Done</button>
                 </div>
               </div>
-              
-              <!-- STRIPE PAYMENT SECTION -->
-              <div id="paymentSection" class="payment-section hidden">
-                <h3>Secure Payment</h3>
-                <p>Complete your payment securely using Stripe.</p>
-                
-                <div id="payment-element" class="payment-element"></div>
-                <div id="payment-message" class="payment-message hidden"></div>
-                <div id="payment-errors" class="payment-errors hidden"></div>
-                
-                <button id="submitPaymentBtn" class="btn btn-gold" type="button" disabled>
-                  <span id="submitButtonState">Complete Payment</span>
-                </button>
-                
-                <button id="cancelPaymentBtn" class="btn btn-muted" type="button">
-                  Cancel Payment
-                </button>
-              </div>
             </div>
 
             <div class="breakdown">
@@ -1362,7 +1342,6 @@
     </div>
   </div>
 
-  <script defer src="./stripe-payment.js"></script>
   <script defer src="./app.js"></script>
 </body>
 </html>

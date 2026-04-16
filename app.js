@@ -3276,30 +3276,20 @@ if (payNowBtn) {
       (latestEstimate.totalMin + latestEstimate.totalMax) / 2
     );
 
-    // Store estimate data for later use
-    window.estimateDataForPayment = {
-      fullName,
-      email,
-      phone,
-      zipcode,
-      city,
+    // Build URL with parameters for the scheduler
+    const params = new URLSearchParams({
+      name: fullName,
+      email: email,
+      phone: phone,
+      zip: zipcode,
+      address: city,
       projectType: projectType.value,
       projectDisplayName: projectDisplayName.value,
       workingPrice: `$${workingPrice}`,
-    };
-
-    // Show payment section and hide pay button
-    const paymentSection = document.getElementById("paymentSection");
-    const resultsSection = document.querySelector(".results-section");
+    });
     
-    if (paymentSection) {
-      paymentSection.classList.remove("hidden");
-      
-      // Initialize Stripe payment with the amount
-      if (window.stripePayment && window.stripePayment.initializePayment) {
-        await window.stripePayment.initializePayment(workingPrice * 100, window.estimateDataForPayment);
-      }
-    }
+    // Redirect to scheduler for appointment booking and payment
+    window.location.href = `https://astridbonoan.github.io/cost_estimator.io/scheduler.html?${params.toString()}`;
   });
 }
 
@@ -3316,8 +3306,10 @@ if (submitPaymentBtn) {
 if (cancelPaymentBtn) {
   cancelPaymentBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    if (window.stripePayment && window.stripePayment.cancelPaymentFlow) {
-      window.stripePayment.cancelPaymentFlow();
+    // Just hide payment section if it was shown
+    const paymentSection = document.getElementById("paymentSection");
+    if (paymentSection) {
+      paymentSection.classList.add("hidden");
     }
   });
 }
