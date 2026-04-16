@@ -1176,7 +1176,7 @@
           throw new Error("Stripe not initialized - please reload the page");
         }
 
-        if (!window.cardNumberElement) {
+        if (!window.cardElement) {
           throw new Error("Card element not ready - please reload the page");
         }
 
@@ -1207,10 +1207,10 @@
 
         console.log("Payment Intent created:", intentData.paymentIntentId);
 
-        // Process payment with Stripe using card elements
+        // Process payment with Stripe using card element
         const { error, paymentIntent } = await window.stripe.confirmCardPayment(clientSecret, {
           payment_method: {
-            card: window.cardNumberElement,
+            card: window.cardElement,
             billing_details: {
               name: fullName.value.trim(),
               email: email.value.trim(),

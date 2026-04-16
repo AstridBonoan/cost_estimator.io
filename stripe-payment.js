@@ -15,10 +15,12 @@ const PAYMENT_INTENT_ENDPOINT = "http://localhost:3001/api/create-payment-intent
 // Global references so scheduler.html can access them
 window.stripe = null;
 window.elements = null;
+window.cardElement = null;  // Single card element for payment
 window.cardNumberElement = null;
 window.cardExpiryElement = null;
 window.cardCvcElement = null;
 
+let cardElement;  // Single card element for confirmCardPayment
 let cardNumberElement;
 let cardExpiryElement;
 let cardCvcElement;
@@ -55,11 +57,17 @@ function createElements() {
   };
 
   window.elements = window.stripe.elements({ appearance });
+  
+  // Create split elements for display
   cardNumberElement = window.elements.create('cardNumber');
   cardExpiryElement = window.elements.create('cardExpiry');
   cardCvcElement = window.elements.create('cardCvc');
+  
+  // Also create a single card element for payment processing
+  cardElement = window.elements.create('card', { hidePostalCode: false });
 
   // Store in window for global access
+  window.cardElement = cardElement;
   window.cardNumberElement = cardNumberElement;
   window.cardExpiryElement = cardExpiryElement;
   window.cardCvcElement = cardCvcElement;
@@ -67,6 +75,22 @@ function createElements() {
   // Add error listeners
   [cardNumberElement, cardExpiryElement, cardCvcElement].forEach(element => {
     element.addEventListener('change', handleCardElementChange);
+  });
+  
+  // Error listener for card element
+  cardElement.addEventListener('change', (event) => {
+    const cardErrors = document.getElementById("card-errors");
+    if (event.error) {
+      if (cardErrors) {
+        cardErrors.textContent = event.error.message;
+        cardErrors.style.display = 'block';
+      }
+    } else {
+      if (cardErrors) {
+        cardErrors.textContent = '';
+        cardErrors.style.display = 'none';
+      }
+    }
   });
 }
 
@@ -93,6 +117,9 @@ function mountCardElements() {
     cardCvcElement.mount("#card-cvc-element");
     console.log("✅ Card CVC element mounted");
   }
+  
+  // Card element is created but not mounted - it's used for payment processing
+  console.log("✅ Stripe card element ready for payment");
 }
 
 // Handle card element changes (errors, etc.)
@@ -300,9 +327,9 @@ window.stripePayment = {
   handlePaymentSubmit,
   cancelPaymentFlow,
   getCardInfo: () => ({
-    number: window.cardNumberElement ? "****" : "Not entered",
-    expiry: window.cardExpiryElement ? "••/••" : "Not entered",
-    cvc: window.cardCvcElement ? "***" : "Not entered"
+    number: window.cardElement ? "••••" : "Not entered",
+    expiry: window.cardElement ? "••/••" : "Not entered",
+    cvc: window.cardElement ? "•••" : "Not entered"
   })
 };
 
