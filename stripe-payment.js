@@ -285,7 +285,24 @@ window.stripePayment = {
   initializePayment,
   handlePaymentSubmit,
   cancelPaymentFlow,
+  cardNumberElement,
+  cardExpiryElement,
+  cardCvcElement,
+  getCardInfo: () => ({
+    number: cardNumberElement ? "****" : "Not entered",
+    expiry: cardExpiryElement ? "••/••" : "Not entered",
+    cvc: cardCvcElement ? "***" : "Not entered"
+  })
 };
 
+// Also export stripe instance globally
+window.stripe = null;
+
 // Initialize on page load
-document.addEventListener("DOMContentLoaded", initializeStripe);
+document.addEventListener("DOMContentLoaded", () => {
+  initializeStripe();
+  // Make stripe instance accessible after init
+  setTimeout(() => {
+    window.stripe = stripe;
+  }, 100);
+});

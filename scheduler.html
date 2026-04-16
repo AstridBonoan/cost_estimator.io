@@ -1162,18 +1162,65 @@
           state.bookingId = "SCH-" + Math.floor(10000 + Math.random() * 90000);
         }
 
-        // Extract price for payment
+        // Extract price for payment (in dollars)
         let paymentAmount = 0;
         if (state.estimoData && state.estimoData.workingPrice) {
-          const priceStr = state.estimoData.workingPrice.replace(/[^\d]/g, "");
-          paymentAmount = parseInt(priceStr);
+          const priceStr = state.estimoData.workingPrice.replace(/[^\d.]/g, "");
+          paymentAmount = parseFloat(priceStr) || 0;
         }
 
-        // Simulate payment processing
         console.log("Processing payment for $" + paymentAmount);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const paymentResult = { success: true, paymentId: "pi_" + Math.random().toString(36).substr(2, 9) };
+
+        // Create payment intent on backend
+        const intentResponse = await fetch("http://localhost:3001/api/create-payment-intent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: Math.round(paymentAmount * 100), // Convert to cents
+            currency: "usd",
+            description: `Appointment - ${appointmentType.options[appointmentType.selectedIndex].text}`,
+            metadata: {
+              bookingId: state.bookingId,
+              customerEmail: email.value.trim(),
+              customerPhone: phone.value.trim(),
+              customerName: fullName.value.trim(),
+            }
+          })
+        });
+
+        if (!intentResponse.ok) {
+          throw new Error("Failed to create payment intent");
+        }
+
+        const intentData = await intentResponse.json();
+        const clientSecret = intentData.clientSecret;
+
+        // Process payment with Stripe
+        if (!window.stripe) {
+          throw new Error("Stripe not initialized");
+        }
+
+        const { error, paymentIntent } = await window.stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: window.stripePayment?.cardNumberElement || {},
+            billing_details: {
+              name: fullName.value.trim(),
+              email: email.value.trim(),
+              phone: phone.value.trim(),
+              address: {
+                postal_code: zip.value.trim()
+              }
+            }
+          }
+        });
+
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        if (paymentIntent.status !== 'succeeded') {
+          throw new Error("Payment was not successful");
+        }
 
         // Payment successful - now save booking
         const payload = {
@@ -1192,7 +1239,8 @@
           booking_price: state.estimoData.workingPrice || "To be determined",
           submitted_at: new Date().toISOString(),
           payment_status: "completed",
-          payment_id: paymentResult.paymentId,
+          payment_id: paymentIntent.id,
+          payment_amount: paymentAmount,
         };
 
         // Submit booking to email using form submission (avoids CORS)
@@ -1223,7 +1271,7 @@
         populateConfirmedDetails();
         
       } catch (error) {
-        showError("reviewError", "Failed to confirm appointment. Please try again.");
+        showError("reviewError", "Failed to confirm appointment: " + error.message);
         console.error("Booking error:", error);
         state.isSubmitting = false;
         confirmBtn.classList.remove("loading");
