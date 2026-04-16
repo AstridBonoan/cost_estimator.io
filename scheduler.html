@@ -799,11 +799,6 @@
     const zip = $("zip");
     const notes = $("notes");
 
-    const cardholderName = $("cardholderName");
-    const cardNumber = $("cardNumber");
-    const cardExpiry = $("cardExpiry");
-    const cardCvv = $("cardCvv");
-
     function init() {
       loadEstimateData();
       renderAppointmentTypes();
@@ -1298,34 +1293,8 @@
     }
 
     function validateCardFields() {
-      const errors = [];
-
-      if (!cardholderName.value.trim()) {
-        errors.push("Cardholder name is required");
-      }
-
-      const cardNum = cardNumber.value.replace(/\s/g, "");
-      if (!cardNum || cardNum.length < 13 || cardNum.length > 19) {
-        errors.push("Card number must be between 13-19 digits");
-      }
-
-      const expiry = cardExpiry.value;
-      if (!expiry || !expiry.match(/^(0[1-9]|1[0-2])\/\d{2}$/)) {
-        errors.push("Expiry must be in MM/YY format");
-      } else {
-        const [month, year] = expiry.split("/");
-        const exp = new Date(2000 + parseInt(year), parseInt(month));
-        if (exp < new Date()) {
-          errors.push("Card has expired");
-        }
-      }
-
-      const cvv = cardCvv.value;
-      if (!cvv || !cvv.match(/^\d{3,4}$/)) {
-        errors.push("CVV must be 3-4 digits");
-      }
-
-      return errors;
+      // Card validation is handled by Stripe payment elements
+      return [];
     }
   </script>
 
