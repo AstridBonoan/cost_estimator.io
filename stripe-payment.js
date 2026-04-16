@@ -6,7 +6,7 @@
 
 // IMPORTANT: Set your Stripe Public Key below  
 // Get it from: https://dashboard.stripe.com/apikeys
-const STRIPE_PUBLIC_KEY = "pk_live_51TKpQfLoT0JUyRg2FVoyMtuUZaD52l70DnqTTOSMYEnw7zRBQbpbzU0egRefWpWKFIUkoF35zo4ZAiJrRz8EatXx0018EZd2MS";
+const STRIPE_PUBLIC_KEY = "pk_test_51SLAVsPhUE8nH1XtgtaZGZm6Ru0800hzh8vNjZDtRFDACpZv8F1FNG3dFTT8UHc60EBA70BEmUT3DtKN6nanC00wtNIvr'JV";
 
 // Backend URL for creating Payment Intents
 // Set this to your backend endpoint that creates payment intents
@@ -28,15 +28,22 @@ let clientSecret = null;
 
 // Initialize Stripe on page load
 function initializeStripe() {
+  console.log("🔍 Initializing Stripe with key:", STRIPE_PUBLIC_KEY?.substring(0, 20) + "...");
+  
   if (!STRIPE_PUBLIC_KEY || STRIPE_PUBLIC_KEY === "pk_test_YOUR_KEY_HERE") {
-    console.warn("⚠️  Stripe Public Key not configured. Payment will not work until configured.");
+    console.error("❌ Stripe Public Key not configured. Payment will not work until configured.");
     return;
   }
 
-  window.stripe = Stripe(STRIPE_PUBLIC_KEY);
-  createElements();
-  mountCardElements();
-  console.log("✅ Stripe initialized");
+  try {
+    window.stripe = Stripe(STRIPE_PUBLIC_KEY);
+    console.log("✅ Stripe initialized successfully");
+    createElements();
+    mountCardElements();
+    console.log("✅ Stripe ready for payment");
+  } catch (error) {
+    console.error("❌ Stripe initialization error:", error);
+  }
 }
 
 // Create Stripe Elements
