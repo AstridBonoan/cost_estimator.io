@@ -575,6 +575,8 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="./stripe-payment.css" />
+  <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
   <div class="wrap">
@@ -593,6 +595,16 @@
         <div class="grid">
           <div>
             <div class="card summary-box" id="serviceSummaryCard"></div>
+
+            <!-- PAYMENT INFORMATION SECTION -->
+            <div class="card" style="margin-top:18px;">
+              <h2>Payment Information</h2>
+              <p class="sub">Enter your card details to secure your booking.</p>
+              
+              <div id="payment-element" class="payment-element" style="margin:16px 0;"></div>
+              <div id="payment-message" class="payment-message hidden" style="margin:12px 0; padding:12px; border-radius:8px;"></div>
+              <div id="payment-errors" class="payment-errors hidden" style="margin:12px 0; padding:12px; border-radius:8px; background:#fef2f2; border:1px solid #fecaca; color:#991b1b;"></div>
+            </div>
 
             <div class="card" style="margin-top:18px;">
               <h2>Your Information</h2>
@@ -826,6 +838,16 @@
             projectDisplayName: params.get("projectDisplayName") || "Service Project",
             workingPrice: params.get("workingPrice") || "$0",
           };
+          
+          // Initialize Stripe payment with the booking amount
+          const customerEmail = state.estimoData.customerEmail;
+          const customerName = state.estimoData.customerName;
+          const priceStr = state.estimoData.workingPrice.replace(/[^\d]/g, "");
+          const amount = parseInt(priceStr) || 0;
+          
+          if (window.schedulerStripe && amount > 0) {
+            window.schedulerStripe.initializePayment(amount, customerEmail, customerName);
+          }
           return;
         }
 
@@ -833,6 +855,16 @@
         const dataStr = sessionStorage.getItem("estimateData");
         if (dataStr) {
           state.estimoData = JSON.parse(dataStr);
+          
+          // Initialize Stripe payment
+          const customerEmail = state.estimoData.customerEmail;
+          const customerName = state.estimoData.customerName;
+          const priceStr = state.estimoData.workingPrice.replace(/[^\d]/g, "");
+          const amount = parseInt(priceStr) || 0;
+          
+          if (window.schedulerStripe && amount > 0) {
+            window.schedulerStripe.initializePayment(amount, customerEmail, customerName);
+          }
         }
       } catch (e) {
         console.log("No estimate data found in session or URL");
@@ -1108,8 +1140,12 @@
           ${info("ZIP", zip.value.trim())}
         `;
 
+        // Get card info from Stripe
+        const cardInfo = window.schedulerStripe.getCardInfo();
         $("reviewPayment").innerHTML = `
-          ${info("Status", "Ready for Stripe Payment")}
+          ${info("Cardholder", cardInfo.name || "Not entered")}
+          ${info("Email", cardInfo.email || "Not entered")}
+          ${info("Status", "Ready for Payment")}
           ${info("Method", "Secure Credit Card")}
         `;
 
@@ -1131,12 +1167,32 @@
         state.isSubmitting = true;
         clearError("reviewError");
         confirmBtn.classList.add("loading");
-        confirmBtn.textContent = "Finalizing Appointment...";
+        confirmBtn.textContent = "Processing Payment...";
 
         if (!state.bookingId) {
           state.bookingId = "SCH-" + Math.floor(10000 + Math.random() * 90000);
         }
 
+        // Extract price for payment
+        let paymentAmount = 0;
+        if (state.estimoData && state.estimoData.workingPrice) {
+          const priceStr = state.estimoData.workingPrice.replace(/[^\d]/g, "");
+          paymentAmount = parseInt(priceStr);
+        }
+
+        // Process Stripe payment
+        console.log("Processing payment for $" + paymentAmount);
+        const paymentResult = await window.schedulerStripe.handlePaymentSubmit();
+
+        if (!paymentResult.success) {
+          showError("reviewError", paymentResult.error || "Payment failed. Please try again.");
+          state.isSubmitting = false;
+          confirmBtn.classList.remove("loading");
+          confirmBtn.textContent = "Complete Payment & Confirm";
+          return;
+        }
+
+        // Payment successful - now save booking
         const payload = {
           form_type: "appointment_scheduled",
           business_name: CONFIG.businessName,
@@ -1153,6 +1209,7 @@
           booking_price: state.estimoData.workingPrice || "To be determined",
           submitted_at: new Date().toISOString(),
           payment_status: "completed",
+          payment_id: paymentResult.paymentId,
         };
 
         // Submit booking to email
@@ -1166,7 +1223,7 @@
           throw new Error("Failed to submit booking");
         }
 
-        // Booking confirmed - show success screen
+        // Booking confirmed
         sessionStorage.setItem("bookingId", state.bookingId);
         sessionStorage.setItem("bookingData", JSON.stringify(payload));
         
@@ -1288,5 +1345,6 @@
     <input type="hidden" id="stripeCustomerName" name="customer_name" value="">
   </form>
 
+  <script defer src="./stripe-scheduler.js"></script>
 </body>
 </html>
