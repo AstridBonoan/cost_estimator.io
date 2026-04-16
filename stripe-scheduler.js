@@ -13,24 +13,33 @@ let paymentElement;
 let clientSecret = null;
 let cardholderEmail = null;
 let cardholderName = null;
+let isPaymentReady = false;
 
 // Initialize Stripe on page load
 function initializeSchedulerStripe() {
+  console.log("Initializing Stripe...");
+  
   if (!STRIPE_PUBLIC_KEY || STRIPE_PUBLIC_KEY === "pk_test_YOUR_KEY_HERE") {
     console.warn("⚠️  Stripe Public Key not configured");
     return;
   }
 
   stripe = Stripe(STRIPE_PUBLIC_KEY);
+  console.log("Stripe initialized");
   createPaymentElements();
 }
 
 // Create Stripe Elements
 function createPaymentElements() {
-  if (!stripe) return;
+  if (!stripe) {
+    console.error("Stripe not initialized");
+    return;
+  }
+
+  console.log("Creating payment elements...");
 
   const appearance = {
-    theme: 'light',
+    theme: 'stripe',
     variables: {
       colorPrimary: '#0B3C5D',
       colorBackground: '#FFFFFF',
@@ -39,11 +48,15 @@ function createPaymentElements() {
       fontFamily: 'Inter, system-ui, -apple-system, sans-serif',
       spacingUnit: '4px',
       borderRadius: '8px',
+      fontSizeBase: '16px',
     },
   };
 
   elements = stripe.elements({ appearance });
+  
+  // Create the Payment Element
   paymentElement = elements.create('payment');
+  console.log("Elements created, Payment Element created");
 }
 
 // Mount Payment Element
@@ -54,15 +67,29 @@ function mountSchedulerPaymentElement() {
   }
 
   const paymentElementContainer = document.getElementById("payment-element");
-  if (paymentElementContainer && !paymentElementContainer.hasChildNodes()) {
+  if (!paymentElementContainer) {
+    console.error("Payment element container not found");
+    return;
+  }
+
+  // Clear any existing content
+  paymentElementContainer.innerHTML = '';
+
+  try {
     paymentElement.mount("#payment-element");
-    console.log("Payment element mounted");
+    isPaymentReady = true;
+    console.log("Payment element mounted successfully");
+  } catch (error) {
+    console.error("Error mounting payment element:", error);
+    showSchedulerPaymentError("Failed to load payment form. Please refresh the page.");
   }
 }
 
 // Create Payment Intent
 async function createSchedulerPaymentIntent(amount, customerEmail, customerName) {
   try {
+    console.log("Creating payment intent for $" + amount);
+    
     const response = await fetch(PAYMENT_INTENT_ENDPOINT, {
       method: "POST",
       headers: {
@@ -105,6 +132,7 @@ function showSchedulerPaymentMessage(message, type = "success") {
 
 // Show payment error
 function showSchedulerPaymentError(error) {
+  console.error("Payment error:", error);
   const paymentErrors = document.getElementById("payment-errors");
   if (paymentErrors) {
     paymentErrors.textContent = error;
@@ -123,8 +151,17 @@ function clearSchedulerPaymentErrors() {
 
 // Initialize payment for the booking amount
 async function initializeSchedulerPayment(amount, customerEmail, customerName) {
+  console.log("Initializing payment for:", { amount, customerEmail, customerName });
+
   if (!stripe) {
+    console.error("Stripe not initialized");
     showSchedulerPaymentError("Stripe is not initialized. Please refresh the page.");
+    return;
+  }
+
+  if (!elements) {
+    console.error("Elements not created");
+    showSchedulerPaymentError("Payment system not ready. Please refresh the page.");
     return;
   }
 
@@ -140,25 +177,28 @@ async function initializeSchedulerPayment(amount, customerEmail, customerName) {
 
   clientSecret = intentData.clientSecret;
 
-  // Update payment element
-  const { error } = await elements.update({
-    defaultValues: {
-      billingDetails: {
-        name: customerName,
-        email: customerEmail,
+  // Update payment element with billing details
+  try {
+    const { error } = await elements.update({
+      defaultValues: {
+        billingDetails: {
+          name: customerName,
+          email: customerEmail,
+        },
       },
-    },
-  });
+    });
 
-  if (error) {
-    showSchedulerPaymentError(`Payment setup error: ${error.message}`);
-    return;
+    if (error) {
+      showSchedulerPaymentError(`Payment setup error: ${error.message}`);
+      return;
+    }
+  } catch (error) {
+    console.error("Error updating elements:", error);
   }
 
   // Mount the payment element
   mountSchedulerPaymentElement();
-
-  console.log("Payment initialized for $" + amount);
+  console.log("Payment initialized successfully");
 }
 
 // Handle payment submission
@@ -168,10 +208,17 @@ async function handleSchedulerPaymentSubmit() {
     return { success: false, error: "Payment system not initialized" };
   }
 
+  if (!isPaymentReady) {
+    showSchedulerPaymentError("Payment form is not ready. Please wait a moment.");
+    return { success: false, error: "Payment form not ready" };
+  }
+
   clearSchedulerPaymentErrors();
   showSchedulerPaymentMessage("Processing your payment...", "processing");
 
   try {
+    console.log("Confirming payment with clientSecret:", clientSecret);
+
     // Confirm payment
     const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
@@ -182,19 +229,20 @@ async function handleSchedulerPaymentSubmit() {
     });
 
     if (error) {
+      console.error("Stripe error:", error);
       showSchedulerPaymentError(error.message);
-      console.error("Payment error:", error);
       return { success: false, error: error.message };
     }
 
     // Payment successful
-    if (paymentIntent.status === "succeeded") {
+    if (paymentIntent && paymentIntent.status === "succeeded") {
       showSchedulerPaymentMessage("✓ Payment successful! Processing your booking...", "success");
       console.log("Payment succeeded:", paymentIntent.id);
       return { success: true, paymentId: paymentIntent.id };
     } else {
-      showSchedulerPaymentError(`Payment status: ${paymentIntent.status}`);
-      return { success: false, error: `Payment status: ${paymentIntent.status}` };
+      const status = paymentIntent?.status || "unknown";
+      showSchedulerPaymentError(`Payment status: ${status}`);
+      return { success: false, error: `Payment status: ${status}` };
     }
   } catch (error) {
     console.error("Payment error:", error);
@@ -212,4 +260,9 @@ window.schedulerStripe = {
 };
 
 // Initialize on page load
-document.addEventListener("DOMContentLoaded", initializeSchedulerStripe);
+if (document.readyState === 'loading') {
+  document.addEventListener("DOMContentLoaded", initializeSchedulerStripe);
+} else {
+  initializeSchedulerStripe();
+}
+
