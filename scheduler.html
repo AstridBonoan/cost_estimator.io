@@ -1333,7 +1333,13 @@
 
       return errors;
     }
+  </script>
 
+  <!-- Load Stripe payment integration BEFORE init() -->
+  <script src="./stripe-scheduler.js"></script>
+
+  <script>
+    // Initialize after Stripe is loaded
     init();
   </script>
 
@@ -1344,7 +1350,5 @@
     <input type="hidden" id="stripeCustomerEmail" name="customer_email" value="">
     <input type="hidden" id="stripeCustomerName" name="customer_name" value="">
   </form>
-
-  <script defer src="./stripe-scheduler.js"></script>
 </body>
 </html>
