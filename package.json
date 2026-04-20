@@ -27,5 +27,14 @@
   "engines": {
     "node": ">=14.0.0",
     "npm": ">=6.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AstridBonoan/cost_estimator.io.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AstridBonoan/cost_estimator.io/issues"
+  },
+  "homepage": "https://github.com/AstridBonoan/cost_estimator.io#readme"
 }
