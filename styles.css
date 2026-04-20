@@ -454,6 +454,12 @@ textarea:focus {
   cursor: pointer;
   font-weight: 700;
   color: var(--text);
+  font-size: 0.98rem;
+}
+
+.accordion-button > div:first-child > div:first-child {
+  font-size: 1rem;
+  font-weight: 700;
 }
 
 .accordion-button:hover {
