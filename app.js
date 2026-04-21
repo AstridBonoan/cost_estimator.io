@@ -2517,6 +2517,33 @@ function validateStep(step) {
       showValidation(validationStep2, "Please complete name, phone, email, and ZIP code before continuing.");
       return false;
     }
+
+    // Validate full name - at least 2 characters and contains only letters, spaces, and hyphens
+    if (fullName.length < 2 || !/^[a-zA-Z\s\-']+$/.test(fullName)) {
+      showValidation(validationStep2, "Please enter a valid full name.");
+      return false;
+    }
+
+    // Validate phone - at least 10 digits (allows formatting like (123) 456-7890)
+    const phoneDigitsOnly = phone.replace(/\D/g, "");
+    if (phoneDigitsOnly.length < 10) {
+      showValidation(validationStep2, "Please enter a valid phone number with at least 10 digits.");
+      return false;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      showValidation(validationStep2, "Please enter a valid email address.");
+      return false;
+    }
+
+    // Validate ZIP code - 5 or 9 digits (allows ZIP+4 format)
+    const zipcodeDigitsOnly = zipcode.replace(/\D/g, "");
+    if (zipcodeDigitsOnly.length !== 5 && zipcodeDigitsOnly.length !== 9) {
+      showValidation(validationStep2, "Please enter a valid ZIP code (5 or 9 digits).");
+      return false;
+    }
   }
 
   if (step === 3) {
