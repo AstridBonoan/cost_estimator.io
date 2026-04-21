@@ -593,9 +593,71 @@
           <div>
             <div class="card summary-box" id="serviceSummaryCard"></div>
 
+            <!-- BILLING DETAILS SECTION -->
+            <div class="card" style="margin-top:18px;">
+              <h2>Billing Details</h2>
+              <p class="sub">Enter your information to complete your booking.</p>
+              
+              <div class="row-2">
+                <div class="field">
+                  <label for="billingFullName">Full Name</label>
+                  <input type="text" id="billingFullName" placeholder="John Doe" />
+                </div>
+                <div class="field">
+                  <label for="billingEmail">Email</label>
+                  <input type="email" id="billingEmail" placeholder="john@example.com" />
+                </div>
+              </div>
+
+              <div class="row-2">
+                <div class="field">
+                  <label for="billingPhone">Phone Number</label>
+                  <input type="tel" id="billingPhone" placeholder="(123) 456-7890" />
+                </div>
+                <div class="field">
+                  <label for="billingCountry">Country</label>
+                  <select id="billingCountry">
+                    <option value="">Select a country</option>
+                    <option value="US">United States</option>
+                    <option value="CA">Canada</option>
+                    <option value="GB">United Kingdom</option>
+                    <option value="AU">Australia</option>
+                    <option value="MX">Mexico</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="billingAddress">Street Address</label>
+                <input type="text" id="billingAddress" placeholder="123 Main Street" />
+              </div>
+
+              <div class="field">
+                <label for="billingApartment">Apartment, suite, etc. (optional)</label>
+                <input type="text" id="billingApartment" placeholder="Apt 4B" />
+              </div>
+
+              <div class="row-2">
+                <div class="field">
+                  <label for="billingCity">City</label>
+                  <input type="text" id="billingCity" placeholder="New York" />
+                </div>
+                <div class="field">
+                  <label for="billingState">State / Province</label>
+                  <input type="text" id="billingState" placeholder="NY" />
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="billingZip">ZIP / Postal Code</label>
+                <input type="text" id="billingZip" placeholder="10001" />
+              </div>
+            </div>
+
             <!-- PAYMENT INFORMATION SECTION -->
             <div class="card" style="margin-top:18px;">
-              <h2>Payment Information</h2>
+              <h2>Payment Method</h2>
               <p class="sub">Enter your card details to secure your booking.</p>
               
               <div class="field">
@@ -743,6 +805,17 @@
     const timesIntro = $("timesIntro");
     const continueBtn = $("continueBtn");
 
+    // Billing details fields
+    const billingFullName = $("billingFullName");
+    const billingEmail = $("billingEmail");
+    const billingPhone = $("billingPhone");
+    const billingCountry = $("billingCountry");
+    const billingAddress = $("billingAddress");
+    const billingApartment = $("billingApartment");
+    const billingCity = $("billingCity");
+    const billingState = $("billingState");
+    const billingZip = $("billingZip");
+
     function init() {
       loadEstimateData();
       renderAppointmentTypes();
@@ -801,8 +874,14 @@
     }
 
     function autoFillCustomerData() {
-      // Data is loaded from URL params in loadEstimateData()
-      // No form fields to fill
+      if (!state.estimoData) return;
+
+      // Auto-fill billing details from estimoData if available
+      if (state.estimoData.customerName) billingFullName.value = state.estimoData.customerName;
+      if (state.estimoData.customerEmail) billingEmail.value = state.estimoData.customerEmail;
+      if (state.estimoData.customerPhone) billingPhone.value = state.estimoData.customerPhone;
+      if (state.estimoData.customerAddress) billingAddress.value = state.estimoData.customerAddress;
+      if (state.estimoData.customerZip) billingZip.value = state.estimoData.customerZip;
     }
 
     function renderAppointmentTypes() {
@@ -840,6 +919,12 @@
       $("continueBtn").addEventListener("click", goToReview);
       $("backToScheduleBtn").addEventListener("click", () => showScreen("schedule"));
       $("confirmBtn").addEventListener("click", handleConfirm);
+
+      // Add listeners to billing fields
+      [billingFullName, billingEmail, billingPhone, billingCountry, billingAddress, billingApartment, billingCity, billingState, billingZip].forEach(el => {
+        if (el) el.addEventListener("input", validateScheduleStep);
+        if (el) el.addEventListener("change", validateScheduleStep);
+      });
     }
 
     function showScreen(name) {
@@ -991,7 +1076,18 @@
     }
 
     function validateScheduleStep() {
-      const valid = state.selectedDate && state.selectedTime;
+      const valid =
+        state.selectedDate &&
+        state.selectedTime &&
+        billingFullName.value.trim() &&
+        billingEmail.value.trim() &&
+        billingPhone.value.trim() &&
+        billingAddress.value.trim() &&
+        billingCity.value.trim() &&
+        billingState.value.trim() &&
+        billingZip.value.trim() &&
+        billingCountry.value;
+
       continueBtn.disabled = !valid;
       continueBtn.style.cursor = valid ? "pointer" : "not-allowed";
     }
@@ -1012,11 +1108,14 @@
         `;
 
         $("reviewCustomer").innerHTML = `
-          ${info("Name", state.estimoData.customerName || "N/A")}
-          ${info("Email", state.estimoData.customerEmail || "N/A")}
-          ${info("Phone", state.estimoData.customerPhone || "N/A")}
-          ${info("Address", state.estimoData.customerAddress || "N/A")}
-          ${info("ZIP", state.estimoData.customerZip || "N/A")}
+          ${info("Full Name", billingFullName.value.trim())}
+          ${info("Email", billingEmail.value.trim())}
+          ${info("Phone", billingPhone.value.trim())}
+          ${info("Address", billingAddress.value.trim() + (billingApartment.value.trim() ? " " + billingApartment.value.trim() : ""))}
+          ${info("City", billingCity.value.trim())}
+          ${info("State", billingState.value.trim())}
+          ${info("ZIP", billingZip.value.trim())}
+          ${info("Country", billingCountry.options[billingCountry.selectedIndex]?.text || "N/A")}
         `;
 
         $("reviewPayment").innerHTML = `
@@ -1078,9 +1177,13 @@
             description: `Appointment - ${state.estimoData.projectDisplayName || "Service"}`,
             metadata: {
               bookingId: state.bookingId,
-              customerEmail: state.estimoData.customerEmail || "",
-              customerPhone: state.estimoData.customerPhone || "",
-              customerName: state.estimoData.customerName || "",
+              customerEmail: billingEmail.value.trim(),
+              customerPhone: billingPhone.value.trim(),
+              customerName: billingFullName.value.trim(),
+              customerCity: billingCity.value.trim(),
+              customerState: billingState.value.trim(),
+              customerZip: billingZip.value.trim(),
+              customerCountry: billingCountry.value,
             }
           })
         });
@@ -1100,11 +1203,16 @@
           type: 'card',
           card: window.cardNumberElement,
           billing_details: {
-            name: state.estimoData.customerName || "",
-            email: state.estimoData.customerEmail || "",
-            phone: state.estimoData.customerPhone || "",
+            name: billingFullName.value.trim(),
+            email: billingEmail.value.trim(),
+            phone: billingPhone.value.trim(),
             address: {
-              postal_code: state.estimoData.customerZip || ""
+              line1: billingAddress.value.trim(),
+              line2: billingApartment.value.trim(),
+              city: billingCity.value.trim(),
+              state: billingState.value.trim(),
+              postal_code: billingZip.value.trim(),
+              country: billingCountry.value
             }
           }
         });
@@ -1138,12 +1246,14 @@
           business_name: CONFIG.businessName,
           booking_id: state.bookingId,
           service_type: state.estimoData.projectDisplayName || "Service",
-          customer_name: state.estimoData.customerName || "",
-          customer_email: state.estimoData.customerEmail || "",
-          customer_phone: state.estimoData.customerPhone || "",
-          property_address: state.estimoData.customerAddress || "",
-          zip_code: state.estimoData.customerZip || "",
-          notes: state.estimoData.notes || "",
+          customer_name: billingFullName.value.trim(),
+          customer_email: billingEmail.value.trim(),
+          customer_phone: billingPhone.value.trim(),
+          property_address: billingAddress.value.trim() + (billingApartment.value.trim() ? " " + billingApartment.value.trim() : ""),
+          city: billingCity.value.trim(),
+          state: billingState.value.trim(),
+          zip_code: billingZip.value.trim(),
+          country: billingCountry.value,
           appointment_date: formatLongDate(state.selectedDate),
           appointment_time: state.selectedTime,
           booking_price: state.estimoData.workingPrice || "To be determined",
@@ -1207,11 +1317,12 @@
         ${info("Booking Price", workingPrice)}
         ${info("Date", formatLongDate(state.selectedDate))}
         ${info("Time", state.selectedTime)}
-        ${info("Name", state.estimoData.customerName || "N/A")}
-        ${info("Email", state.estimoData.customerEmail || "N/A")}
-        ${info("Phone", state.estimoData.customerPhone || "N/A")}
-        ${info("Address", state.estimoData.customerAddress || "N/A")}
-        ${info("ZIP", state.estimoData.customerZip || "N/A")}
+        ${info("Name", billingFullName.value.trim())}
+        ${info("Email", billingEmail.value.trim())}
+        ${info("Phone", billingPhone.value.trim())}
+        ${info("Address", billingAddress.value.trim() + (billingApartment.value.trim() ? " " + billingApartment.value.trim() : ""))}
+        ${info("City, State, ZIP", billingCity.value.trim() + ", " + billingState.value.trim() + " " + billingZip.value.trim())}
+        ${info("Country", billingCountry.options[billingCountry.selectedIndex]?.text || "N/A")}
         ${info("Booking ID", state.bookingId)}
       `;
     }
