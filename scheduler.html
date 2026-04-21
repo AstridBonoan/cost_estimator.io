@@ -737,19 +737,11 @@
     const $ = (id) => document.getElementById(id);
 
     const serviceSummaryCard = $("serviceSummaryCard");
-    const appointmentType = $("appointmentType");
     const monthTitle = $("monthTitle");
     const daysGrid = $("daysGrid");
     const timesGrid = $("timesGrid");
     const timesIntro = $("timesIntro");
     const continueBtn = $("continueBtn");
-
-    const fullName = $("fullName");
-    const email = $("email");
-    const phone = $("phone");
-    const address = $("address");
-    const zip = $("zip");
-    const notes = $("notes");
 
     function init() {
       loadEstimateData();
@@ -809,43 +801,12 @@
     }
 
     function autoFillCustomerData() {
-      if (!state.estimoData) return;
-
-      const autoFillField = (inputEl, noteEl, dataField, checkValue) => {
-        if (state.estimoData[dataField] && state.estimoData[dataField].trim()) {
-          inputEl.value = state.estimoData[dataField];
-          if (noteEl) noteEl.style.display = "block";
-          return true;
-        }
-        return false;
-      };
-
-      autoFillField(fullName, $("fullNameNote"), "customerName");
-      autoFillField(email, $("emailNote"), "customerEmail");
-      autoFillField(phone, $("phoneNote"), "customerPhone");
-      autoFillField(address, $("addressNote"), "customerAddress");
-      autoFillField(zip, $("zipNote"), "customerZip");
-
-      if (state.estimoData.projectValue) {
-        const option = Array.from(appointmentType.options).find(opt => opt.value === state.estimoData.projectValue);
-        if (option) {
-          appointmentType.value = state.estimoData.projectValue;
-          $("appointmentTypeNote").style.display = "block";
-        }
-      }
-
-      validateScheduleStep();
+      // Data is loaded from URL params in loadEstimateData()
+      // No form fields to fill
     }
 
     function renderAppointmentTypes() {
-      appointmentType.innerHTML = "";
-      CONFIG.appointmentTypes.forEach((item, index) => {
-        const opt = document.createElement("option");
-        opt.value = item.value;
-        opt.textContent = item.label;
-        if (index === 0) opt.selected = true;
-        appointmentType.appendChild(opt);
-      });
+      // Appointment type is loaded from URL params, no form rendering needed
     }
 
     function renderServiceSummary() {
@@ -879,16 +840,6 @@
       $("continueBtn").addEventListener("click", goToReview);
       $("backToScheduleBtn").addEventListener("click", () => showScreen("schedule"));
       $("confirmBtn").addEventListener("click", handleConfirm);
-
-      [fullName, email, phone, address, zip, notes, appointmentType].forEach(el => {
-        el.addEventListener("input", validateScheduleStep);
-        el.addEventListener("change", () => {
-          if (el === appointmentType && state.selectedDate) {
-            renderTimesForDate(state.selectedDate, timesGrid, timesIntro, false);
-          }
-          validateScheduleStep();
-        });
-      });
     }
 
     function showScreen(name) {
@@ -990,7 +941,7 @@
 
       introEl.textContent = `Showing availability for ${formatLongDate(dateObj)}.`;
 
-      const slots = getDemoSlots(dateObj, appointmentType.value);
+      const slots = getDemoSlots(dateObj);
 
       slots.forEach(slot => {
         const btn = document.createElement("button");
@@ -1020,7 +971,7 @@
       });
     }
 
-    function getDemoSlots(dateObj, type) {
+    function getDemoSlots(dateObj) {
       const weekday = dateObj.getDay();
       const dayNum = dateObj.getDate();
 
@@ -1040,23 +991,14 @@
     }
 
     function validateScheduleStep() {
-      const valid =
-        fullName.value.trim() &&
-        email.value.trim() &&
-        phone.value.trim() &&
-        address.value.trim() &&
-        zip.value.trim() &&
-        appointmentType.value &&
-        state.selectedDate &&
-        state.selectedTime;
-
+      const valid = state.selectedDate && state.selectedTime;
       continueBtn.disabled = !valid;
       continueBtn.style.cursor = valid ? "pointer" : "not-allowed";
     }
 
     function goToReview() {
       try {
-        const projectName = state.estimoData.projectDisplayName || appointmentType.options[appointmentType.selectedIndex].text;
+        const projectName = state.estimoData.projectDisplayName || "Service Project";
         const workingPrice = state.estimoData.workingPrice || "$0";
         
         $("reviewService").innerHTML = `
@@ -1070,19 +1012,13 @@
         `;
 
         $("reviewCustomer").innerHTML = `
-          ${info("Name", fullName.value.trim())}
-          ${info("Email", email.value.trim())}
-          ${info("Phone", phone.value.trim())}
-          ${info("Address", address.value.trim())}
-          ${info("ZIP", zip.value.trim())}
+          ${info("Name", state.estimoData.customerName || "N/A")}
+          ${info("Email", state.estimoData.customerEmail || "N/A")}
+          ${info("Phone", state.estimoData.customerPhone || "N/A")}
+          ${info("Address", state.estimoData.customerAddress || "N/A")}
+          ${info("ZIP", state.estimoData.customerZip || "N/A")}
         `;
 
-        // Get card info from Stripe
-        let cardInfo = { name: "Card", email: "Not entered" };
-        if (window.stripePayment && window.stripePayment.getCardInfo) {
-          cardInfo = window.stripePayment.getCardInfo();
-        }
-        
         $("reviewPayment").innerHTML = `
           ${info("Card Type", "Visa / Mastercard / Amex")}
           ${info("Card Status", "Entered")}
@@ -1139,12 +1075,12 @@
           body: JSON.stringify({
             amount: Math.round(paymentAmount * 100), // Convert to cents
             currency: "usd",
-            description: `Appointment - ${appointmentType.options[appointmentType.selectedIndex].text}`,
+            description: `Appointment - ${state.estimoData.projectDisplayName || "Service"}`,
             metadata: {
               bookingId: state.bookingId,
-              customerEmail: email.value.trim(),
-              customerPhone: phone.value.trim(),
-              customerName: fullName.value.trim(),
+              customerEmail: state.estimoData.customerEmail || "",
+              customerPhone: state.estimoData.customerPhone || "",
+              customerName: state.estimoData.customerName || "",
             }
           })
         });
@@ -1164,11 +1100,11 @@
           type: 'card',
           card: window.cardNumberElement,
           billing_details: {
-            name: fullName.value.trim(),
-            email: email.value.trim(),
-            phone: phone.value.trim(),
+            name: state.estimoData.customerName || "",
+            email: state.estimoData.customerEmail || "",
+            phone: state.estimoData.customerPhone || "",
             address: {
-              postal_code: zip.value.trim()
+              postal_code: state.estimoData.customerZip || ""
             }
           }
         });
@@ -1201,13 +1137,13 @@
           form_type: "appointment_scheduled",
           business_name: CONFIG.businessName,
           booking_id: state.bookingId,
-          service_type: appointmentType.options[appointmentType.selectedIndex].text,
-          customer_name: fullName.value.trim(),
-          customer_email: email.value.trim(),
-          customer_phone: phone.value.trim(),
-          property_address: address.value.trim(),
-          zip_code: zip.value.trim(),
-          notes: notes.value.trim(),
+          service_type: state.estimoData.projectDisplayName || "Service",
+          customer_name: state.estimoData.customerName || "",
+          customer_email: state.estimoData.customerEmail || "",
+          customer_phone: state.estimoData.customerPhone || "",
+          property_address: state.estimoData.customerAddress || "",
+          zip_code: state.estimoData.customerZip || "",
+          notes: state.estimoData.notes || "",
           appointment_date: formatLongDate(state.selectedDate),
           appointment_time: state.selectedTime,
           booking_price: state.estimoData.workingPrice || "To be determined",
@@ -1271,11 +1207,11 @@
         ${info("Booking Price", workingPrice)}
         ${info("Date", formatLongDate(state.selectedDate))}
         ${info("Time", state.selectedTime)}
-        ${info("Name", fullName.value.trim())}
-        ${info("Email", email.value.trim())}
-        ${info("Phone", phone.value.trim())}
-        ${info("Address", address.value.trim())}
-        ${info("ZIP", zip.value.trim())}
+        ${info("Name", state.estimoData.customerName || "N/A")}
+        ${info("Email", state.estimoData.customerEmail || "N/A")}
+        ${info("Phone", state.estimoData.customerPhone || "N/A")}
+        ${info("Address", state.estimoData.customerAddress || "N/A")}
+        ${info("ZIP", state.estimoData.customerZip || "N/A")}
         ${info("Booking ID", state.bookingId)}
       `;
     }

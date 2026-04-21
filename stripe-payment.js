@@ -69,12 +69,9 @@ function createElements() {
   cardNumberElement = window.elements.create('cardNumber');
   cardExpiryElement = window.elements.create('cardExpiry');
   cardCvcElement = window.elements.create('cardCvc');
-  
-  // Also create a single card element for payment processing
-  cardElement = window.elements.create('card', { hidePostalCode: false });
 
   // Store in window for global access
-  window.cardElement = cardElement;
+  window.cardElement = cardNumberElement; // For backward compatibility
   window.cardNumberElement = cardNumberElement;
   window.cardExpiryElement = cardExpiryElement;
   window.cardCvcElement = cardCvcElement;
@@ -82,22 +79,6 @@ function createElements() {
   // Add error listeners
   [cardNumberElement, cardExpiryElement, cardCvcElement].forEach(element => {
     element.addEventListener('change', handleCardElementChange);
-  });
-  
-  // Error listener for card element
-  cardElement.addEventListener('change', (event) => {
-    const cardErrors = document.getElementById("card-errors");
-    if (event.error) {
-      if (cardErrors) {
-        cardErrors.textContent = event.error.message;
-        cardErrors.style.display = 'block';
-      }
-    } else {
-      if (cardErrors) {
-        cardErrors.textContent = '';
-        cardErrors.style.display = 'none';
-      }
-    }
   });
 }
 
@@ -125,8 +106,7 @@ function mountCardElements() {
     console.log("✅ Card CVC element mounted");
   }
   
-  // Card element is created but not mounted - it's used for payment processing
-  console.log("✅ Stripe card element ready for payment");
+  console.log("✅ Stripe card elements ready for payment");
 }
 
 // Handle card element changes (errors, etc.)
