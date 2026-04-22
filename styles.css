@@ -811,6 +811,8 @@ textarea:focus {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  justify-content: center;
+  align-items: center;
 }
 
 /* RESPONSIVE */
@@ -848,6 +850,8 @@ textarea:focus {
 
   .actions-split {
     flex-direction: row;
+    justify-content: center;
+    align-items: center;
   }
 
   .actions-split .btn {
