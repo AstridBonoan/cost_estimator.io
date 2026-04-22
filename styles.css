@@ -804,12 +804,15 @@ textarea:focus {
   flex-direction: column;
   gap: 12px;
   margin-top: 20px;
-  margin-left: auto;
-  margin-right: auto;
   background: #ffffff;
   padding: 14px;
   border-radius: 16px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.cta-panel .actions {
+  margin-left: auto;
+  margin-right: auto;
   width: fit-content;
   align-items: center;
 }
@@ -818,7 +821,6 @@ textarea:focus {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  justify-content: center;
 }
 
 /* RESPONSIVE */
@@ -854,9 +856,18 @@ textarea:focus {
     min-width: 180px;
   }
 
-  .actions-split {
+  .cta-panel .actions-split {
     flex-direction: row;
     justify-content: center;
+  }
+
+  .cta-panel .actions-split .btn {
+    width: auto;
+    min-width: 170px;
+  }
+
+  .actions-split {
+    flex-direction: row;
   }
 
   .actions-split .btn {
