@@ -6,7 +6,7 @@
 
 // IMPORTANT: Set your Stripe Public Key below  
 // Get it from: https://dashboard.stripe.com/apikeys
-const STRIPE_PUBLIC_KEY = "pk_test_51SLAVsPhUE8nH1XtgtaZGZm6Ru0800hzh8vNjZDtRFDACpZv8F1FNG3dFTT8UHc60EBA70BEmUT3DtKN6nanC00wtNIvr'JV";
+const STRIPE_PUBLIC_KEY = "pk_test_51TKpQfLoT0JUyRg2FVoyMtuUZaD52l70DnqTTOSMYEnw7zRBQbpbzU0egRefWpWKFIUkoF35zo4ZAiJrRz8EatXx0018EZd2MS";
 
 // Backend URL for creating Payment Intents
 // Set this to your backend endpoint that creates payment intents
