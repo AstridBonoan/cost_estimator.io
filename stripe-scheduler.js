@@ -2,7 +2,7 @@
 // STRIPE PAYMENT INTEGRATION FOR SCHEDULER  
 // ============================================================================
 
-const STRIPE_PUBLIC_KEY = "pk_live_51TKpQfLoT0JUyRg2FVoyMtuUZaD52l70DnqTTOSMYEnw7zRBQbpbzU0egRefWpWKFIUkoF35zo4ZAiJrRz8EatXx0018EZd2MS";
+const STRIPE_PUBLIC_KEY = "pk_test_51TKpQfLoT0JUyRg2FVoyMtuUZaD52l70DnqTTOSMYEnw7zRBQbpbzU0egRefWpWKFIUkoF35zo4ZAiJrRz8EatXx0018EZd2MS";
 const PAYMENT_INTENT_ENDPOINT = "http://localhost:3001/api/create-payment-intent";
 
 let stripe = null;
