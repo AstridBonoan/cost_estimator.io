@@ -3318,7 +3318,7 @@ if (payNowBtn) {
     // Redirect to scheduler for appointment booking and payment
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const schedulerUrl = isLocalhost 
-      ? `http://localhost:3001/scheduler.html?${params.toString()}`
+      ? `https://estimator-sqzv.onrender.com/scheduler.html?${params.toString()}`
       : `https://astridbonoan.github.io/cost_estimator.io/scheduler.html?${params.toString()}`;
     window.location.href = schedulerUrl;
   });
