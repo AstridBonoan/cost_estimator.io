@@ -1168,7 +1168,7 @@
         }
 
         // Create payment intent on backend
-        const intentResponse = await fetch("http://localhost:3001/api/create-payment-intent", {
+        const intentResponse = await fetch("https://estimator-sqzv.onrender.com/api/create-payment-intent", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
