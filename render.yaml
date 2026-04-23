@@ -18,3 +18,5 @@ services:
         sync: false
       - key: CLIENT_URL
         sync: false
+      - key: CORS_ORIGIN
+        value: https://estimator-sgzv.onrender.com
