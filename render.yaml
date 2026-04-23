@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: estimator-payment-backend
+    name: Estimator
     env: node
     plan: free
     buildCommand: npm install
