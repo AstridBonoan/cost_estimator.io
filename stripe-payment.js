@@ -10,7 +10,7 @@ const STRIPE_PUBLIC_KEY = "pk_test_51TKpQfLoT0JUyRg2FVoyMtuUZaD52l70DnqTTOSMYEnw
 
 // Backend URL for creating Payment Intents
 // Set this to your backend endpoint that creates payment intents
-const PAYMENT_INTENT_ENDPOINT = "https://estimator-sgzv.onrender.com/api/create-payment-intent";
+const PAYMENT_INTENT_ENDPOINT = "https://estimator-sqzv.onrender.com/api/create-payment-intent";
 
 // Global references so scheduler.html can access them
 window.stripe = null;
@@ -238,7 +238,7 @@ async function handlePaymentSubmit(e) {
           // Redirect to scheduler
           const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
           const schedulerUrl = isLocalhost 
-            ? `https://estimator-sgzv.onrender.com/scheduler.html?${params.toString()}`
+            ? `https://estimator-sqzv.onrender.com/scheduler.html?${params.toString()}`
             : `https://astridbonoan.github.io/cost_estimator.io/scheduler.html?${params.toString()}`;
           window.location.href = schedulerUrl;
         }
