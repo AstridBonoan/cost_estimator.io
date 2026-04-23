@@ -3,7 +3,7 @@
 // ============================================================================
 
 const STRIPE_PUBLIC_KEY = "pk_test_51TKpQfLoT0JUyRg2FVoyMtuUZaD52l70DnqTTOSMYEnw7zRBQbpbzU0egRefWpWKFIUkoF35zo4ZAiJrRz8EatXx0018EZd2MS";
-const PAYMENT_INTENT_ENDPOINT = "https://estimator-sqzv.onrender.com/api/create-payment-intent";
+const PAYMENT_INTENT_ENDPOINT = "https://estimator-sgzv.onrender.com/api/create-payment-intent";
 
 let stripe = null;
 let elements = null;

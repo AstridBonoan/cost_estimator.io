@@ -37,7 +37,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
   "https://estimator.tamayenterprises.com",
-  "https://estimator-sqzv.onrender.com",
+  "https://estimator-sgzv.onrender.com",
   process.env.CORS_ORIGIN
 ].filter(Boolean); // Remove undefined values
 
