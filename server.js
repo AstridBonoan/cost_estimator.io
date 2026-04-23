@@ -32,8 +32,25 @@ if (!process.env.STRIPE_SECRET_KEY) {
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Middleware
+// Allow multiple CORS origins for development and production
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://estimator.tamayenterprises.com",
+  "https://estimator-sqzv.onrender.com",
+  process.env.CORS_ORIGIN
+].filter(Boolean); // Remove undefined values
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`CORS rejected origin: ${origin}`);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true
 }));
 app.use(express.json());
