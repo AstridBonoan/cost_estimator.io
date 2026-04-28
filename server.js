@@ -143,7 +143,15 @@ app.post("/api/create-payment-intent", async (req, res) => {
       status: paymentIntent.status,
     });
   } catch (error) {
-    console.error("Error creating payment intent:", error);
+    console.error("Error creating payment intent:", {
+      message: error?.message,
+      type: error?.type,
+      code: error?.code,
+      errno: error?.errno,
+      detail: error?.detail,
+      rawType: error?.rawType,
+      requestId: error?.requestId,
+    });
     const status = error?.type === "StripeConnectionError" ? 503 : 500;
     res.status(status).json({
       error: error.message || "Failed to create payment intent",

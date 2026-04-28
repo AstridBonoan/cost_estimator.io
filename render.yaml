@@ -6,8 +6,10 @@ services:
     buildCommand: npm install
     startCommand: npm start
     envVars:
+      - key: NODE_VERSION
+        value: 20.18.0
       - key: NODE_ENV
-        value: development
+        value: production
       - key: PORT
         value: 3001
       - key: STRIPE_SECRET_KEY
@@ -19,4 +21,4 @@ services:
       - key: CLIENT_URL
         sync: false
       - key: CORS_ORIGIN
-        value: https://estimator-sqzv.onrender.com
+        value: https://estimator.tamayenterprises.com
