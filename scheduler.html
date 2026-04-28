@@ -841,15 +841,7 @@
             workingPrice: params.get("workingPrice") || "$0",
           };
           
-          // Initialize Stripe payment with the booking amount
-          const customerEmail = state.estimoData.customerEmail;
-          const customerName = state.estimoData.customerName;
-          const priceStr = state.estimoData.workingPrice.replace(/[^\d]/g, "");
-          const amount = parseInt(priceStr) || 0;
-          
-          if (window.stripePayment && amount > 0) {
-            window.stripePayment.initialize(amount, customerEmail, customerName);
-          }
+          // Stripe is initialized by stripe-payment.js on DOMContentLoaded.
           return;
         }
 
@@ -858,15 +850,7 @@
         if (dataStr) {
           state.estimoData = JSON.parse(dataStr);
           
-          // Initialize Stripe payment
-          const customerEmail = state.estimoData.customerEmail;
-          const customerName = state.estimoData.customerName;
-          const priceStr = state.estimoData.workingPrice.replace(/[^\d]/g, "");
-          const amount = parseInt(priceStr) || 0;
-          
-          if (window.stripePayment && amount > 0) {
-            window.stripePayment.initialize(amount, customerEmail, customerName);
-          }
+          // Stripe is initialized by stripe-payment.js on DOMContentLoaded.
         }
       } catch (e) {
         console.log("No estimate data found in session or URL");

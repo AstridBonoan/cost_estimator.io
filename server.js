@@ -23,13 +23,26 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+function normalizeStripeKey(rawKey) {
+  if (!rawKey) return "";
+  // Guard against accidental copy/paste artifacts in host env vars.
+  return rawKey.trim().replace(/^['"]|['"]$/g, "");
+}
+
+const stripeSecretKey = normalizeStripeKey(process.env.STRIPE_SECRET_KEY);
+
 // Stripe setup - make sure environment variable is set
-if (!process.env.STRIPE_SECRET_KEY) {
+if (!stripeSecretKey) {
   console.error("ERROR: STRIPE_SECRET_KEY environment variable not set");
   process.exit(1);
 }
 
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+if (!stripeSecretKey.startsWith("sk_test_") && !stripeSecretKey.startsWith("sk_live_")) {
+  console.error("ERROR: STRIPE_SECRET_KEY must start with sk_test_ or sk_live_");
+  process.exit(1);
+}
+
+const stripe = Stripe(stripeSecretKey);
 
 // Middleware
 // Allow multiple CORS origins for development and production

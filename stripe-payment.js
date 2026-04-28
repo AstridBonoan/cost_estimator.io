@@ -35,6 +35,12 @@ function initializeStripe() {
     return;
   }
 
+  // Prevent creating fresh unmounted Elements on repeated calls.
+  if (window.stripe && window.cardNumberElement && window.cardExpiryElement && window.cardCvcElement) {
+    console.log("✅ Stripe already initialized");
+    return;
+  }
+
   try {
     window.stripe = Stripe(STRIPE_PUBLIC_KEY);
     console.log("✅ Stripe initialized successfully");
@@ -51,7 +57,7 @@ function createElements() {
   if (!window.stripe) return;
 
   const appearance = {
-    theme: 'light',
+    theme: 'stripe',
     variables: {
       colorPrimary: '#0B3C5D',
       colorBackground: '#FFFFFF',
