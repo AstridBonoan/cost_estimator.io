@@ -42,7 +42,12 @@ if (!stripeSecretKey.startsWith("sk_test_") && !stripeSecretKey.startsWith("sk_l
   process.exit(1);
 }
 
-const stripe = Stripe(stripeSecretKey);
+const stripe = Stripe(stripeSecretKey, {
+  // Render/free-tier cold starts can cause occasional network hiccups to Stripe.
+  // Increase retries/timeout to reduce false payment failures.
+  maxNetworkRetries: 3,
+  timeout: 20000,
+});
 
 // Middleware
 // Allow multiple CORS origins for development and production
@@ -97,23 +102,37 @@ app.post("/api/create-payment-intent", async (req, res) => {
       return res.status(400).json({ error: "Customer email is required in metadata" });
     }
 
-    // Create payment intent
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount),  // Amount in cents
-      currency: currency.toLowerCase(),
-      description: description || "Tamay Enterprises - Cost Estimator",
-      metadata: {
-        projectType: metadata.projectType || "unknown",
-        customerEmail: metadata.customerEmail,
-        customerPhone: metadata.customerPhone,
-        customerName: metadata.customerName,
-        timestamp: new Date().toISOString(),
-      },
-      // Optional: Add statement descriptor suffix (appears on customer's credit card statement)
-      statement_descriptor_suffix: "TAMAY ESTIMATES",
-      // Optional: Automatic tax calculation if connected
-      // automatic_tax: { enabled: true },
-    });
+    // Create payment intent with targeted retries for transient Stripe network failures.
+    let paymentIntent;
+    const maxAttempts = 3;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        paymentIntent = await stripe.paymentIntents.create({
+          amount: Math.round(amount),  // Amount in cents
+          currency: currency.toLowerCase(),
+          description: description || "Tamay Enterprises - Cost Estimator",
+          metadata: {
+            projectType: metadata.projectType || "unknown",
+            customerEmail: metadata.customerEmail,
+            customerPhone: metadata.customerPhone,
+            customerName: metadata.customerName,
+            timestamp: new Date().toISOString(),
+          },
+          // Optional: Add statement descriptor suffix (appears on customer's credit card statement)
+          statement_descriptor_suffix: "TAMAY ESTIMATES",
+          // Optional: Automatic tax calculation if connected
+          // automatic_tax: { enabled: true },
+        });
+        break;
+      } catch (err) {
+        const isTransientStripeNetworkError = err?.type === "StripeConnectionError";
+        if (!isTransientStripeNetworkError || attempt === maxAttempts) {
+          throw err;
+        }
+        // Small linear backoff before next retry attempt.
+        await new Promise(resolve => setTimeout(resolve, attempt * 500));
+      }
+    }
 
     // Return client secret for frontend
     res.json({
@@ -125,7 +144,8 @@ app.post("/api/create-payment-intent", async (req, res) => {
     });
   } catch (error) {
     console.error("Error creating payment intent:", error);
-    res.status(500).json({
+    const status = error?.type === "StripeConnectionError" ? 503 : 500;
+    res.status(status).json({
       error: error.message || "Failed to create payment intent",
       type: error.type
     });
