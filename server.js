@@ -45,6 +45,7 @@ if (!stripeSecretKey.startsWith("sk_test_") && !stripeSecretKey.startsWith("sk_l
 const stripe = Stripe(stripeSecretKey, {
   // Render/free-tier cold starts can cause occasional network hiccups to Stripe.
   // Increase retries/timeout to reduce false payment failures.
+  httpClient: Stripe.createFetchHttpClient(),
   maxNetworkRetries: 3,
   timeout: 20000,
 });
