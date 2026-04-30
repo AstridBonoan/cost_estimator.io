@@ -1182,32 +1182,24 @@
 
         console.log("Payment Intent created:", intentData.paymentIntentId, "Secret:", clientSecret);
 
-        // Create payment method with split card elements
-        const { paymentMethod, error: pmError } = await window.stripe.createPaymentMethod({
-          type: 'card',
-          card: window.cardNumberElement,
-          billing_details: {
-            name: billingFullName.value.trim(),
-            email: billingEmail.value.trim(),
-            phone: billingPhone.value.trim(),
-            address: {
-              line1: billingAddress.value.trim(),
-              line2: billingApartment.value.trim(),
-              city: billingCity.value.trim(),
-              state: billingState.value.trim(),
-              postal_code: billingZip.value.trim(),
-              country: billingCountry.value
+        // Confirm payment directly with card element and billing details.
+        const { error, paymentIntent } = await window.stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: window.cardNumberElement,
+            billing_details: {
+              name: billingFullName.value.trim(),
+              email: billingEmail.value.trim(),
+              phone: billingPhone.value.trim(),
+              address: {
+                line1: billingAddress.value.trim(),
+                line2: billingApartment.value.trim(),
+                city: billingCity.value.trim(),
+                state: billingState.value.trim(),
+                postal_code: billingZip.value.trim(),
+                country: billingCountry.value
+              }
             }
           }
-        });
-
-        if (pmError) {
-          throw new Error(pmError.message || "Failed to create payment method");
-        }
-
-        // Confirm the payment with the payment method
-        const { error, paymentIntent } = await window.stripe.confirmCardPayment(clientSecret, {
-          payment_method: paymentMethod.id
         });
 
         console.log("Payment result:", { error, paymentIntent });

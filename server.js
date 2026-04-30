@@ -26,10 +26,15 @@ const PORT = process.env.PORT || 3001;
 function normalizeStripeKey(rawKey) {
   if (!rawKey) return "";
   // Guard against accidental copy/paste artifacts in host env vars.
-  return rawKey.trim().replace(/^['"]|['"]$/g, "");
+  // Some dashboards can add quotes or hidden/newline whitespace when pasting keys.
+  return rawKey
+    .trim()
+    .replace(/^['"]|['"]$/g, "")
+    .replace(/\s+/g, "");
 }
 
 const stripeSecretKey = normalizeStripeKey(process.env.STRIPE_SECRET_KEY);
+const rawStripeSecretKey = process.env.STRIPE_SECRET_KEY || "";
 
 // Stripe setup - make sure environment variable is set
 if (!stripeSecretKey) {
@@ -277,10 +282,16 @@ app.use((req, res) => {
 // Start server
 app.listen(PORT, async () => {
   const redactedKey = `${stripeSecretKey.slice(0, 8)}...${stripeSecretKey.slice(-4)}`;
+  const isLiveKey = stripeSecretKey.startsWith("sk_live_");
+  const keyHadWhitespaceArtifacts = /\s/.test(rawStripeSecretKey);
+
   console.log(`🚀 Cost Estimator Payment Server running on port ${PORT}`);
-  console.log(`🔐 Using Stripe ${process.env.NODE_ENV === "production" ? "LIVE" : "TEST"} mode`);
+  console.log(`🔐 Using Stripe ${isLiveKey ? "LIVE" : "TEST"} mode`);
   console.log(`📝 CORS enabled for: ${process.env.CORS_ORIGIN || "http://localhost:3000"}`);
   console.log(`🔑 Stripe key loaded: ${redactedKey}`);
+  if (keyHadWhitespaceArtifacts) {
+    console.warn("⚠️ STRIPE_SECRET_KEY had whitespace/newline artifacts and was normalized.");
+  }
 
   try {
     const account = await stripe.accounts.retrieve();
