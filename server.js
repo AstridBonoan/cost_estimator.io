@@ -43,9 +43,8 @@ if (!stripeSecretKey.startsWith("sk_test_") && !stripeSecretKey.startsWith("sk_l
 }
 
 const stripe = Stripe(stripeSecretKey, {
-  // Render/free-tier cold starts can cause occasional network hiccups to Stripe.
-  // Increase retries/timeout to reduce false payment failures.
-  httpClient: Stripe.createFetchHttpClient(),
+  // Keep retries/timeout, but rely on Stripe SDK default HTTP client.
+  // A custom fetch client can fail in some hosted Node environments.
   maxNetworkRetries: 3,
   timeout: 20000,
 });
@@ -276,10 +275,24 @@ app.use((req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+  const redactedKey = `${stripeSecretKey.slice(0, 8)}...${stripeSecretKey.slice(-4)}`;
   console.log(`🚀 Cost Estimator Payment Server running on port ${PORT}`);
   console.log(`🔐 Using Stripe ${process.env.NODE_ENV === "production" ? "LIVE" : "TEST"} mode`);
   console.log(`📝 CORS enabled for: ${process.env.CORS_ORIGIN || "http://localhost:3000"}`);
+  console.log(`🔑 Stripe key loaded: ${redactedKey}`);
+
+  try {
+    const account = await stripe.accounts.retrieve();
+    console.log(`✅ Stripe connectivity check passed for account: ${account.id}`);
+  } catch (err) {
+    console.error("❌ Stripe connectivity check failed:", {
+      message: err?.message,
+      type: err?.type,
+      code: err?.code,
+      requestId: err?.requestId,
+    });
+  }
 });
 
 module.exports = app;
