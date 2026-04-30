@@ -35,6 +35,7 @@ function normalizeStripeKey(rawKey) {
 
 const stripeSecretKey = normalizeStripeKey(process.env.STRIPE_SECRET_KEY);
 const rawStripeSecretKey = process.env.STRIPE_SECRET_KEY || "";
+const stripePublicKey = normalizeStripeKey(process.env.STRIPE_PUBLIC_KEY);
 
 // Stripe setup - make sure environment variable is set
 if (!stripeSecretKey) {
@@ -45,6 +46,12 @@ if (!stripeSecretKey) {
 if (!stripeSecretKey.startsWith("sk_test_") && !stripeSecretKey.startsWith("sk_live_")) {
   console.error("ERROR: STRIPE_SECRET_KEY must start with sk_test_ or sk_live_");
   process.exit(1);
+}
+
+if (!stripePublicKey) {
+  console.warn("WARN: STRIPE_PUBLIC_KEY environment variable not set");
+} else if (!stripePublicKey.startsWith("pk_test_") && !stripePublicKey.startsWith("pk_live_")) {
+  console.warn("WARN: STRIPE_PUBLIC_KEY should start with pk_test_ or pk_live_");
 }
 
 const stripe = Stripe(stripeSecretKey, {
@@ -86,6 +93,17 @@ app.use(express.static(__dirname));
 // Health check endpoint
 app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
+// Public config endpoint for frontend runtime config (safe values only)
+app.get("/api/public-config", (req, res) => {
+  if (!stripePublicKey) {
+    return res.status(500).json({ error: "STRIPE_PUBLIC_KEY is not configured on server" });
+  }
+
+  res.json({
+    stripePublicKey,
+  });
 });
 
 // Create Payment Intent endpoint

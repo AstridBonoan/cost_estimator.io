@@ -4,13 +4,13 @@
 // This file handles all payment processing with Stripe
 // Requires: STRIPE_PUBLIC_KEY environment variable or set below
 
-// IMPORTANT: Set your Stripe Public Key below  
-// Get it from: https://dashboard.stripe.com/apikeys
-const STRIPE_PUBLIC_KEY = "pk_test_51TKpQfLoT0JUyRg2FVoyMtuUZaD52l70DnqTTOSMYEnw7zRBQbpbzU0egRefWpWKFIUkoF35zo4ZAiJrRz8EatXx0018EZd2MS";
+// Fetch Stripe public key from backend runtime config to avoid hardcoded key drift.
+let STRIPE_PUBLIC_KEY = null;
 
 // Backend URL for creating Payment Intents
 // Set this to your backend endpoint that creates payment intents
 const PAYMENT_INTENT_ENDPOINT = "https://estimator-sqzv.onrender.com/api/create-payment-intent";
+const PUBLIC_CONFIG_ENDPOINT = "https://estimator-sqzv.onrender.com/api/public-config";
 
 // Global references so scheduler.html can access them
 window.stripe = null;
@@ -27,10 +27,14 @@ let cardCvcElement;
 let clientSecret = null;
 
 // Initialize Stripe on page load
-function initializeStripe() {
+async function initializeStripe() {
+  if (!STRIPE_PUBLIC_KEY) {
+    STRIPE_PUBLIC_KEY = await loadStripePublicKey();
+  }
+
   console.log("🔍 Initializing Stripe with key:", STRIPE_PUBLIC_KEY?.substring(0, 20) + "...");
-  
-  if (!STRIPE_PUBLIC_KEY || STRIPE_PUBLIC_KEY === "pk_test_YOUR_KEY_HERE") {
+
+  if (!STRIPE_PUBLIC_KEY) {
     console.error("❌ Stripe Public Key not configured. Payment will not work until configured.");
     return;
   }
@@ -49,6 +53,32 @@ function initializeStripe() {
     console.log("✅ Stripe ready for payment");
   } catch (error) {
     console.error("❌ Stripe initialization error:", error);
+  }
+}
+
+async function loadStripePublicKey() {
+  try {
+    const response = await fetch(PUBLIC_CONFIG_ENDPOINT, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to load public config: ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (!data?.stripePublicKey) {
+      throw new Error("Missing stripePublicKey in public config");
+    }
+
+    return String(data.stripePublicKey).trim();
+  } catch (error) {
+    console.error("❌ Unable to load Stripe public key from backend:", error);
+    showPaymentError("Payment configuration error. Please refresh and try again.");
+    return null;
   }
 }
 
