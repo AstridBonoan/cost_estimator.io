@@ -271,12 +271,9 @@ async function handlePaymentSubmit(e) {
             workingPrice: estimateData.workingPrice || "$0",
           });
           
-          // Redirect to scheduler
-          const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-          const schedulerUrl = isLocalhost 
-            ? `https://estimator-sqzv.onrender.com/scheduler.html?${params.toString()}`
-            : `https://tamayenterprises.github.io/Estimator/scheduler.html?${params.toString()}`;
-          window.location.href = schedulerUrl;
+          const schedulerPage = new URL("scheduler.html", window.location.href);
+          schedulerPage.search = params.toString();
+          window.location.href = schedulerPage.toString();
         }
       }, 1500);
     }

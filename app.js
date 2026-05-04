@@ -3315,12 +3315,10 @@ if (payNowBtn) {
       workingPrice: `$${workingPrice}`,
     });
     
-    // Redirect to scheduler for appointment booking and payment
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const schedulerUrl = isLocalhost 
-      ? `https://estimator-sqzv.onrender.com/scheduler.html?${params.toString()}`
-      : `https://tamayenterprises.github.io/Estimator/scheduler.html?${params.toString()}`;
-    window.location.href = schedulerUrl;
+    // Scheduler lives next to index on whatever origin hosts the app (Render, GitHub Pages, localhost).
+    const schedulerPage = new URL("scheduler.html", window.location.href);
+    schedulerPage.search = params.toString();
+    window.location.href = schedulerPage.toString();
   });
 }
 
