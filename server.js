@@ -306,7 +306,11 @@ app.listen(PORT, async () => {
   console.log(`🚀 Cost Estimator Payment Server running on port ${PORT}`);
   console.log(`🔐 Using Stripe ${isLiveKey ? "LIVE" : "TEST"} mode`);
   console.log(`📝 CORS enabled for: ${process.env.CORS_ORIGIN || "http://localhost:3000"}`);
-  console.log(`🔑 Stripe key loaded: ${redactedKey}`);
+  console.log(`🔑 Stripe secret loaded: ${redactedKey}`);
+  if (stripePublicKey) {
+    const redactedPk = `${stripePublicKey.slice(0, 12)}...${stripePublicKey.slice(-6)}`;
+    console.log(`🔑 Stripe publishable loaded: ${redactedPk}`);
+  }
   if (keyHadWhitespaceArtifacts) {
     console.warn("⚠️ STRIPE_SECRET_KEY had whitespace/newline artifacts and was normalized.");
   }

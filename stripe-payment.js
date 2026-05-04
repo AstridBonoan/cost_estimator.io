@@ -7,10 +7,10 @@
 // Fetch Stripe public key from backend runtime config to avoid hardcoded key drift.
 let STRIPE_PUBLIC_KEY = null;
 
-// Backend URL for creating Payment Intents
-// Set this to your backend endpoint that creates payment intents
-const PAYMENT_INTENT_ENDPOINT = "https://estimator-sqzv.onrender.com/api/create-payment-intent";
-const PUBLIC_CONFIG_ENDPOINT = "https://estimator-sqzv.onrender.com/api/public-config";
+// Backend base URL (Render or local). Publishable key is loaded from /api/public-config.
+const STRIPE_API_BASE = "https://estimator-sqzv.onrender.com";
+const PAYMENT_INTENT_ENDPOINT = `${STRIPE_API_BASE}/api/create-payment-intent`;
+const PUBLIC_CONFIG_ENDPOINT = `${STRIPE_API_BASE}/api/public-config`;
 
 // Global references so scheduler.html can access them
 window.stripe = null;

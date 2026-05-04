@@ -1,10 +1,14 @@
 // ============================================================================
-// STRIPE PAYMENT INTEGRATION FOR SCHEDULER  
+// STRIPE PAYMENT INTEGRATION FOR SCHEDULER (optional / legacy helper)
 // ============================================================================
+// scheduler.html uses stripe-payment.js. This file stays in sync so any
+// future include does not use a hardcoded publishable key.
 
-const STRIPE_PUBLIC_KEY = "pk_test_51TKpQfLoT0JUyRg2FVoyMtuUZaD52l70DnqTTOSMYEnw7zRBQbpbzU0egRefWpWKFIUkoF35zo4ZAiJrRz8EatXx0018EZd2MS";
-const PAYMENT_INTENT_ENDPOINT = "https://estimator-sqzv.onrender.com/api/create-payment-intent";
+const STRIPE_API_BASE = "https://estimator-sqzv.onrender.com";
+const PAYMENT_INTENT_ENDPOINT = `${STRIPE_API_BASE}/api/create-payment-intent`;
+const PUBLIC_CONFIG_ENDPOINT = `${STRIPE_API_BASE}/api/public-config`;
 
+let STRIPE_PUBLIC_KEY = null;
 let stripe = null;
 let elements = null;
 let cardElement = null;
@@ -12,26 +16,37 @@ let clientSecret = null;
 let cardholderEmail = "";
 let cardholderName = "";
 
+async function loadStripePublicKey() {
+  const response = await fetch(PUBLIC_CONFIG_ENDPOINT, { method: "GET" });
+  if (!response.ok) throw new Error(`public-config ${response.status}`);
+  const data = await response.json();
+  if (!data?.stripePublicKey) throw new Error("missing stripePublicKey");
+  return String(data.stripePublicKey).trim();
+}
+
 // Initialize Stripe
-function initializeSchedulerStripe() {
+async function initializeSchedulerStripe() {
   console.log("🔵 Initializing Stripe...");
-  
+
   if (!window.Stripe) {
     console.warn("⚠️ Stripe.js not loaded yet, will retry...");
     setTimeout(initializeSchedulerStripe, 500);
     return;
   }
-  
+
   try {
+    if (!STRIPE_PUBLIC_KEY) {
+      STRIPE_PUBLIC_KEY = await loadStripePublicKey();
+    }
     stripe = window.Stripe(STRIPE_PUBLIC_KEY);
     const appearance = {
-      theme: 'stripe',
+      theme: "stripe",
       variables: {
-        colorPrimary: '#0B3C5D',
+        colorPrimary: "#0B3C5D",
       },
     };
     elements = stripe.elements({ appearance });
-    cardElement = elements.create('card');
+    cardElement = elements.create("card");
     console.log("✅ Stripe initialized");
   } catch (error) {
     console.error("❌ Stripe init error:", error);
@@ -45,14 +60,14 @@ function mountCardElement() {
     return false;
   }
 
-  const container = document.getElementById('payment-element');
+  const container = document.getElementById("payment-element");
   if (!container) {
     console.error("❌ Payment element container not found");
     return false;
   }
 
   try {
-    cardElement.mount('#payment-element');
+    cardElement.mount("#payment-element");
     console.log("✅ Card element mounted");
     return true;
   } catch (error) {
@@ -64,7 +79,7 @@ function mountCardElement() {
 // Initialize payment
 async function initializeSchedulerPayment(amount, customerEmail, customerName) {
   console.log("🔵 Initializing payment for $" + amount);
-  
+
   cardholderEmail = customerEmail;
   cardholderName = customerName;
 
@@ -74,15 +89,18 @@ async function initializeSchedulerPayment(amount, customerEmail, customerName) {
   }
 
   try {
-    // Create payment intent
     console.log("📡 Creating payment intent...");
     const response = await fetch(PAYMENT_INTENT_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         amount: Math.round(amount * 100),
-        currency: 'usd',
-        metadata: { email: customerEmail, name: customerName },
+        currency: "usd",
+        metadata: {
+          customerEmail: customerEmail,
+          customerName: customerName || "unknown",
+          projectType: "scheduler",
+        },
       }),
     });
 
@@ -94,15 +112,13 @@ async function initializeSchedulerPayment(amount, customerEmail, customerName) {
     clientSecret = data.clientSecret;
     console.log("✅ Payment intent created");
 
-    // Mount card element
     mountCardElement();
-    
   } catch (error) {
     console.error("❌ Payment init error:", error);
-    const errorDiv = document.getElementById('payment-errors');
+    const errorDiv = document.getElementById("payment-errors");
     if (errorDiv) {
       errorDiv.textContent = "Payment error: " + error.message;
-      errorDiv.classList.remove('hidden');
+      errorDiv.classList.remove("hidden");
     }
   }
 }
@@ -110,10 +126,10 @@ async function initializeSchedulerPayment(amount, customerEmail, customerName) {
 // Handle payment submission
 async function handleSchedulerPaymentSubmit() {
   console.log("🔵 Submitting payment...");
-  
+
   if (!stripe || !cardElement || !clientSecret) {
     console.error("❌ Payment not ready");
-    return { success: false, error: 'Payment not initialized' };
+    return { success: false, error: "Payment not initialized" };
   }
 
   try {
@@ -132,7 +148,7 @@ async function handleSchedulerPaymentSubmit() {
       return { success: false, error: error.message };
     }
 
-    if (paymentIntent && paymentIntent.status === 'succeeded') {
+    if (paymentIntent && paymentIntent.status === "succeeded") {
       console.log("✅ Payment successful");
       return { success: true, paymentId: paymentIntent.id };
     }
@@ -144,7 +160,6 @@ async function handleSchedulerPaymentSubmit() {
   }
 }
 
-// Export to window
 window.schedulerStripe = {
   initialize: initializeSchedulerStripe,
   initializePayment: initializeSchedulerPayment,
@@ -152,14 +167,12 @@ window.schedulerStripe = {
   getCardInfo: () => ({ email: cardholderEmail, name: cardholderName }),
 };
 
-// Initialize Stripe when available
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   console.log("📄 DOM loaded");
   initializeSchedulerStripe();
 });
 
-if (document.readyState !== 'loading') {
+if (document.readyState !== "loading") {
   console.log("📄 Document already ready");
   initializeSchedulerStripe();
 }
-
