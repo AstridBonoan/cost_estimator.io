@@ -3253,7 +3253,7 @@ hotLeadBtn.addEventListener("click", async () => {
 
   hotLeadBtn.disabled = true;
   hotLeadBtn.textContent = "Sending...";
-  scheduleJobBtn.disabled = true;
+  if (payNowBtn) payNowBtn.disabled = true;
   doneBtn.disabled = true;
 
   try {
@@ -3263,7 +3263,7 @@ hotLeadBtn.addEventListener("click", async () => {
   } catch (error) {
     console.error(error);
     hotLeadBtn.disabled = false;
-    scheduleJobBtn.disabled = false;
+    if (payNowBtn) payNowBtn.disabled = false;
     hotLeadBtn.textContent = "Get My Exact Quote";
     doneBtn.disabled = false;
     alert("We could not submit your request right now. Please try again.");
