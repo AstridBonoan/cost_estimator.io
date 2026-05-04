@@ -922,6 +922,13 @@ function showStep(step) {
     hideAllEndStates();
     results.classList.remove("hidden");
     results.classList.add("active");
+    // New results step: reset CTAs (e.g. Pay Deposit stays disabled if user used "Get Quote" then "Start New" without reload).
+    if (payNowBtn) payNowBtn.disabled = false;
+    if (hotLeadBtn) {
+      hotLeadBtn.disabled = false;
+      hotLeadBtn.textContent = "Get My Exact Quote";
+    }
+    if (doneBtn) doneBtn.disabled = false;
   } else {
     form.classList.remove("hidden");
     hideAllEndStates();
@@ -2614,6 +2621,10 @@ function resetExperience() {
 
   if (doneBtn) {
     doneBtn.disabled = false;
+  }
+
+  if (payNowBtn) {
+    payNowBtn.disabled = false;
   }
 
   breakdownList.innerHTML = "";
