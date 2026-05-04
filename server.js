@@ -84,6 +84,44 @@ app.use(cors({
   },
   credentials: true
 }));
+
+// Stripe webhooks require the raw body for signature verification — must run before express.json()
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+app.post("/webhook", express.raw({ type: "application/json" }), (req, res) => {
+  const sig = req.headers["stripe-signature"];
+
+  let event;
+
+  try {
+    if (!endpointSecret) {
+      console.warn("Webhook signature verification skipped - STRIPE_WEBHOOK_SECRET not set");
+      event = JSON.parse(req.body.toString());
+    } else {
+      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    }
+  } catch (err) {
+    console.error("Webhook error:", err.message);
+    return res.sendStatus(400);
+  }
+
+  switch (event.type) {
+    case "payment_intent.succeeded":
+      handlePaymentIntentSucceeded(event.data.object);
+      break;
+    case "payment_intent.payment_failed":
+      handlePaymentIntentFailed(event.data.object);
+      break;
+    case "charge.refunded":
+      handleChargeRefunded(event.data.object);
+      break;
+    default:
+      console.log(`Unhandled event type: ${event.type}`);
+  }
+
+  res.json({ received: true });
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -183,46 +221,7 @@ app.post("/api/create-payment-intent", async (req, res) => {
   }
 });
 
-// Webhook endpoint for Stripe events (optional but recommended)
-// This allows you to verify payments server-side
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-
-app.post("/webhook", express.raw({ type: "application/json" }), (req, res) => {
-  const sig = req.headers["stripe-signature"];
-
-  let event;
-
-  try {
-    if (!endpointSecret) {
-      console.warn("Webhook signature verification skipped - STRIPE_WEBHOOK_SECRET not set");
-      event = JSON.parse(req.body);
-    } else {
-      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-    }
-  } catch (err) {
-    console.error("Webhook error:", err.message);
-    return res.sendStatus(400);
-  }
-
-  // Handle different event types
-  switch (event.type) {
-    case "payment_intent.succeeded":
-      handlePaymentIntentSucceeded(event.data.object);
-      break;
-    case "payment_intent.payment_failed":
-      handlePaymentIntentFailed(event.data.object);
-      break;
-    case "charge.refunded":
-      handleChargeRefunded(event.data.object);
-      break;
-    default:
-      console.log(`Unhandled event type: ${event.type}`);
-  }
-
-  res.json({ received: true });
-});
-
-// Payment event handlers
+// Payment event handlers (used by POST /webhook above)
 function handlePaymentIntentSucceeded(paymentIntent) {
   console.log("Payment succeeded:", paymentIntent.id);
   // Send confirmation email or update database
